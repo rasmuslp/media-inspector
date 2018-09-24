@@ -1,0 +1,30 @@
+{
+  "name": "media-pruner",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "predo-deps": "rm -rf node_modules/ package-lock.json",
+    "do-deps": "npm install",
+    "lint": "eslint .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node $NODE_DEBUG_OPTION src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rasmuslp/media-pruner.git"
+  },
+  "author": {
+    "name": "Rasmus Ljungmann Pedersen",
+    "email": "rasmuslp@gmail.com"
+  },
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/rasmuslp/media-pruner/issues"
+  },
+  "homepage": "https://github.com/rasmuslp/media-pruner#readme",
+  "dependencies": {
+    "commander": "2.18.0",
+    "mime-types": "2.1.20"
+  }
+}
