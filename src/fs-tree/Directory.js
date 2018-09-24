@@ -48,6 +48,14 @@ class Directory extends FsObject {
 
 		return matches;
 	}
+
+	async getSizeOfTree() {
+		let sizes = [];
+
+		await this.traverseTree(node => sizes.push(node.size));
+
+		return sizes.reduce((sum, cur) => sum + cur, 0);
+	}
 }
 
 module.exports = Directory;

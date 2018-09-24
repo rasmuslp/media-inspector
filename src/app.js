@@ -9,14 +9,19 @@ const packageJson = require(path.join(__dirname, '..', 'package.json'));
 
 commander
 	.version(packageJson.version)
-	.option('-n, --dey-run', `Don't actually perform any actions`)
+	.option('-n, --dry-run', `Don't actually perform any actions`)
 	.parse(process.argv);
 
-console.log('Commander', commander);
-console.log('Args', process.argv);
+const directories = commander.args;
+if (!(directories.length)) {
+	console.error('media-pruner needs to know where to scan');
+}
 
-async function run() {
-	const dir = await fsTree(path.join(__dirname, '..'));
+async function run(directoryPath) {
+	console.log(`media-pruner scanning ${directoryPath}`);
+
+	const dir = await fsTree(directoryPath);
+	console.log('Dir:', dir);
 
 	const jsonFiles = await dir.findInTree(node => {
 		const mimeType = mime.lookup(node.path);
@@ -26,9 +31,11 @@ async function run() {
 
 		return false;
 	});
-
-	console.log('Dir:', dir);
 	console.log('JSON:', jsonFiles);
+
+	const size = await dir.getSizeOfTree();
+	console.log('Size: ', size);
 }
 
-run();
+run(directories[0]);
+
