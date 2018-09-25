@@ -59,4 +59,3 @@ async function run(directoryPath) {
 }
 
 run(directories[0]);
-
