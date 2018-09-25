@@ -26,7 +26,7 @@ async function buildNode(nodePath, directoryBuilder = defaultDirectoryBuilder, f
 
 	if (stats.isDirectory()) {
 		let children = await readdirAsync(nodePath);
-		children = await Promise.all(children.map(async name => {
+		children = await Promise.all(children.map(name => {
 			const childPath = path.join(nodePath, name);
 			return buildNode(childPath, directoryBuilder, fileBuilder);
 		}));
@@ -41,7 +41,6 @@ async function buildNode(nodePath, directoryBuilder = defaultDirectoryBuilder, f
 module.exports = {
 	Directory,
 	File,
-
 
 	build: buildNode
 };

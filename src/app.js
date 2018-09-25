@@ -19,7 +19,7 @@ if (!(directories.length)) {
 	console.error('media-pruner needs to know where to scan');
 }
 
-const typeExtractor = /^([^\/]+)/;
+const typeExtractor = /^([^/]+)/;
 const mediaTypes = [
 	'image',
 	'video'
