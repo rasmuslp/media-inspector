@@ -14,20 +14,16 @@ class FsObject {
 		return this._parent;
 	}
 
-	get type() {
-		return this._type;
-	}
-
 	get size() {
 		return this._stats.size;
 	}
 
 	get isDirectory() {
-		return this._type === 'directory';
+		return this._fsObjectType === 'directory';
 	}
 
 	get isFile() {
-		return this._type === 'file';
+		return this._fsObjectType === 'file';
 	}
 }
 

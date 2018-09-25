@@ -8,11 +8,19 @@ const readdirAsync = util.promisify(fs.readdir);
 const Directory = require('./Directory');
 const File = require('./File');
 
-async function buildNode(nodePath, DirectoryClass = Directory, FileClass = File) {
+function defaultDirectoryBuilder(objectPath, stats, children) {
+	return new Directory(objectPath, stats, children);
+}
+
+function defaultFileBuilder(objectPath, stats) {
+	return new File(objectPath, stats);
+}
+
+async function buildNode(nodePath, directoryBuilder = defaultDirectoryBuilder, fileBuilder = defaultFileBuilder) {
 	const stats = await statAsync(nodePath);
 
 	if (stats.isFile()) {
-		const file = new FileClass(nodePath, stats);
+		const file = fileBuilder(nodePath, stats);
 		return file;
 	}
 
@@ -20,16 +28,20 @@ async function buildNode(nodePath, DirectoryClass = Directory, FileClass = File)
 		let children = await readdirAsync(nodePath);
 		children = await Promise.all(children.map(async name => {
 			const childPath = path.join(nodePath, name);
-			return buildNode(childPath, DirectoryClass, FileClass);
+			return buildNode(childPath, directoryBuilder, fileBuilder);
 		}));
 
-		const directory = new DirectoryClass(nodePath, stats, children);
+		const directory = directoryBuilder(nodePath, stats, children);
 		return directory;
 	}
 
 	throw new Error('WAT?!');
 }
 
-module.exports = async function fsTree(nodePath, DirectoryClass, FileClass) {
-	return buildNode(nodePath, DirectoryClass, FileClass)
+module.exports = {
+	Directory,
+	File,
+
+
+	build: buildNode
 };

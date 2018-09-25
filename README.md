@@ -2,5 +2,5 @@
 
 ## Notes
 
-https://github.com/tj/commander.js#readme
-https://github.com/jshttp/mime-types#readme
+* https://github.com/tj/commander.js#readme
+* https://github.com/jshttp/mime-types#readme

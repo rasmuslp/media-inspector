@@ -4,7 +4,7 @@ class Directory extends FsObject {
 	constructor(objectPath, stats, children) {
 		super(objectPath, stats);
 		this._children = children;
-		this._type = 'directory';
+		this._fsObjectType = 'directory';
 
 		for (const child of children) {
 			child._parent = this;
