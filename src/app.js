@@ -6,6 +6,7 @@ const mime = require('mime-types');
 const fsTree = require('./fs-tree');
 
 const MediaFile = require('./MediaFile');
+const mediainfo = require('./mediainfo');
 
 const packageJson = require(path.join(__dirname, '..', 'package.json'));
 
@@ -53,6 +54,17 @@ async function run(directoryPath) {
 		return node.isFile && node.type === 'video';
 	});
 	console.log('Files:', videoFiles);
+
+	console.log('Reading mediainfo for video files...');
+	for (const videoFile of videoFiles) {
+		try {
+			const info = await mediainfo.read(videoFile.path);
+			console.log(videoFile.path, info);
+		}
+		catch (e) {
+			console.log(videoFile.path, e);
+		}
+	}
 
 	const size = await dir.getSizeOfTree();
 	console.log('Total Size: ', size);
