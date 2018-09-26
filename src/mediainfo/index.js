@@ -3,6 +3,8 @@ const util = require('util');
 
 const mediainfoParser = require('mediainfo-parser');
 
+const MediainfoMetadata = require('./MediainfoMetadata');
+
 const exec = util.promisify(childProcess.exec);
 const parse = util.promisify(mediainfoParser.parse);
 
@@ -15,7 +17,10 @@ async function read(path) {
 	// Parse mediainfo output
 	const parsed = await parse(output.stdout);
 
-	return parsed;
+	// Lets wrap that up
+	const mediainfoMetadata = new MediainfoMetadata(parsed);
+
+	return mediainfoMetadata;
 }
 
 module.exports = {

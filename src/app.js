@@ -6,7 +6,6 @@ const mime = require('mime-types');
 const fsTree = require('./fs-tree');
 
 const MediaFile = require('./MediaFile');
-const mediainfo = require('./mediainfo');
 
 const packageJson = require(path.join(__dirname, '..', 'package.json'));
 
@@ -58,7 +57,7 @@ async function run(directoryPath) {
 	console.log('Reading mediainfo for video files...');
 	for (const videoFile of videoFiles) {
 		try {
-			const info = await mediainfo.read(videoFile.path);
+			const info = await videoFile.fetchMetadata();
 			console.log(videoFile.path, info);
 		}
 		catch (e) {
