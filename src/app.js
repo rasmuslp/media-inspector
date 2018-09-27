@@ -57,6 +57,7 @@ function fileMatchesFilter(mediaFile, filters) {
 		return false;
 	}
 
+	const rejectReasons = [];
 	for (const filter of filters[type]) {
 		// All conditions must be met
 		for (const [trackType, conditions] of Object.entries(filter)) {
@@ -65,7 +66,11 @@ function fileMatchesFilter(mediaFile, filters) {
 				switch (condition.comparator) {
 					case 'string': {
 						if (!(value.toLocaleLowerCase() === condition.value.toLocaleLowerCase())) {
-							return false;
+							rejectReasons.push({
+								path: `${trackType}.${property}`,
+								condition: `${condition.comparator} ${condition.value.toLocaleLowerCase()}`,
+								value: `${value.toLocaleLowerCase()}`
+							});
 						}
 
 						break;
@@ -73,7 +78,11 @@ function fileMatchesFilter(mediaFile, filters) {
 					case '>=': {
 						if (!(value >= condition.value)) {
 							// We didn't meet the condition
-							return false;
+							rejectReasons.push({
+								path: `${trackType}.${property}`,
+								condition: `${condition.comparator} ${condition.value}`,
+								value
+							});
 						}
 
 						break;
@@ -84,6 +93,10 @@ function fileMatchesFilter(mediaFile, filters) {
 				}
 			}
 		}
+	}
+
+	if (rejectReasons.length > 0) {
+		return rejectReasons;
 	}
 
 	return true;
@@ -109,11 +122,20 @@ async function run(directoryPath) {
 			const info = await videoFile.fetchMetadata();
 			infoForFiles.push(info);
 
-			if (fileMatchesFilter(videoFile, filter)) {
+			const result = fileMatchesFilter(videoFile, filter);
+			// Array is rejection reasons (stupid flow)
+			if (Array.isArray(result)) {
+				unmatchedFiles.push(videoFile);
+				console.log(`File, rejected: ${videoFile.path}`, result);
+			}
+			// True => pass
+			else if (result) {
 				matchedFiles.push(videoFile);
 			}
+			// Otherwise, failure
 			else {
 				unmatchedFiles.push(videoFile);
+				console.log(`File, unmatched: ${videoFile.path}`);
 			}
 		}
 		catch (e) {
