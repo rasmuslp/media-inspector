@@ -3,7 +3,28 @@
 		"general": {
 			"bitrate": {
 				"comparator": ">=",
-				"value": 2000000
+				"value": 1200000
+			}
+		},
+		"video": {
+			"format": {
+				"comparator": "string",
+				"value": "hevc"
+			}
+		},
+		"audio": {
+			"channels": {
+				"comparator": ">=",
+				"value": 2
+			}
+		}
+	},
+
+	{
+		"general": {
+			"bitrate": {
+				"comparator": ">=",
+				"value": 1800000
 			}
 		},
 		"video": {

@@ -25,7 +25,7 @@ if (!commander.filter) {
 }
 const filterPath = path.join(process.cwd(), commander.filter);
 
-const filter = require(filterPath);
+const loadedFilters = require(filterPath);
 
 const typeExtractor = /^([^/]+)/;
 const mediaTypes = [
@@ -51,58 +51,7 @@ function fileBuilder(objectPath, stats) {
 	return new fsTree.File(objectPath, stats);
 }
 
-function fileMatchesFilter(mediaFile, filters) {
-	const type = mediaFile.type;
-	if (!(type in filters)) {
-		return false;
-	}
-
-	const rejectReasons = [];
-	for (const filter of filters[type]) {
-		// All conditions must be met
-		for (const [trackType, conditions] of Object.entries(filter)) {
-			for (const [property, condition] of Object.entries(conditions)) {
-				const value = mediaFile.metadata.get(trackType, property);
-				switch (condition.comparator) {
-					case 'string': {
-						if (!(value.toLocaleLowerCase() === condition.value.toLocaleLowerCase())) {
-							rejectReasons.push({
-								path: `${trackType}.${property}`,
-								condition: `${condition.comparator} ${condition.value.toLocaleLowerCase()}`,
-								value: `${value.toLocaleLowerCase()}`
-							});
-						}
-
-						break;
-					}
-					case '>=': {
-						if (!(value >= condition.value)) {
-							// We didn't meet the condition
-							rejectReasons.push({
-								path: `${trackType}.${property}`,
-								condition: `${condition.comparator} ${condition.value}`,
-								value
-							});
-						}
-
-						break;
-					}
-
-					default:
-						throw new Error(`Unknown comparator '${condition.comparator}'`);
-				}
-			}
-		}
-	}
-
-	if (rejectReasons.length > 0) {
-		return rejectReasons;
-	}
-
-	return true;
-}
-
-async function run(directoryPath) {
+async function run(directoryPath, filters) {
 	console.log(`media-pruner scanning ${directoryPath}`);
 
 	const dir = await fsTree.build(directoryPath, undefined, fileBuilder);
@@ -116,26 +65,23 @@ async function run(directoryPath) {
 	const start = Date.now();
 	const infoForFiles = [];
 	const matchedFiles = [];
-	const unmatchedFiles = [];
+	const rejectedFiles = [];
 	for (const videoFile of videoFiles) {
 		try {
 			const info = await videoFile.fetchMetadata();
 			infoForFiles.push(info);
 
-			const result = fileMatchesFilter(videoFile, filter);
-			// Array is rejection reasons (stupid flow)
-			if (Array.isArray(result)) {
-				unmatchedFiles.push(videoFile);
-				console.log(`File, rejected: ${videoFile.path}`, result);
-			}
-			// True => pass
-			else if (result) {
+			const type = videoFile.type; // Always 'video'
+			try {
+				videoFile.passAnyFilter(filters[type]);
 				matchedFiles.push(videoFile);
 			}
-			// Otherwise, failure
-			else {
-				unmatchedFiles.push(videoFile);
-				console.log(`File, unmatched: ${videoFile.path}`);
+			catch (e) {
+				// Rejected
+				rejectedFiles.push({
+					file: videoFile,
+					error: e
+				});
 			}
 		}
 		catch (e) {
@@ -145,11 +91,14 @@ async function run(directoryPath) {
 
 	console.log(`Filtering completed in ${Date.now() - start} ms`);
 	console.log(`Matched files (${matchedFiles.length})`);
-	console.log(`Unmatched files (${unmatchedFiles.length})`);
-	console.log(JSON.stringify(unmatchedFiles.map(file => file.path)));
+	console.log(`Rejected files (${rejectedFiles.length})`);
+	console.log(JSON.stringify(rejectedFiles.map(({ file, error }) => ({
+		path: file.path,
+		rejection: error.reasons
+	}))));
 
 	const size = await dir.getSizeOfTree();
 	console.log('Total Size: ', size);
 }
 
-run(directories[0]);
+run(directories[0], loadedFilters);
