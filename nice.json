@@ -1,0 +1,22 @@
+{
+	"video": [{
+		"general": {
+			"bitrate": {
+				"comparator": ">=",
+				"value": 2000000
+			}
+		},
+		"video": {
+			"format": {
+				"comparator": "string",
+				"value": "avc"
+			}
+		},
+		"audio": {
+			"channels": {
+				"comparator": ">=",
+				"value": 2
+			}
+		}
+	}]
+}

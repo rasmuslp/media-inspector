@@ -5,6 +5,11 @@
 Requirements:
 * [mediainfo](https://mediaarea.net/en/MediaInfo) executable in `$PATH`
 
+Example
+```bash
+$ npm run start -- -f nice.json <folder/with/video/files>
+```
+
 ## Notes
 
 * https://github.com/tj/commander.js#readme
