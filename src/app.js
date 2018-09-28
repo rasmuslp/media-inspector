@@ -61,41 +61,12 @@ async function run(directoryPath, filters) {
 	});
 	console.log(`Found ${videoFiles.length} video files`);
 
-	console.log('Filtering video files...');
+	console.log(`Filtering files...`);
 	const start = Date.now();
-	const infoForFiles = [];
-	const matchedFiles = [];
-	const rejectedFiles = [];
-	for (const videoFile of videoFiles) {
-		try {
-			const info = await videoFile.fetchMetadata();
-			infoForFiles.push(info);
-
-			const type = videoFile.type; // Always 'video'
-			try {
-				videoFile.passAnyFilter(filters[type]);
-				matchedFiles.push(videoFile);
-			}
-			catch (e) {
-				// Rejected
-				rejectedFiles.push({
-					file: videoFile,
-					error: e
-				});
-			}
-		}
-		catch (e) {
-			console.log(videoFile.path, e);
-		}
-	}
-
+	const pruneList = await dir.getPruneList(filters);
 	console.log(`Filtering completed in ${Date.now() - start} ms`);
-	console.log(`Matched files (${matchedFiles.length})`);
-	console.log(`Rejected files (${rejectedFiles.length})`);
-	console.log(JSON.stringify(rejectedFiles.map(({ file, error }) => ({
-		path: file.path,
-		rejection: error.reasons
-	}))));
+
+	console.log(pruneList);
 
 	const size = await dir.getSizeOfTree();
 	console.log('Total Size: ', size);

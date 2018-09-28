@@ -25,6 +25,10 @@ class FsObject {
 	get isFile() {
 		return this._fsObjectType === 'file';
 	}
+
+	getPruneList() {
+		return [];
+	}
 }
 
 module.exports = FsObject;

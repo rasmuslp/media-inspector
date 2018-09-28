@@ -64,7 +64,7 @@ class MediaFile extends fsTree.File {
 		}
 
 		if (rejectReasons.length > 0) {
-			throw new FilterRejectionError(``, this, rejectReasons);
+			throw new FilterRejectionError(`Filter failed with reasons:`, this, rejectReasons);
 		}
 	}
 
@@ -85,6 +85,29 @@ class MediaFile extends fsTree.File {
 		}
 
 		throw rejected;
+	}
+
+	async getPruneList(filtersByType) {
+		const pruneList = [];
+
+		if (this.type in filtersByType) {
+			// Prime metadata for 'passAnyFilter'
+			await this.fetchMetadata();
+
+			try {
+				this.passAnyFilter(filtersByType[this.type]);
+				return [];
+			}
+			catch (e) {
+				// Rejected
+				return [{
+					file: this,
+					reason: e
+				}];
+			}
+		}
+
+		return pruneList;
 	}
 }
 
