@@ -62,3 +62,6 @@ typings/
 
 # Development environment
 .idea/
+
+# Local test files
+local-test-files/
