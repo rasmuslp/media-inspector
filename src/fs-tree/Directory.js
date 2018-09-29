@@ -52,7 +52,7 @@ class Directory extends FsObject {
 		if (options.includeRecommended) {
 			if (!this._children || this._children.length === 0) {
 				pruneList.push({
-					file: this,
+					fsObject: this,
 					reason: new Error(`Directory empty`)
 				});
 			}

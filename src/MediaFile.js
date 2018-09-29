@@ -101,7 +101,7 @@ class MediaFile extends fsTree.File {
 			catch (e) {
 				// Rejected
 				return [{
-					file: this,
+					fsObject: this,
 					reason: e
 				}];
 			}
