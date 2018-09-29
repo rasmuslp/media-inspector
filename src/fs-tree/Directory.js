@@ -39,16 +39,24 @@ class Directory extends FsObject {
 		return this._children.filter(i => i._type === 'file');
 	}
 
-	async getPruneList(...args) {
+	async getPruneList(options = {}) {
 		const pruneList = [];
 
 		for (const child of this.childrenSorted) {
 			// Recurse and add to list
-			const childPruneList = await child.getPruneList(...args);
+			const childPruneList = await child.getPruneList(options);
 			pruneList.push(...childPruneList);
 		}
 
-		// pruneList.push(this);
+		// TODO: Include this, iff empty or will be empty
+		if (options.includeRecommended) {
+			if (!this._children || this._children.length === 0) {
+				pruneList.push({
+					file: this,
+					reason: new Error(`Directory empty`)
+				});
+			}
+		}
 
 		return pruneList;
 	}

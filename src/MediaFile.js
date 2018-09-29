@@ -87,7 +87,7 @@ class MediaFile extends fsTree.File {
 		throw rejected;
 	}
 
-	async getPruneList(filtersByType) {
+	async getPruneList({ filtersByType }) {
 		const pruneList = [];
 
 		if (this.type in filtersByType) {
