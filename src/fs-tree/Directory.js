@@ -11,26 +11,24 @@ class Directory extends FsObject {
 		}
 	}
 
+	// Children before parents
+	static getSortByPathDirFile(a, b) {
+		if (a.path.startsWith(b.path)) {
+			return -1;
+		}
+		else if (b.path.startsWith(a.path)) {
+			return 1;
+		}
+
+		return a.path.localeCompare(b.path);
+	}
+
 	get children() {
 		return this._children;
 	}
 
 	get childrenSorted() {
-		const sorted = this._children.sort((a, b) => {
-			if (a.isDirectory && b.isDirectory) {
-				return a.path.localeCompare(b.path);
-			}
-
-			if (a.isDirectory && b.isFile) {
-				return -1;
-			}
-
-			if (a.isFile && b.isDirectory) {
-				return 1;
-			}
-
-			return a.path.localeCompare(b.path);
-		});
+		const sorted = this._children.sort(this.constructor.getSortByPathDirFile);
 
 		return sorted;
 	}
@@ -41,6 +39,24 @@ class Directory extends FsObject {
 
 	get files() {
 		return this._children.filter(i => i._type === 'file');
+	}
+
+	// Returns list of tree, this included
+	async getTree() {
+		const nodes = [];
+		await this.traverseTree(node => {
+			nodes.push(node);
+		});
+
+		return nodes;
+	}
+
+	async getTreeSorted() {
+		const tree = await this.getTree();
+		let sorted = [...tree];
+		sorted.sort(this.constructor.getSortByPathDirFile);
+
+		return sorted;
 	}
 
 	async getPruneList(options = {}) {
@@ -73,7 +89,7 @@ class Directory extends FsObject {
 
 			// Queue any children
 			if (node.children.length > 0) {
-				queue.push(...node.childrenSorted);
+				queue.push(...node.children);
 			}
 
 			// Apply fn
