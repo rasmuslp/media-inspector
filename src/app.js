@@ -69,9 +69,19 @@ async function run(directoryPath, filters) {
 	});
 	console.log(`Filtering completed in ${Date.now() - start} ms`);
 
+	const spaceFreeable = purges
+		.map(item => item.fsObject.size)
+		.reduce((acc, cur) => (acc += cur), 0);
+
+	console.log('Space freeable: ', spaceFreeable);
 
 	const size = await dir.getSizeOfTree();
 	console.log('Total Size: ', size);
+
+	const reduction = spaceFreeable / size * 100;
+	console.log(`Reduction: ${reduction}%`);
+
+	console.log('Done');
 }
 
 run(directories[0], loadedFilters);
