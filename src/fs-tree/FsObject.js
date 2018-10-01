@@ -14,6 +14,10 @@ class FsObject {
 		return this._parent;
 	}
 
+	get children() {
+		return [];
+	}
+
 	get size() {
 		return this._stats.size;
 	}

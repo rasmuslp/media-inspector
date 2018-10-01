@@ -11,6 +11,10 @@ class Directory extends FsObject {
 		}
 	}
 
+	get children() {
+		return this._children;
+	}
+
 	get childrenSorted() {
 		const sorted = this._children.sort((a, b) => {
 			if (a.isDirectory && b.isDirectory) {
@@ -68,7 +72,7 @@ class Directory extends FsObject {
 			const node = queue.pop();
 
 			// Queue any children
-			if (node._children) {
+			if (node.children.length > 0) {
 				queue.push(...node.childrenSorted);
 			}
 
