@@ -63,13 +63,12 @@ async function run(directoryPath, filters) {
 
 	console.log(`Filtering files...`);
 	const start = Date.now();
-	const pruneList = await dir.getPruneList({
+	let purges = await dir.getTreePurges({
 		filtersByType: filters,
 		includeRecommended: true
 	});
 	console.log(`Filtering completed in ${Date.now() - start} ms`);
 
-	console.log(pruneList);
 
 	const size = await dir.getSizeOfTree();
 	console.log('Total Size: ', size);

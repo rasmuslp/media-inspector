@@ -59,26 +59,30 @@ class Directory extends FsObject {
 		return sorted;
 	}
 
-	async getPruneList(options = {}) {
-		const pruneList = [];
+	async getTreePurges(options = {}) {
+		const purges = [];
 
-		for (const child of this.childrenSorted) {
-			// Recurse and add to list
-			const childPruneList = await child.getPruneList(options);
-			pruneList.push(...childPruneList);
+		const nodes = await this.getTreeSorted();
+		for (const node of nodes) {
+			// Get the nodes own list of purgable files
+			const nodePrunes = await node.getPurges(options);
+			purges.push(...nodePrunes);
 		}
 
-		// TODO: Include this, iff empty or will be empty
+		return purges;
+	}
+
+	getPurges(options = {}) {
 		if (options.includeRecommended) {
-			if (!this._children || this._children.length === 0) {
-				pruneList.push({
+			if (!this.children || this.children.length === 0) {
+				return [{
 					fsObject: this,
 					reason: new Error(`Directory empty`)
-				});
+				}];
 			}
 		}
 
-		return pruneList;
+		return [];
 	}
 
 	async traverseTree(nodeFn) {

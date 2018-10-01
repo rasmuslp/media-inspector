@@ -30,7 +30,7 @@ class FsObject {
 		return this._fsObjectType === 'file';
 	}
 
-	getPruneList() {
+	getPurges() {
 		return [];
 	}
 }

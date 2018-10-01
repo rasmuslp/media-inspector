@@ -87,19 +87,33 @@ class MediaFile extends fsTree.File {
 		throw rejected;
 	}
 
-	async getPruneList({ filtersByType }) {
-		const pruneList = [];
-
-		if (this.type in filtersByType) {
+	// Include recommended
+	async getPurges(options = {}) {
+		if (this.type in options.filtersByType) {
 			// Prime metadata for 'passAnyFilter'
 			await this.fetchMetadata();
 
 			try {
-				this.passAnyFilter(filtersByType[this.type]);
+				this.passAnyFilter(options.filtersByType[this.type]);
 				return [];
 			}
 			catch (e) {
 				// Rejected
+
+				if (options.includeRecommended) {
+					// Take parent and all children when this was the majority
+					if (this.size >= 0.9 * await this.parent.getSizeOfTree()) {
+						// Mark parent and tree
+						const parentTree = await this.parent.getTreeSorted();
+						const purges = parentTree.map(node => ({
+							fsObject: node,
+							reason: this === node ? e : new Error(`Auxiliary file or folder to ${this.path}`)
+						}));
+
+						return purges;
+					}
+				}
+
 				return [{
 					fsObject: this,
 					reason: e
@@ -107,7 +121,7 @@ class MediaFile extends fsTree.File {
 			}
 		}
 
-		return pruneList;
+		return [];
 	}
 }
 
