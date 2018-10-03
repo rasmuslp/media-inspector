@@ -7,7 +7,10 @@ class MediaFile extends fsTree.File {
 	constructor(objectPath, stats, type, mimeType) {
 		super(objectPath, stats);
 
+		// Mime type -part
 		this._type = type;
+
+		// Full mime type
 		this._mimeType = mimeType;
 	}
 
