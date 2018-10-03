@@ -1,9 +1,13 @@
+const fs = require('fs');
 const path = require('path');
 
 const commander = require('commander');
 const mime = require('mime-types');
 
 const fsTree = require('./fs-tree');
+
+const FilterRejectionError = require('./FilterRejectionError');
+const RecommendedPurgeError = require('./RecommendedPurgeError');
 
 const MediaFile = require('./MediaFile');
 
@@ -13,6 +17,7 @@ commander
 	.version(packageJson.version)
 	.option('-f, --filter [path]', 'filter configuration file in JSON or JavaScript')
 	.option('--include-recommended', `will also include empty directories and 'container' folders`)
+	.option('--skip-log', `don't write history in current working directory`)
 	.parse(process.argv);
 
 // Extract mime 'master' type of the full mime type
@@ -40,7 +45,7 @@ function fileBuilder(objectPath, stats) {
 	return new fsTree.File(objectPath, stats);
 }
 
-async function run({ filterPath, includeRecommended, directory }) {
+async function run({ filterPath, includeRecommended, skipLog = false, directory } = {}) {
 	if (!directory) {
 		console.error('media-purger needs to know where to scan');
 		process.exit(-1);
@@ -88,6 +93,40 @@ ${includeRecommended ? 'including recommended' : ''}
 		process.exit(-1);
 	}
 
+	// Keep log of reasons for writing to disk;
+	const logMessages = [];
+
+	console.log(`Listing files for purging:`);
+	for (const item of purges) {
+		let message = `${item.fsObject.path}\n\t`;
+
+		if (item.fsObject.isDirectory) {
+			message += `[Directory]`;
+		}
+		else if (item.fsObject instanceof MediaFile) {
+			message += `[Media file]`;
+		}
+		else {
+			message += `[File]`;
+		}
+
+		message += ' ';
+
+		switch (item.reason.constructor) {
+			case FilterRejectionError:
+			case RecommendedPurgeError: {
+				message += item.reason.getPurgeReason();
+				break;
+			}
+
+			default:
+				message += `${item.reason.message ? item.reason.message : 'Error'}: ${JSON.stringify(item.reason)}`;
+		}
+
+		logMessages.push(message);
+		console.log(message);
+	}
+
 	const spaceFreeable = purges
 		.map(item => item.fsObject.size)
 		.reduce((acc, cur) => (acc += cur), 0);
@@ -98,7 +137,20 @@ ${includeRecommended ? 'including recommended' : ''}
 	console.log('Total Size: ', size);
 
 	const reduction = spaceFreeable / size * 100;
-	console.log(`Reduction: ${reduction}%`);
+	console.log(`Reduction: ${reduction.toFixed(2)}%`);
+
+	const doDelete = true;
+	if (doDelete) {
+		if (!skipLog) {
+			try {
+				fs.appendFileSync(path.join(process.cwd(), `media-purger-${Date.now()}.log`), logMessages.join('\n'));
+			}
+			catch (e) {
+				console.error(`Could not write log:`, e);
+				process.exit(-1);
+			}
+		}
+	}
 
 	console.log('Done');
 }
@@ -106,5 +158,6 @@ ${includeRecommended ? 'including recommended' : ''}
 run({
 	filterPath: commander.filter,
 	includeRecommended: commander.includeRecommended,
+	skipLog: commander.skipLog,
 	directory: commander.args[0]
 });
