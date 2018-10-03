@@ -11,22 +11,11 @@ const packageJson = require(path.join(__dirname, '..', 'package.json'));
 
 commander
 	.version(packageJson.version)
-	.option('-n, --dry-run', `don't actually perform any actions`)
 	.option('-f, --filter [path]', 'filter configuration file in JSON or JavaScript')
+	.option('--include-recommended', `will also include empty directories and 'container' folders`)
 	.parse(process.argv);
 
-const directories = commander.args;
-if (!(directories.length)) {
-	console.error('media-purger needs to know where to scan');
-}
-
-if (!commander.filter) {
-	console.error('media-purger needs a filter');
-}
-const filterPath = path.join(process.cwd(), commander.filter);
-
-const loadedFilters = require(filterPath);
-
+// Extract mime 'master' type of the full mime type
 const typeExtractor = /^([^/]+)/;
 const mediaTypes = [
 	'image',
@@ -44,30 +33,60 @@ function fileBuilder(objectPath, stats) {
 			}
 		}
 		else {
-			console.log(`Could not extract type from ${mimeType}`);
+			console.log(`Could not extract type from ${mimeType} at ${objectPath}`);
 		}
 	}
 
 	return new fsTree.File(objectPath, stats);
 }
 
-async function run(directoryPath, filters) {
-	console.log(`media-purger scanning ${directoryPath}`);
+async function run({ filterPath, includeRecommended, directory }) {
+	if (!directory) {
+		console.error('media-purger needs to know where to scan');
+		process.exit(-1);
+	}
 
-	const dir = await fsTree.build(directoryPath, undefined, fileBuilder);
+	if (!filterPath) {
+		console.error('media-purger needs a filter');
+		process.exit(-1);
+	}
 
-	const videoFiles = await dir.findInTree(node => {
-		return node.isFile && node.type === 'video';
-	});
-	console.log(`Found ${videoFiles.length} video files`);
+	// Load filter
+	const filterFullPath = path.resolve(process.cwd(), filterPath);
+	const loadedFilters = require(filterFullPath);
 
-	console.log(`Filtering files...`);
+	const directoryFullPath = path.resolve(process.cwd(), directory);
+
+	const bootMessage = `
+media-purger starting up
+scanning directory at ${directoryFullPath}
+with filter at ${filterFullPath}
+${includeRecommended ? 'including recommended' : ''}
+`;
+	console.log(bootMessage);
+
+	// Scan
+	console.log(`Scanning files and directories...`);
+	const dir = await fsTree.build(directoryFullPath, undefined, fileBuilder);
+
+	// Filter
+	console.log(`Filtering...`);
 	const start = Date.now();
 	let purges = await dir.getTreePurges({
-		filtersByType: filters,
-		includeRecommended: true
+		filtersByType: loadedFilters,
+		includeRecommended
 	});
-	console.log(`Filtering completed in ${Date.now() - start} ms`);
+	console.log(`Filtering completed. Found ${purges.length} item${purges.length === 1 ? 's' : ''} for purging (${Date.now() - start} ms)`);
+
+	const uniquePaths = new Set();
+	for (const purge of purges) {
+		uniquePaths.add(purge.fsObject.path);
+	}
+
+	if (uniquePaths.size !== purges.length) {
+		console.log('Stop stop! Duplicates detected!');
+		process.exit(-1);
+	}
 
 	const spaceFreeable = purges
 		.map(item => item.fsObject.size)
@@ -84,4 +103,8 @@ async function run(directoryPath, filters) {
 	console.log('Done');
 }
 
-run(directories[0], loadedFilters);
+run({
+	filterPath: commander.filter,
+	includeRecommended: commander.includeRecommended,
+	directory: commander.args[0]
+});
