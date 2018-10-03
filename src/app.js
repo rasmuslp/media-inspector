@@ -18,6 +18,7 @@ commander
 	.option('-f, --filter [path]', 'filter configuration file in JSON or JavaScript')
 	.option('--include-recommended', `will also include empty directories and 'container' folders`)
 	.option('--skip-log', `don't write history in current working directory`)
+	.option('--purge', `!!!deletes files and directories not satisfying the filter configuration!!!`)
 	.parse(process.argv);
 
 // Extract mime 'master' type of the full mime type
@@ -45,7 +46,7 @@ function fileBuilder(objectPath, stats) {
 	return new fsTree.File(objectPath, stats);
 }
 
-async function run({ filterPath, includeRecommended, skipLog = false, directory } = {}) {
+async function run({ filterPath, includeRecommended = false, skipLog = false, purge = false, directory } = {}) {
 	if (!directory) {
 		console.error('media-purger needs to know where to scan');
 		process.exit(-1);
@@ -60,6 +61,8 @@ async function run({ filterPath, includeRecommended, skipLog = false, directory 
 	const filterFullPath = path.resolve(process.cwd(), filterPath);
 	const loadedFilters = require(filterFullPath);
 
+	const logFileFullPath = path.join(process.cwd(), `media-purger-${Date.now()}.log`);
+
 	const directoryFullPath = path.resolve(process.cwd(), directory);
 
 	const bootMessage = `
@@ -67,6 +70,8 @@ media-purger starting up
 scanning directory at ${directoryFullPath}
 with filter at ${filterFullPath}
 ${includeRecommended ? 'including recommended' : ''}
+${skipLog ? 'logging disabled' : 'logging enabled'}
+${purge ? '' : 'only scanning'}
 `;
 	console.log(bootMessage);
 
@@ -92,9 +97,6 @@ ${includeRecommended ? 'including recommended' : ''}
 		console.log('Stop stop! Duplicates detected!');
 		process.exit(-1);
 	}
-
-	// Keep log of reasons for writing to disk;
-	const logMessages = [];
 
 	console.log(`Listing files for purging:`);
 	for (const item of purges) {
@@ -123,8 +125,10 @@ ${includeRecommended ? 'including recommended' : ''}
 				message += `${item.reason.message ? item.reason.message : 'Error'}: ${JSON.stringify(item.reason)}`;
 		}
 
-		logMessages.push(message);
 		console.log(message);
+
+		// Store message for writing to log, if actually purging
+		item.message = message;
 	}
 
 	const spaceFreeable = purges
@@ -139,14 +143,35 @@ ${includeRecommended ? 'including recommended' : ''}
 	const reduction = spaceFreeable / size * 100;
 	console.log(`Reduction: ${reduction.toFixed(2)}%`);
 
-	const doDelete = true;
-	if (doDelete) {
-		if (!skipLog) {
+	// Let the purge begin!
+	if (purge) {
+		for (const item of purges) {
+			// If not skip log, write intent to log before performing removal
+			if (!skipLog) {
+				try {
+					fs.appendFileSync(logFileFullPath, item.message + '\n');
+				}
+				catch (e) {
+					console.error(`Could not write log:`, e);
+					process.exit(-1);
+				}
+			}
+
+			// Remove
+			console.log(`DELETING ${item.fsObject.path}`);
 			try {
-				fs.appendFileSync(path.join(process.cwd(), `media-purger-${Date.now()}.log`), logMessages.join('\n'));
+				if (item.fsObject.isDirectory) {
+					fs.rmdirSync(item.fsObject.path);
+				}
+				else if (item.fsObject.isFile) {
+					fs.unlinkSync(item.fsObject.path);
+				}
+				else {
+					console.log(`Err, dunno? ${item.fsObject.path}`);
+				}
 			}
 			catch (e) {
-				console.error(`Could not write log:`, e);
+				console.error(`Could not unlink: ${item.fsObject.path}`, e);
 				process.exit(-1);
 			}
 		}
@@ -159,5 +184,6 @@ run({
 	filterPath: commander.filter,
 	includeRecommended: commander.includeRecommended,
 	skipLog: commander.skipLog,
+	purge: commander.purge,
 	directory: commander.args[0]
 });
