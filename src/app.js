@@ -17,11 +17,11 @@ commander
 
 const directories = commander.args;
 if (!(directories.length)) {
-	console.error('media-pruner needs to know where to scan');
+	console.error('media-purger needs to know where to scan');
 }
 
 if (!commander.filter) {
-	console.error('media-pruner needs a filter');
+	console.error('media-purger needs a filter');
 }
 const filterPath = path.join(process.cwd(), commander.filter);
 
@@ -52,7 +52,7 @@ function fileBuilder(objectPath, stats) {
 }
 
 async function run(directoryPath, filters) {
-	console.log(`media-pruner scanning ${directoryPath}`);
+	console.log(`media-purger scanning ${directoryPath}`);
 
 	const dir = await fsTree.build(directoryPath, undefined, fileBuilder);
 

@@ -1,6 +1,6 @@
-# media-pruner
+# media-purger
 
-[![CircleCI](https://circleci.com/gh/rasmuslp/media-pruner.svg?style=shield&circle-token=21fe02e13458f4ce20cd844453b47dbb540f32d8)](https://circleci.com/gh/rasmuslp/media-pruner)
+[![CircleCI](https://circleci.com/gh/rasmuslp/media-purger.svg?style=shield&circle-token=21fe02e13458f4ce20cd844453b47dbb540f32d8)](https://circleci.com/gh/rasmuslp/media-purger)
 
 Requirements:
 * [mediainfo](https://mediaarea.net/en/MediaInfo) executable in `$PATH`
