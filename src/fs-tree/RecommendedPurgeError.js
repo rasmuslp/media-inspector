@@ -6,7 +6,7 @@ class RecommendedPurgeError extends Error {
 	}
 
 	getPurgeReason() {
-		return `RecommendedPurgeError ${this.message}`;
+		return `[Recommended] ${this.message}`;
 	}
 }
 

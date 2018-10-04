@@ -1,4 +1,5 @@
 const FsObject = require('./FsObject');
+const RecommendedPurgeError = require('./RecommendedPurgeError');
 
 class Directory extends FsObject {
 	constructor(objectPath, stats, children = []) {
@@ -64,7 +65,7 @@ class Directory extends FsObject {
 
 		const nodes = await this.getTreeSorted();
 		for (const node of nodes) {
-			// Get the nodes own list of purgable files
+			// Get the nodes own list of purgeable files
 			const nodePrunes = await node.getPurges(options);
 			purges.push(...nodePrunes);
 		}
@@ -77,7 +78,7 @@ class Directory extends FsObject {
 			if (!this.children || this.children.length === 0) {
 				return [{
 					fsObject: this,
-					reason: new Error(`Directory empty`)
+					reason: new RecommendedPurgeError(`Directory empty`)
 				}];
 			}
 		}

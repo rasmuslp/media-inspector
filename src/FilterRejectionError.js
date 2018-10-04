@@ -15,7 +15,7 @@ class FilterRejectionError extends Error {
 	}
 
 	getPurgeReason() {
-		return `FilterRejectionError ${this.getReasonsToString().join(', ')}`;
+		return `[Filter Not Satisfied] ${this.getReasonsToString().join(', ')}`;
 	}
 }
 
