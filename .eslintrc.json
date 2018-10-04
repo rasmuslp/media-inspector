@@ -1,6 +1,9 @@
 {
 	"root": true,
-	"extends": "rasmuslp",
+	"extends": [
+		"rasmuslp",
+		"plugin:jest/recommended" // It would be nice to have this in an "overrides"-section...
+	],
 	"rules": {
 		"no-console": "off",
 		"no-multiple-empty-lines": "warn" // Having uncomitted blocks is common when developing, and then this rule gets tricky

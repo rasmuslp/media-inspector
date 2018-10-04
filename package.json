@@ -7,7 +7,7 @@
     "predo-deps": "rm -rf node_modules/ package-lock.json",
     "do-deps": "npm install",
     "lint": "eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node $NODE_DEBUG_OPTION src/app.js"
   },
   "repository": {
@@ -33,8 +33,10 @@
     "eslint-config-rasmuslp": "git+https://github.com/rasmuslp/eslint-config-rasmuslp.git",
     "eslint-config-standard": "12.0.0",
     "eslint-plugin-import": "2.14.0",
+    "eslint-plugin-jest": "21.24.1",
     "eslint-plugin-node": "7.0.1",
     "eslint-plugin-promise": "4.0.1",
-    "eslint-plugin-standard": "4.0.0"
+    "eslint-plugin-standard": "4.0.0",
+    "jest": "23.6.0"
   }
 }
