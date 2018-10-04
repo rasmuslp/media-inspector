@@ -2,7 +2,6 @@ const fsTree = require('./fs-tree');
 const mediainfo = require('./mediainfo');
 
 const FilterRejectionError = require('./FilterRejectionError');
-const RecommendedPurgeError = require('./RecommendedPurgeError');
 
 class MediaFile extends fsTree.File {
 	constructor(objectPath, stats, type, mimeType) {
@@ -111,7 +110,7 @@ class MediaFile extends fsTree.File {
 						const parentTree = await this.parent.getTreeSorted();
 						const purges = parentTree.map(node => ({
 							fsObject: node,
-							reason: this === node ? e : new RecommendedPurgeError(`Auxiliary file or folder to ${this.path}`)
+							reason: this === node ? e : new fsTree.RecommendedPurgeError(`Auxiliary file or folder to ${this.path}`)
 						}));
 
 						return purges;
