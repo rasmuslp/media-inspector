@@ -20,6 +20,18 @@ jobs:
         command: npm run lint
 
     - run:
+        name: Install mediainfo
+        command: |
+          apt-get update
+          wget https://mediaarea.net/download/binary/libzen0/0.4.37/libzen0_0.4.37-1_amd64.Debian_8.0.deb
+          dpkg -i libzen0_0.4.37-1_amd64.Debian_8.0.deb
+          wget https://mediaarea.net/download/binary/libmediainfo0/18.08.1/libmediainfo0_18.08.1-1_amd64.Debian_8.0.deb
+          apt install libmms0
+          dpkg -i libmediainfo0_18.08.1-1_amd64.Debian_8.0.deb
+          wget https://mediaarea.net/download/binary/mediainfo/18.08.1/mediainfo_18.08.1-1_amd64.Debian_8.0.deb
+          dpkg -i mediainfo_18.08.1-1_amd64.Debian_8.0.deb
+
+    - run:
         name: Test
         command: npm run test -- --ci --runInBand --reporters=default --reporters=jest-junit
         environment:
