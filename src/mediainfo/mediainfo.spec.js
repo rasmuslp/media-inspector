@@ -35,8 +35,6 @@ describe(partialPath, () => {
 						isstreamable: 'No',
 						encodedDate: 'UTC 1970-01-01 00:00:00',
 						taggedDate: 'UTC 2014-07-19 17:15:29',
-						fileModifiedDate: 'UTC 2018-10-04 17:40:48',
-						fileModifiedDateLocal: '2018-10-04 19:40:48',
 						encodedApplication: 'Lavf53.24.2'
 					},
 					{
