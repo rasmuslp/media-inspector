@@ -23,7 +23,7 @@ class MediaFile extends fsTree.File {
 	}
 
 	async fetchMetadata() {
-		this._metadata = await mediainfo.read(this.path);
+		this._metadata = await mediainfo.getMetadata(this.path);
 
 		return this.metadata;
 	}

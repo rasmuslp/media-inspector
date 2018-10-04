@@ -16,3 +16,6 @@ $ npm run start -- -f nice.json <folder/with/video/files>
 * https://github.com/jshttp/mime-types#readme
 * https://github.com/mgcrea/node-mediainfo-parser
 
+# Test files
+https://www.sample-videos.com/about.php
+
