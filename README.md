@@ -7,7 +7,7 @@ Requirements:
 
 Example
 ```bash
-$ npm run start -- -f nice.json <folder/with/video/files>
+$ npm run start -- -f filter-example.json <folder/with/video/files>
 ```
 
 ## Notes

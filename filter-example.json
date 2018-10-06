@@ -1,0 +1,57 @@
+{
+	"video": [
+		[
+			{
+				"path": "video.format",
+				"comparator": "string",
+				"value": "hevc"
+			},
+			{
+				"path": "general.bitrate",
+				"comparator": ">=",
+				"value": 1200000
+			},
+			{
+				"path": "audio.channels",
+				"comparator": ">=",
+				"value": 2
+			}
+		],
+
+		[
+			{
+				"path": "video.format",
+				"comparator": "string",
+				"value": "avc"
+			},
+			{
+				"path": "general.bitrate",
+				"comparator": ">=",
+				"value": 1800000
+			},
+			{
+				"path": "audio.channels",
+				"comparator": ">=",
+				"value": 2
+			}
+		],
+
+		[
+			{
+				"path": "video.format",
+				"comparator": "string",
+				"value": "vc-1"
+			},
+			{
+				"path": "general.bitrate",
+				"comparator": ">=",
+				"value": 1000000
+			},
+			{
+				"path": "audio.channels",
+				"comparator": ">=",
+				"value": 2
+			}
+		]
+	]
+}

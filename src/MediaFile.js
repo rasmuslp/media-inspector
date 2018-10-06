@@ -31,49 +31,58 @@ class MediaFile extends fsTree.File {
 	// Throws if not passing
 	checkFilter(filter) {
 		// All conditions must be met
-		const rejectReasons = [];
-		for (const [trackType, conditions] of Object.entries(filter)) {
-			for (const [property, condition] of Object.entries(conditions)) {
-				const value = this.metadata.get(trackType, property);
-				switch (condition.comparator) {
-					case 'string': {
-						if (!(value.toLocaleLowerCase() === condition.value.toLocaleLowerCase())) {
-							rejectReasons.push({
-								path: `${trackType}.${property}`,
-								condition: `${condition.comparator} ${condition.value.toLocaleLowerCase()}`,
-								value: `${value.toLocaleLowerCase()}`
-							});
-						}
-
-						break;
-					}
-					case '>=': {
-						if (!(value >= condition.value)) {
-							// We didn't meet the condition
-							rejectReasons.push({
-								path: `${trackType}.${property}`,
-								condition: `${condition.comparator} ${condition.value}`,
-								value
-							});
-						}
-
-						break;
-					}
-
-					default:
-						throw new Error(`Unknown comparator '${condition.comparator}'`);
-				}
+		const output = [];
+		for (const condition of filter) {
+			const match = condition.path.match(/^([^.]+)\.([^.]+)$/);
+			if (!match) {
+				throw new Error(`Could not parse path '${condition.path}'`);
 			}
+
+			const [, trackType, property] = match;
+			const value = this.metadata.get(trackType, property);
+
+			switch (condition.comparator) {
+				case 'string': {
+					if (!(value.toLocaleLowerCase() === condition.value.toLocaleLowerCase())) {
+						output.push({
+							path: condition.path,
+							condition: `${condition.comparator} ${condition.value.toLocaleLowerCase()}`,
+							value: `${value.toLocaleLowerCase()}`
+						});
+					}
+
+					break;
+				}
+				case '>=': {
+					if (!(value >= condition.value)) {
+						// We didn't meet the condition
+						output.push({
+							path: condition.path,
+							condition: `${condition.comparator} ${condition.value}`,
+							value
+						});
+					}
+
+					break;
+				}
+
+				default:
+					throw new Error(`Unknown comparator '${condition.comparator}'`);
+			}
+
+			// No error at path
+			output.push(null);
 		}
 
-		if (rejectReasons.length > 0) {
-			throw new FilterRejectionError(`Filter failed with reasons:`, this, rejectReasons);
+		// Filter to remove any 'passed' entries, as they are stored as null
+		if (output.filter(result => result).length > 0) {
+			throw new FilterRejectionError(`Filter failed with reasons:`, this, output);
 		}
 	}
 
 	// Throws if not passing any
 	passAnyFilter(filters) {
-		let rejected;
+		let rejections = [];
 		for (const filter of filters) {
 			try {
 				this.checkFilter(filter);
@@ -82,12 +91,39 @@ class MediaFile extends fsTree.File {
 				return;
 			}
 			catch (e) {
-				// Rejected, store and try next filter
-				rejected = e;
+				rejections.push(e);
+
+				// Try next filter
 			}
 		}
 
-		throw rejected;
+		// Find rejected reason that satisfied file the most - i.e. closest to a pass
+		let mostSatisfying;
+		let score = 0;
+		for (const rejection of rejections) {
+			// Count passes before first failure
+			let passesBeforeFirstFailure = 0;
+			for (const reason of rejection.reasons) {
+				if (reason) {
+					break;
+				}
+
+				passesBeforeFirstFailure++;
+			}
+
+			if (passesBeforeFirstFailure > score) {
+				mostSatisfying = rejection;
+			}
+
+			if (!mostSatisfying) {
+				mostSatisfying = rejection;
+			}
+		}
+
+		// Throw most satisfying, if any were found
+		if (mostSatisfying) {
+			throw mostSatisfying;
+		}
 	}
 
 	// Include recommended

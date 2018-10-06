@@ -11,7 +11,8 @@ class FilterRejectionError extends Error {
 	}
 
 	getReasonsToString() {
-		return this.reasons.map(reason => `${reason.path} failed condition '${reason.condition}' with value '${reason.value}'`);
+		// Filter to remove any 'passed' entries, as they are stored as null
+		return this.reasons.filter(reason => reason).map(reason => `${reason.path} failed condition '${reason.condition}' with value '${reason.value}'`);
 	}
 
 	getPurgeReason() {
