@@ -54,14 +54,15 @@ class MediaFile extends fsTree.File {
 			}
 
 			// Test value
+			let result;
 			switch (condition.comparator) {
 				case 'string': {
 					if (!(value.toLocaleLowerCase() === condition.value.toLocaleLowerCase())) {
-						output.push({
+						result = {
 							path: condition.path,
 							condition: `${condition.comparator} ${condition.value.toLocaleLowerCase()}`,
 							value: `${value.toLocaleLowerCase()}`
-						});
+						};
 					}
 
 					break;
@@ -69,11 +70,11 @@ class MediaFile extends fsTree.File {
 				case '>=': {
 					if (!(value >= condition.value)) {
 						// We didn't meet the condition
-						output.push({
+						result = {
 							path: condition.path,
 							condition: `${condition.comparator} ${condition.value}`,
 							value
-						});
+						};
 					}
 
 					break;
@@ -86,7 +87,7 @@ class MediaFile extends fsTree.File {
 			}
 
 			// No error at path
-			output.push(null);
+			output.push(result);
 		}
 
 		// Filter to remove any 'passed' entries, as they are stored as null
