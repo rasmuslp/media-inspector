@@ -2,7 +2,7 @@
 
 const yargs = require('yargs');
 
-const app = require('./app');
+const lib = require('./lib');
 
 // TODO: Ideas for other options:
 // --ignore-ext [ext]
@@ -34,7 +34,7 @@ const argv = yargs
 			return getSharedBuilder(yargs);
 		},
 		handler: argv => {
-			return app.scan({
+			return lib.scan({
 				directoryPath: argv.directory,
 				filterPath: argv.filterPath,
 				includeRecommended: argv.includeRecommended
@@ -46,7 +46,7 @@ const argv = yargs
 			return getSharedBuilder(yargs);
 		},
 		handler: argv => {
-			return app.list({
+			return lib.list({
 				directoryPath: argv.directory,
 				filterPath: argv.filterPath,
 				includeRecommended: argv.includeRecommended
@@ -71,7 +71,7 @@ const argv = yargs
 				});
 		},
 		handler: argv => {
-			return app.remove({
+			return lib.remove({
 				directoryPath: argv.directory,
 				filterPath: argv.filterPath,
 				includeRecommended: argv.includeRecommended,

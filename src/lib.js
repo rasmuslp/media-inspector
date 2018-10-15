@@ -9,7 +9,6 @@ const FilterRejectionError = require('./FilterRejectionError');
 
 const MediaFile = require('./MediaFile');
 
-
 // Extract mime 'master' type of the full mime type
 const typeExtractor = /^([^/]+)/;
 const mediaTypes = [
