@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const commander = require('commander');
 const mime = require('mime-types');
 
 const fsTree = require('./fs-tree');
@@ -10,15 +9,6 @@ const FilterRejectionError = require('./FilterRejectionError');
 
 const MediaFile = require('./MediaFile');
 
-const packageJson = require(path.join(__dirname, '..', 'package.json'));
-
-commander
-	.version(packageJson.version)
-	.option('-f, --filter [path]', 'filter configuration file in JSON or JavaScript')
-	.option('--include-recommended', `will also include empty directories and 'container' folders`)
-	.option('--skip-log', `don't write history in current working directory`)
-	.option('--purge', `!!!deletes files and directories not satisfying the filter configuration!!!`)
-	.parse(process.argv);
 
 // Extract mime 'master' type of the full mime type
 const typeExtractor = /^([^/]+)/;
@@ -45,144 +35,164 @@ function fileBuilder(objectPath, stats) {
 	return new fsTree.File(objectPath, stats);
 }
 
-async function run({ filterPath, includeRecommended = false, skipLog = false, purge = false, directory } = {}) {
-	if (!directory) {
-		console.error('media-purger needs to know where to scan');
-		process.exit(-1);
-	}
-
-	if (!filterPath) {
-		console.error('media-purger needs a filter');
-		process.exit(-1);
-	}
+async function preProcess({ directoryPath, filterPath, includeRecommended, logToConsole = false }) {
+	// Build directory path
+	const directoryFullPath = path.resolve(process.cwd(), directoryPath);
 
 	// Load filter
 	const filterFullPath = path.resolve(process.cwd(), filterPath);
 	const loadedFilters = require(filterFullPath);
 
-	const logFileFullPath = path.join(process.cwd(), `media-purger-${Date.now()}.log`);
-
-	const directoryFullPath = path.resolve(process.cwd(), directory);
-
-	const bootMessage = `
+	if (logToConsole) {
+		const bootMessage = `
 media-purger starting up
 scanning directory at ${directoryFullPath}
 with filter at ${filterFullPath}
 ${includeRecommended ? 'including recommended' : ''}
-${skipLog ? 'logging disabled' : 'logging enabled'}
-${purge ? '' : 'only scanning'}
 `;
-	console.log(bootMessage);
+		console.log(bootMessage);
+	}
 
-	// Scan
-	console.log(`Scanning files and directories...`);
-	const dir = await fsTree.build(directoryFullPath, undefined, fileBuilder);
+	// Scan directory structure
+	if (logToConsole) {
+		console.log(`Scanning files and directories...`);
+	}
+	const directory = await fsTree.build(directoryFullPath, undefined, fileBuilder);
 
 	// Filter
-	console.log(`Filtering...`);
-	const start = Date.now();
-	let purges = await dir.getTreePurges({
+	if (logToConsole) {
+		console.log(`Filtering...`);
+	}
+	let purges = await directory.getTreePurges({
 		filtersByType: loadedFilters,
 		includeRecommended
 	});
-	console.log(`Filtering completed. Found ${purges.length} item${purges.length === 1 ? 's' : ''} for purging (${Date.now() - start} ms)`);
+	if (logToConsole) {
+		console.log(`Filtering completed. Found ${purges.length} item${purges.length === 1 ? 's' : ''} for purging`);
+	}
 
+	// TODO FIX/IMPROVE: Ensure nothing was marked twice, that would be a bug!
 	const uniquePaths = new Set();
 	for (const purge of purges) {
 		uniquePaths.add(purge.fsObject.path);
 	}
 
 	if (uniquePaths.size !== purges.length) {
-		console.log('Stop stop! Duplicates detected!');
+		console.error('Stop stop! Duplicates detected!');
 		process.exit(-1);
 	}
 
-	console.log(`Listing files for purging:`);
-	for (const item of purges) {
-		let message = `${item.fsObject.path}\n\t`;
+	return {
+		directory,
+		purges
+	};
+}
 
-		if (item.fsObject.isDirectory) {
-			message += `[Directory]`;
+function getLogMessageOfPurge(purge) {
+	let message = `${purge.fsObject.path}\n\t`;
+
+	if (purge.fsObject.isDirectory) {
+		message += `[Directory]`;
+	}
+	else if (purge.fsObject instanceof MediaFile) {
+		message += `[Media file]`;
+	}
+	else {
+		message += `[File]`;
+	}
+
+	message += ' ';
+
+	switch (purge.reason.constructor) {
+		case FilterRejectionError:
+		case fsTree.RecommendedPurgeError: {
+			message += purge.reason.getPurgeReason();
+			break;
 		}
-		else if (item.fsObject instanceof MediaFile) {
-			message += `[Media file]`;
-		}
-		else {
-			message += `[File]`;
-		}
 
-		message += ' ';
+		default:
+			message += `${purge.reason.message ? purge.reason.message : 'Error'}: ${JSON.stringify(purge.reason)}`;
+	}
 
-		switch (item.reason.constructor) {
-			case FilterRejectionError:
-			case fsTree.RecommendedPurgeError: {
-				message += item.reason.getPurgeReason();
-				break;
-			}
+	return message;
+}
 
-			default:
-				message += `${item.reason.message ? item.reason.message : 'Error'}: ${JSON.stringify(item.reason)}`;
-		}
+async function scan({ directoryPath, filterPath, includeRecommended = false }) {
+	const { directory, purges } = await preProcess({ directoryPath, filterPath, includeRecommended, logToConsole: true });
 
+	// Log purges with reasons
+	for (const purge of purges) {
+		const message = getLogMessageOfPurge(purge);
 		console.log(message);
-
-		// Store message for writing to log, if actually purging
-		item.message = message;
 	}
 
 	const spaceFreeable = purges
-		.map(item => item.fsObject.size)
+		.map(purge => purge.fsObject.size)
 		.reduce((acc, cur) => (acc += cur), 0);
 
 	console.log('Space freeable: ', spaceFreeable);
 
-	const size = await dir.getSizeOfTree();
+	const size = await directory.getSizeOfTree();
 	console.log('Total Size: ', size);
 
 	const reduction = spaceFreeable / size * 100;
 	console.log(`Reduction: ${reduction.toFixed(2)}%`);
+}
+
+async function list({ directoryPath, filterPath, includeRecommended = false }) {
+	const { purges } = await preProcess({ directoryPath, filterPath, includeRecommended });
+
+	// List purges
+	for (const purge of purges) {
+		console.log(purge.fsObject.path);
+	}
+}
+
+async function remove({ directoryPath, filterPath, includeRecommended = false, dryRun = true, skipLog = false }) {
+	const { purges } = await preProcess({ directoryPath, filterPath, includeRecommended });
 
 	// Let the purge begin!
-	if (purge) {
-		for (const item of purges) {
-			// If not skip log, write intent to log before performing removal
-			if (!skipLog) {
-				try {
-					fs.appendFileSync(logFileFullPath, item.message + '\n');
-				}
-				catch (e) {
-					console.error(`Could not write log:`, e);
-					process.exit(-1);
-				}
-			}
+	const logFileFullPath = path.join(process.cwd(), `media-purger-${Date.now()}.log`);
+	for (const purge of purges) {
+		// Build a log message of the purge
+		let message = getLogMessageOfPurge(purge);
 
-			// Remove
-			console.log(`DELETING ${item.fsObject.path}`);
+		console.log(message);
+
+		// If not skip log, write intent to log before performing removal
+		if (!skipLog) {
 			try {
-				if (item.fsObject.isDirectory) {
-					fs.rmdirSync(item.fsObject.path);
+				fs.appendFileSync(logFileFullPath, message + '\n');
+			}
+			catch (e) {
+				console.error(`Could not write log:`, e);
+				process.exit(-1);
+			}
+		}
+
+		// Remove
+		if (!dryRun) {
+			try {
+				if (purge.fsObject.isDirectory) {
+					fs.rmdirSync(purge.fsObject.path);
 				}
-				else if (item.fsObject.isFile) {
-					fs.unlinkSync(item.fsObject.path);
+				else if (purge.fsObject.isFile) {
+					fs.unlinkSync(purge.fsObject.path);
 				}
 				else {
-					console.log(`Err, dunno? ${item.fsObject.path}`);
+					console.log(`Err, dunno? ${purge.fsObject.path}`);
 				}
 			}
 			catch (e) {
-				console.error(`Could not unlink: ${item.fsObject.path}`, e);
+				console.error(`Could not unlink: ${purge.fsObject.path}`, e);
 				process.exit(-1);
 			}
 		}
 	}
-
-	console.log('Done');
 }
 
-run({
-	filterPath: commander.filter,
-	includeRecommended: commander.includeRecommended,
-	skipLog: commander.skipLog,
-	purge: commander.purge,
-	directory: commander.args[0]
-});
+module.exports = {
+	scan,
+	list,
+	remove
+};

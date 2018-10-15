@@ -8,7 +8,8 @@
     "do-deps": "npm install",
     "lint": "eslint .",
     "test": "jest",
-    "start": "node $NODE_DEBUG_OPTION src/app.js"
+    "test:coverage": "jest --coverage",
+    "start": "node $NODE_DEBUG_OPTION src/cli.js"
   },
   "repository": {
     "type": "git",
@@ -24,9 +25,9 @@
   },
   "homepage": "https://github.com/rasmuslp/media-purger#readme",
   "dependencies": {
-    "commander": "2.18.0",
-    "mediainfo-parser": "1.1.5",
-    "mime-types": "2.1.20"
+    "mediainfo-parser": "^1.1.5",
+    "mime-types": "^2.1.20",
+    "yargs": "^11.1.0"
   },
   "devDependencies": {
     "eslint": "5.6.0",

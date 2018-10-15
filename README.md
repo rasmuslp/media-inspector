@@ -12,7 +12,7 @@ $ npm run start -- -f filter-example.json <folder/with/video/files>
 
 ## Notes
 
-* https://github.com/tj/commander.js#readme
+* https://github.com/yargs/yargs
 * https://github.com/jshttp/mime-types#readme
 * https://github.com/mgcrea/node-mediainfo-parser
 
