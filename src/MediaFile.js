@@ -39,7 +39,17 @@ class MediaFile extends fsTree.File {
 			}
 
 			const [, trackType, property] = match;
-			const value = this.metadata.get(trackType, property);
+			// Try to read value
+			let value;
+			try {
+				value = this.metadata.get(trackType, property);
+			}
+			catch (e) {
+				// Swallow: Could not get property, we count that as a pass
+				console.error(`Could not read ${condition.path} from ${this.path}`, e);
+				output.push(null);
+				continue;
+			}
 
 			switch (condition.comparator) {
 				case 'string': {
