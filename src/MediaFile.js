@@ -35,22 +35,25 @@ class MediaFile extends fsTree.File {
 		for (const condition of filter) {
 			const match = condition.path.match(/^([^.]+)\.([^.]+)$/);
 			if (!match) {
-				throw new Error(`Could not parse path '${condition.path}'`);
+				// Swallow: Could not parse filter? We count that as a pass
+				console.error(`Could not parse path '${condition.path}' in filter:`, filter);
+				continue;
 			}
 
 			const [, trackType, property] = match;
+
 			// Try to read value
 			let value;
 			try {
 				value = this.metadata.get(trackType, property);
 			}
 			catch (e) {
-				// Swallow: Could not get property, we count that as a pass
+				// Swallow: Could not get property? Ee count that as a pass
 				console.error(`Could not read ${condition.path} from ${this.path}`, e);
-				output.push(null);
 				continue;
 			}
 
+			// Test value
 			switch (condition.comparator) {
 				case 'string': {
 					if (!(value.toLocaleLowerCase() === condition.value.toLocaleLowerCase())) {
@@ -77,7 +80,9 @@ class MediaFile extends fsTree.File {
 				}
 
 				default:
-					throw new Error(`Unknown comparator '${condition.comparator}'`);
+					// Swallow: Unknown comparator? We count that as a pass
+					console.error(`Unknown comparator '${condition.comparator}' in filter:`, filter);
+					continue;
 			}
 
 			// No error at path
