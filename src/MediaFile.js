@@ -49,7 +49,7 @@ class MediaFile extends fsTree.File {
 			}
 			catch (e) {
 				// Swallow: Could not get property? Ee count that as a pass
-				console.error(`Could not read ${condition.path} from ${this.path}`, e);
+				console.error(`Could not read ${condition.path} from ${this.path}`, e.message || e);
 				continue;
 			}
 
