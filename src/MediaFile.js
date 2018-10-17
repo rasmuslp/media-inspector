@@ -3,6 +3,7 @@ const debug = require('debug')('MediaFile');
 const fsTree = require('./fs-tree');
 const mediainfo = require('./mediainfo');
 
+const FilterCondition = require('./FilterCondition');
 const FilterRejectionError = require('./FilterRejectionError');
 
 class MediaFile extends fsTree.File {
@@ -35,14 +36,9 @@ class MediaFile extends fsTree.File {
 		// All conditions must be met
 		const output = [];
 		for (const condition of filter) {
-			const match = condition.path.match(/^([^.]+)\.([^.]+)$/);
-			if (!match) {
-				// Swallow: Could not parse filter? We count that as a pass
-				console.error(`Could not parse path '${condition.path}' in filter:`, filter);
-				continue;
-			}
+			const filterCondition = new FilterCondition(condition);
 
-			const [, trackType, property] = match;
+			const [trackType, property] = filterCondition.pathParts;
 
 			// Try to read value
 			let value;
@@ -55,38 +51,7 @@ class MediaFile extends fsTree.File {
 				continue;
 			}
 
-			// Test value
-			let result;
-			switch (condition.comparator) {
-				case 'string': {
-					if (!(value.toLocaleLowerCase() === condition.value.toLocaleLowerCase())) {
-						result = {
-							path: condition.path,
-							condition: `${condition.comparator} ${condition.value.toLocaleLowerCase()}`,
-							value: `${value.toLocaleLowerCase()}`
-						};
-					}
-
-					break;
-				}
-				case '>=': {
-					if (!(value >= condition.value)) {
-						// We didn't meet the condition
-						result = {
-							path: condition.path,
-							condition: `${condition.comparator} ${condition.value}`,
-							value
-						};
-					}
-
-					break;
-				}
-
-				default:
-					// Swallow: Unknown comparator? We count that as a pass
-					console.error(`Unknown comparator '${condition.comparator}' in filter:`, filter);
-					continue;
-			}
+			const result = filterCondition.cccheck(value);
 
 			// No error at path
 			output.push(result);
