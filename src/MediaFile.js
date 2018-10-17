@@ -1,3 +1,5 @@
+const debug = require('debug')('MediaFile');
+
 const fsTree = require('./fs-tree');
 const mediainfo = require('./mediainfo');
 
@@ -49,7 +51,7 @@ class MediaFile extends fsTree.File {
 			}
 			catch (e) {
 				// Swallow: Could not get property? Ee count that as a pass
-				console.error(`Could not read ${condition.path} from ${this.path}`, e.message || e);
+				debug(`Could not read ${condition.path} from ${this.path}`, e.message || e);
 				continue;
 			}
 
