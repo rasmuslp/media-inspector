@@ -3,7 +3,6 @@ const debug = require('debug')('MediaFile');
 const fsTree = require('./fs-tree');
 const mediainfo = require('./mediainfo');
 
-const FilterCondition = require('./FilterCondition');
 const FilterRejectionError = require('./FilterRejectionError');
 
 class MediaFile extends fsTree.File {
@@ -35,9 +34,7 @@ class MediaFile extends fsTree.File {
 	checkFilter(filter) {
 		// All conditions must be met
 		const output = [];
-		for (const condition of filter) {
-			const filterCondition = new FilterCondition(condition);
-
+		for (const filterCondition of filter) {
 			const [trackType, property] = filterCondition.pathParts;
 
 			// Try to read value
@@ -47,7 +44,7 @@ class MediaFile extends fsTree.File {
 			}
 			catch (e) {
 				// Swallow: Could not get property? Ee count that as a pass
-				debug(`Could not read ${condition.path} from ${this.path}`, e.message || e);
+				debug(`Could not read ${filterCondition.path} from ${this.path}`, e.message || e);
 				continue;
 			}
 

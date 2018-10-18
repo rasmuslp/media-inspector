@@ -1,3 +1,4 @@
+const FilterCondition = require('./FilterCondition');
 const MediaFile = require('./MediaFile');
 const MediainfoMetadata = require('./mediainfo/MediainfoMetadata');
 
@@ -9,8 +10,10 @@ describe('checkFilter', () => {
 		const mediaFile = new MediaFile(partialPath, { size: 0 }, 'video');
 		mediaFile._metadata = new MediainfoMetadata(mediainfoOutput);
 
-		mediaFile.checkFilter([{
-			path: 'general.dummy'
-		}]);
+		mediaFile.checkFilter([
+			new FilterCondition({
+				path: 'general.dummy'
+			})
+		]);
 	});
 });

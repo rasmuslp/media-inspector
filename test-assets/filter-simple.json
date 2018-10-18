@@ -1,0 +1,16 @@
+{
+	"video": [
+		[
+			{
+				"path": "video.format",
+				"comparator": "string",
+				"value": "hevc"
+			},
+			{
+				"path": "video.framerate",
+				"comparator": ">=",
+				"value": "25"
+			}
+		]
+	]
+}

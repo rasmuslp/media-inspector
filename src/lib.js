@@ -3,6 +3,7 @@ const path = require('path');
 
 const mime = require('mime-types');
 
+const { filterLoader } = require('./filter');
 const fsTree = require('./fs-tree');
 
 const FilterRejectionError = require('./FilterRejectionError');
@@ -35,12 +36,12 @@ function fileBuilder(objectPath, stats) {
 }
 
 async function preProcess({ directoryPath, filterPath, includeRecommended, logToConsole = false }) {
-	// Build directory path
+	// Build full paths
 	const directoryFullPath = path.resolve(process.cwd(), directoryPath);
-
-	// Load filter
 	const filterFullPath = path.resolve(process.cwd(), filterPath);
-	const loadedFilters = require(filterFullPath);
+
+	// Load filters
+	const filtersByType = await filterLoader(filterFullPath);
 
 	if (logToConsole) {
 		const bootMessage = `
@@ -63,7 +64,7 @@ ${includeRecommended ? 'including recommended' : ''}
 		console.log(`Filtering...`);
 	}
 	let purges = await directory.getTreePurges({
-		filtersByType: loadedFilters,
+		filtersByType,
 		includeRecommended
 	});
 	if (logToConsole) {
