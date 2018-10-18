@@ -1,7 +1,7 @@
 const fs = require('fs');
 const util = require('util');
 
-const FilterCondition = require('./FilterCondition');
+const FilterConditionFactory = require('./FilterConditionFactory');
 
 const readFileAsync = util.promisify(fs.readFile);
 
@@ -26,7 +26,7 @@ async function filterLoader(filterPath) {
 			const transformedConditions = [];
 			for (const condition of filter) {
 				try {
-					transformedConditions.push(new FilterCondition(condition));
+					transformedConditions.push(FilterConditionFactory.getFilterCondition(condition));
 				}
 				catch (e) {
 					const filterNumber = transformedConditions.length + 1;
