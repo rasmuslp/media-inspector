@@ -1,4 +1,4 @@
-const FilterCondition = require('./FilterCondition');
+const FilterCondition = require('./filter/FilterCondition');
 const MediaFile = require('./MediaFile');
 const MediainfoMetadata = require('./mediainfo/MediainfoMetadata');
 

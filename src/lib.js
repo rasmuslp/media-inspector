@@ -6,7 +6,7 @@ const mime = require('mime-types');
 const { filterLoader } = require('./filter');
 const fsTree = require('./fs-tree');
 
-const FilterRejectionError = require('./FilterRejectionError');
+const FilterRejectionError = require('./filter/FilterRejectionError');
 
 const MediaFile = require('./MediaFile');
 

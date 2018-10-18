@@ -3,7 +3,7 @@ const debug = require('debug')('MediaFile');
 const fsTree = require('./fs-tree');
 const mediainfo = require('./mediainfo');
 
-const FilterRejectionError = require('./FilterRejectionError');
+const FilterRejectionError = require('./filter/FilterRejectionError');
 
 class MediaFile extends fsTree.File {
 	constructor(objectPath, stats, type, mimeType) {

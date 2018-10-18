@@ -1,7 +1,7 @@
 const fs = require('fs');
 const util = require('util');
 
-const FilterCondition = require('../FilterCondition');
+const FilterCondition = require('./FilterCondition');
 
 const readFileAsync = util.promisify(fs.readFile);
 
