@@ -48,14 +48,13 @@ class MediaFile extends fsTree.File {
 				continue;
 			}
 
-			const result = filterCondition.cccheck(value);
-
-			// No error at path
-			output.push(result);
+			// Check and store
+			const filterConditionResult = filterCondition.check(value);
+			output.push(filterConditionResult);
 		}
 
-		// Filter to remove any 'passed' entries, as they are stored as null
-		if (output.filter(result => result).length > 0) {
+		// See if any didn't pass
+		if (output.filter(result => !result.passed).length > 0) {
 			throw new FilterRejectionError(`Filter failed with reasons:`, this, output);
 		}
 	}

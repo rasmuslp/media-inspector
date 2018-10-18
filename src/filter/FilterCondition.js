@@ -1,3 +1,5 @@
+const FilterConditionResult = require('./FilterConditionResult');
+
 class FilterCondition {
 	constructor({ path, comparator, value }) {
 		this._path = path;
@@ -13,31 +15,37 @@ class FilterCondition {
 		return this._path.split('.');
 	}
 
-	cccheck(value) {
+	check(value) {
 		// Default result is a pass
-		let result = null;
+		let result = new FilterConditionResult({
+			filterCondition: this,
+			conditionStringified: `${this._comparator} ${this._expectedValue}`,
+			value,
+			passed: true
+		});
 
 		// Test value
 		switch (this._comparator) {
 			case 'string': {
 				if (!(value.toLocaleLowerCase() === this._expectedValue.toLocaleLowerCase())) {
-					result = {
-						path: this._path,
-						condition: `${this._comparator} ${this._expectedValue.toLocaleLowerCase()}`,
-						value: `${value.toLocaleLowerCase()}`
-					};
+					result = new FilterConditionResult({
+						filterCondition: this,
+						conditionStringified: `${this._comparator} ${this._expectedValue.toLocaleLowerCase()}`,
+						value: `${value.toLocaleLowerCase()}`,
+						passed: false
+					});
 				}
 
 				break;
 			}
 			case '>=': {
 				if (!(value >= this._expectedValue)) {
-					// We didn't meet the condition
-					result = {
-						path: this._path,
-						condition: `${this._comparator} ${this._expectedValue}`,
-						value
-					};
+					result = new FilterConditionResult({
+						filterCondition: this,
+						conditionStringified: `${this._comparator} ${this._expectedValue}`,
+						value,
+						passed: false
+					});
 				}
 
 				break;
