@@ -8,10 +8,6 @@ jobs:
     - checkout
 
     - run:
-        name: NPM 6.4.1
-        command: npm install -g npm@6.4.1
-
-    - run:
         name: Install node modules
         command: npm ci
 
