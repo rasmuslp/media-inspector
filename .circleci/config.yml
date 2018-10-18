@@ -29,9 +29,13 @@ jobs:
 
     - run:
         name: Test
-        command: npm run test -- --ci --runInBand --reporters=default --reporters=jest-junit
+        command: npm run test -- --ci --coverage --runInBand --reporters=default --reporters=jest-junit
         environment:
           JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+
+    - run:
+        name: Upload coverage
+        command: bash <(curl -s https://codecov.io/bash)
 
     - store_test_results:
         path: reports/junit
