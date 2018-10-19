@@ -3,6 +3,7 @@ const debug = require('debug')('MediaFile');
 const fsTree = require('./fs-tree');
 const mediainfo = require('./mediainfo');
 
+const FilterResult = require('./filter/FilterResult');
 const FilterRejectionError = require('./filter/FilterRejectionError');
 
 class MediaFile extends fsTree.File {
@@ -30,10 +31,9 @@ class MediaFile extends fsTree.File {
 		return this.metadata;
 	}
 
-	// Throws if not passing
 	checkFilter(filter) {
 		// All conditions must be met
-		const output = [];
+		const results = [];
 		for (const filterCondition of filter) {
 			const [trackType, property] = filterCondition.pathParts;
 
@@ -50,59 +50,35 @@ class MediaFile extends fsTree.File {
 
 			// Check and store
 			const filterConditionResult = filterCondition.check(value);
-			output.push(filterConditionResult);
+			results.push(filterConditionResult);
 		}
 
-		// See if any didn't pass
-		if (output.filter(result => !result.passed).length > 0) {
-			throw new FilterRejectionError(`Filter failed with reasons:`, this, output);
-		}
+		return new FilterResult(results);
 	}
 
 	// Throws if not passing any
-	passAnyFilter(filters) {
-		let rejections = [];
+	// TODO: As above, return list of results, if any of them failed
+	passAnyFilter(filters = []) {
+		// No filters, thats a pass
+		if (filters.length === 0) {
+			return;
+		}
+
+		// Check all filters
+		let results = [];
 		for (const filter of filters) {
-			try {
-				this.checkFilter(filter);
-
-				// If it's a pass, we return success
-				return;
-			}
-			catch (e) {
-				rejections.push(e);
-
-				// Try next filter
-			}
+			const result = this.checkFilter(filter);
+			results.push(result);
 		}
 
-		// Find rejected reason that satisfied file the most - i.e. closest to a pass
-		let mostSatisfying;
-		let score = 0;
-		for (const rejection of rejections) {
-			// Count passes before first failure
-			let passesBeforeFirstFailure = 0;
-			for (const reason of rejection.reasons) {
-				if (reason) {
-					break;
-				}
-
-				passesBeforeFirstFailure++;
-			}
-
-			if (passesBeforeFirstFailure > score) {
-				mostSatisfying = rejection;
-			}
-
-			if (!mostSatisfying) {
-				mostSatisfying = rejection;
-			}
+		// See if any passed
+		const anyPassed = results.find(result => result.passed);
+		if (anyPassed) {
+			return;
 		}
 
-		// Throw most satisfying, if any were found
-		if (mostSatisfying) {
-			throw mostSatisfying;
-		}
+		// Otherwise throw
+		throw new FilterRejectionError(`Filters failed with::`, this, results);
 	}
 
 	// Include recommended
