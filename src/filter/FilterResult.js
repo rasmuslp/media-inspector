@@ -3,10 +3,6 @@ class FilterResult {
 		this._filterConditionResults = filterConditionResults;
 	}
 
-	get filterConditionResults() {
-		return this._filterConditionResults;
-	}
-
 	get passed() {
 		// Check if _any_ failed
 		const anyFailed = this._filterConditionResults.find(result => !result.passed);
@@ -16,6 +12,18 @@ class FilterResult {
 
 		// Otherwise must have succeeded
 		return true;
+	}
+
+	getResultsAsStrings() {
+		let messages = [];
+		for (const result of this._filterConditionResults) {
+			let message = `${result.path} ${result.passed ? 'passed' : 'failed'}: `;
+			message += `'${result.value}' ${result.conditionStringified}`;
+
+			messages.push(message);
+		}
+
+		return messages;
 	}
 }
 

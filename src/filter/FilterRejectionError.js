@@ -6,23 +6,11 @@ class FilterRejectionError extends Error {
 		this._filterResults = filterResults;
 	}
 
-	get reasons() {
-		return this._filterResults;
-	}
-
-	getReasonsToString() {
+	getResultsAsString() {
 		// Filter to remove any 'passed' entries, as they are stored as null
 		const filterMessages = [];
 		for (const filterResult of this._filterResults) {
-			let conditionMessages = [];
-			for (const filterConditionResult of filterResult.filterConditionResults) {
-				let message = `${filterConditionResult.path} ${filterConditionResult.passed ? 'passed' : 'failed'}: `;
-				message += `'${filterConditionResult.value}' ${filterConditionResult.conditionStringified}`;
-
-				conditionMessages.push(message);
-			}
-
-			const filterMessage = `\t\t${filterResult.passed ? 'PASSED' : 'FAILED'}: ${conditionMessages.join(', ')}`;
+			const filterMessage = `${filterResult.passed ? 'PASSED' : 'FAILED'}: ${filterResult.getResultsAsStrings().join(', ')}`;
 			filterMessages.push(filterMessage);
 		}
 
@@ -30,7 +18,7 @@ class FilterRejectionError extends Error {
 	}
 
 	getPurgeReason() {
-		return `[Filter Not Satisfied]:\n${this.getReasonsToString().join('\n')}`;
+		return `[Filter Not Satisfied]:\n${this.getResultsAsString().map(message => '\t\t' + message).join('\n')}`;
 	}
 }
 
