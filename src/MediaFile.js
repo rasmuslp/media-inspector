@@ -101,7 +101,7 @@ class MediaFile extends fsTree.File {
 						const parentTree = await this.parent.getTreeSorted();
 						const purges = parentTree.map(node => ({
 							fsObject: node,
-							reason: this === node ? e : new fsTree.RecommendedPurgeError(`Auxiliary file or folder to ${this.path}`)
+							reason: this === node ? e : new fsTree.RecommendedPurge(`Auxiliary file or folder to ${this.path}`)
 						}));
 
 						return purges;

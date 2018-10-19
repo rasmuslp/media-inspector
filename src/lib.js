@@ -105,7 +105,7 @@ function getLogMessageOfPurge(purge) {
 
 	switch (purge.reason.constructor) {
 		case FilterRejectionError:
-		case fsTree.RecommendedPurgeError: {
+		case fsTree.RecommendedPurge: {
 			message += purge.reason.getPurgeReason();
 			break;
 		}

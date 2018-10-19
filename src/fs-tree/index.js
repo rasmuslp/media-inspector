@@ -8,7 +8,7 @@ const readdirAsync = util.promisify(fs.readdir);
 const Directory = require('./Directory');
 const File = require('./File');
 
-const RecommendedPurgeError = require('./RecommendedPurgeError');
+const RecommendedPurge = require('./RecommendedPurge');
 
 function defaultDirectoryBuilder(objectPath, stats, children) {
 	return new Directory(objectPath, stats, children);
@@ -44,7 +44,7 @@ module.exports = {
 	Directory,
 	File,
 
-	RecommendedPurgeError,
+	RecommendedPurge,
 
 	build: buildNode
 };

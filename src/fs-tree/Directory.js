@@ -1,5 +1,5 @@
 const FsObject = require('./FsObject');
-const RecommendedPurgeError = require('./RecommendedPurgeError');
+const RecommendedPurge = require('./RecommendedPurge');
 
 class Directory extends FsObject {
 	constructor(objectPath, stats, children = []) {
@@ -78,7 +78,7 @@ class Directory extends FsObject {
 			if (!this.children || this.children.length === 0) {
 				return [{
 					fsObject: this,
-					reason: new RecommendedPurgeError(`Directory empty`)
+					reason: new RecommendedPurge(`Directory empty`)
 				}];
 			}
 		}
