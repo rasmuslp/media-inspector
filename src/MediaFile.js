@@ -4,7 +4,7 @@ const fsTree = require('./fs-tree');
 const mediainfo = require('./mediainfo');
 
 const FilterResult = require('./filter/FilterResult');
-const FilterRejectionError = require('./filter/FilterRejectionError');
+const FilterRejectionPurge = require('./filter/FilterRejectionPurge');
 
 class MediaFile extends fsTree.File {
 	constructor(objectPath, stats, type, mimeType) {
@@ -56,12 +56,11 @@ class MediaFile extends fsTree.File {
 		return new FilterResult(results);
 	}
 
-	// Throws if not passing any
-	// TODO: As above, return list of results, if any of them failed
-	passAnyFilter(filters = []) {
+	// Returns false if passed, Purge if rejected
+	isRejected(filters = []) {
 		// No filters, thats a pass
 		if (filters.length === 0) {
-			return;
+			return false;
 		}
 
 		// Check all filters
@@ -74,45 +73,43 @@ class MediaFile extends fsTree.File {
 		// See if any passed
 		const anyPassed = results.find(result => result.passed);
 		if (anyPassed) {
-			return;
+			return false;
 		}
 
-		// Otherwise throw
-		throw new FilterRejectionError(`Filters failed with::`, this, results);
+		// Otherwise reject
+		return FilterRejectionPurge(`Filters failed with::`, this, results);
 	}
 
 	// Include recommended
 	async getPurges(options = {}) {
 		if (this.type in options.filtersByType) {
-			// Prime metadata for 'passAnyFilter'
+			// Prime metadata for 'isRejected'
 			await this.fetchMetadata();
 
-			try {
-				this.passAnyFilter(options.filtersByType[this.type]);
+			const rejected = this.isRejected(options.filtersByType[this.type]);
+			if (!rejected) {
 				return [];
 			}
-			catch (e) {
-				// Rejected
 
-				if (options.includeRecommended) {
-					// Take parent and all children when this was the majority
-					if (this.size >= 0.9 * await this.parent.getSizeOfTree()) {
-						// Mark parent and tree
-						const parentTree = await this.parent.getTreeSorted();
-						const purges = parentTree.map(node => ({
-							fsObject: node,
-							reason: this === node ? e : new fsTree.RecommendedPurge(`Auxiliary file or folder to ${this.path}`)
-						}));
+			// Rejected
+			if (options.includeRecommended) {
+				// Take parent and all children when this was the majority
+				if (this.size >= 0.9 * await this.parent.getSizeOfTree()) {
+					// Mark parent and tree
+					const parentTree = await this.parent.getTreeSorted();
+					const purges = parentTree.map(node => ({
+						fsObject: node,
+						reason: this === node ? rejected : new fsTree.RecommendedPurge(`Auxiliary file or folder to ${this.path}`)
+					}));
 
-						return purges;
-					}
+					return purges;
 				}
-
-				return [{
-					fsObject: this,
-					reason: e
-				}];
 			}
+
+			return [{
+				fsObject: this,
+				reason: rejected
+			}];
 		}
 
 		return [];

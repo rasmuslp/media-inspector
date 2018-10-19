@@ -1,8 +1,9 @@
-class FilterRejectionError extends Error {
-	constructor(message, file, filterResults = []) {
-		super(message);
+const Purge = require('../fs-tree/Purge');
 
-		this._file = file;
+class FilterRejectionPurge extends Purge {
+	constructor(message, file, filterResults = []) {
+		super(message, file);
+
 		this._filterResults = filterResults;
 	}
 
@@ -22,4 +23,4 @@ class FilterRejectionError extends Error {
 	}
 }
 
-module.exports = FilterRejectionError;
+module.exports = FilterRejectionPurge;

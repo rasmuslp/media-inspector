@@ -6,7 +6,7 @@ const mime = require('mime-types');
 const { filterLoader } = require('./filter');
 const fsTree = require('./fs-tree');
 
-const FilterRejectionError = require('./filter/FilterRejectionError');
+const FilterRejectionPurge = require('./filter/FilterRejectionPurge');
 
 const MediaFile = require('./MediaFile');
 
@@ -104,7 +104,7 @@ function getLogMessageOfPurge(purge) {
 	message += ' ';
 
 	switch (purge.reason.constructor) {
-		case FilterRejectionError:
+		case FilterRejectionPurge:
 		case fsTree.RecommendedPurge: {
 			message += purge.reason.getPurgeReason();
 			break;
