@@ -77,7 +77,7 @@ class MediaFile extends fsTree.File {
 		}
 
 		// Otherwise reject
-		return FilterRejectionPurge(`Filters failed with::`, this, results);
+		return new FilterRejectionPurge(`Filters failed with::`, this, results);
 	}
 
 	// Include recommended
