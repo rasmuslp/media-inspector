@@ -1,0 +1,11 @@
+{
+	"video": [
+		[
+			{
+				"path": "audio.channels",
+				"comparator": ">=",
+				"value": 2
+			}
+		]
+	]
+}
