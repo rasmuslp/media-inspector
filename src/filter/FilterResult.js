@@ -25,6 +25,29 @@ class FilterResult {
 
 		return messages;
 	}
+
+	// Ratio of passes/results
+	getScore() {
+		const passed = this._filterConditionResults.filter(result => result.passed);
+		const score = passed.length / this._filterConditionResults.length;
+
+		return score;
+	}
+
+	// Weighted ratio of passes/results
+	getWeightedScore() {
+		let score = 0;
+		for (let i = 0; i < this._filterConditionResults.length; i++) {
+			const result = this._filterConditionResults[i];
+			if (result.passed) {
+				const weigth = this._filterConditionResults.length - i;
+				const partialScore = Math.pow(weigth, 2);
+				score += partialScore;
+			}
+		}
+
+		return score;
+	}
 }
 
 module.exports = FilterResult;

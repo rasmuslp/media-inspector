@@ -31,8 +31,9 @@ describe('#passed', () => {
 	});
 });
 
-describe('#getResultsAsStrings', () => {
-	test('one failed on passed', () => {
+describe('one failed on passed', () => {
+	let results;
+	beforeEach(() => {
 		const conditions = [
 			new FilterCondition({
 				path: 'video.framerate',
@@ -47,24 +48,33 @@ describe('#getResultsAsStrings', () => {
 			})
 		];
 
-		const results = [
-			// Should fail
-			conditions[0].check(15),
-
+		results = [
 			// Should pass
-			conditions[1].check(2)
+			conditions[0].check(25),
+
+			// Should fail
+			conditions[1].check(1)
 		];
 
+		// NB: Is it bad practice to check the test input here?
 		// Check input
-		expect(results[0].passed).toBe(false);
-		expect(results[1].passed).toBe(true);
+		expect(results[0].passed).toBe(true);
+		expect(results[1].passed).toBe(false);
+	});
 
+	test('#getResultsAsStrings', () => {
 		const filterResult = new FilterResult(results);
 		const resultAsStrings = filterResult.getResultsAsStrings();
 
 		// Test
 		expect(resultAsStrings).toHaveLength(2);
-		expect(resultAsStrings[0]).toMatch(/failed/);
-		expect(resultAsStrings[1]).toMatch(/passed/);
+		expect(resultAsStrings[0]).toMatch(/passed/);
+		expect(resultAsStrings[1]).toMatch(/failed/);
+	});
+
+	test('#getWeightedScore', () => {
+		const filterResult = new FilterResult(results);
+		const score = filterResult.getWeightedScore();
+		expect(score).toBe(4);
 	});
 });
