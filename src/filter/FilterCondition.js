@@ -1,36 +1,46 @@
 const FilterConditionResult = require('./FilterConditionResult');
 
 class FilterCondition {
-	constructor({ path, comparator, value }) {
-		this._path = path;
-		this._comparator = comparator;
-		this._expectedValue = value;
+	constructor({ comparator, path, value }) {
+		this._options = {
+			comparator,
+			path,
+			value
+		};
+	}
+
+	get comparator() {
+		return this._options.comparator;
+	}
+
+	get expectedValue() {
+		return this._options.value;
 	}
 
 	get path() {
-		return this._path;
+		return this._options.path;
 	}
 
 	get pathParts() {
-		return this._path.split('.');
+		return this.path.split('.');
 	}
 
 	check(value) {
 		// Default result is a pass
 		let result = new FilterConditionResult({
 			filterCondition: this,
-			conditionStringified: `${this._comparator} ${this._expectedValue}`,
+			conditionStringified: `${this.comparator} ${this.expectedValue}`,
 			value,
 			passed: true
 		});
 
 		// Test value
-		switch (this._comparator) {
+		switch (this.comparator) {
 			case 'string': {
-				if (!(value.toLocaleLowerCase() === this._expectedValue.toLocaleLowerCase())) {
+				if (!(value.toLocaleLowerCase() === this.expectedValue.toLocaleLowerCase())) {
 					result = new FilterConditionResult({
 						filterCondition: this,
-						conditionStringified: `${this._comparator} ${this._expectedValue.toLocaleLowerCase()}`,
+						conditionStringified: `${this.comparator} ${this.expectedValue.toLocaleLowerCase()}`,
 						value: `${value.toLocaleLowerCase()}`,
 						passed: false
 					});
@@ -39,10 +49,10 @@ class FilterCondition {
 				break;
 			}
 			case '>=': {
-				if (!(value >= this._expectedValue)) {
+				if (!(value >= this.expectedValue)) {
 					result = new FilterConditionResult({
 						filterCondition: this,
-						conditionStringified: `${this._comparator} ${this._expectedValue}`,
+						conditionStringified: `${this.comparator} ${this.expectedValue}`,
 						value,
 						passed: false
 					});
@@ -53,7 +63,8 @@ class FilterCondition {
 
 			default:
 				// Let it pass: Unknown comparator? We count that as a pass
-				console.error(`Unknown comparator '${this._comparator}' in condition`, this);
+				// TODO: Throw error here, when it is "unreachable" - i.e. after condition validation is implemented
+				console.error(`Unknown comparator '${this.comparator}' in condition`, this._options);
 		}
 
 		return result;
