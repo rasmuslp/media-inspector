@@ -25,7 +25,36 @@ class FilterCondition {
 		return this.path.split('.');
 	}
 
-	check(value) {
+	static convertInput(inputValue) {
+		let value = inputValue;
+
+		// Try to convert / transform the input here
+		// eslint-disable-next-line default-case
+		switch (typeof inputValue) {
+			case 'number': {
+				// Try parsing to Number
+				const num = Number(inputValue);
+				if (!isNaN(num)) {
+					value = num;
+				}
+
+				break;
+			}
+
+			case 'string': {
+				value = inputValue.toLocaleLowerCase();
+
+				break;
+			}
+		}
+
+		return value;
+	}
+
+	check(inputValue) {
+		// Convert the input
+		let value = this.constructor.convertInput(inputValue);
+
 		// Default result is a pass
 		let result = new FilterConditionResult({
 			filterCondition: this,

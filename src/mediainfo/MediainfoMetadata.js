@@ -18,21 +18,9 @@ class MediainfoMetadata {
 		throw new Error(`Track type '${trackType}' not found`);
 	}
 
-	_getProperty(track, property) {
-		const value = track[property];
-
-		// Try parsing to Number
-		const num = Number(value);
-		if (!isNaN(num)) {
-			return num;
-		}
-
-		return value;
-	}
-
-	_getOrDie(track, property, errorMessage) {
+	static _getOrDie(track, property, errorMessage) {
 		// See if the property is there
-		const value = this._getProperty(track, property);
+		const value = track[property];
 		if (value != null) {
 			return value;
 		}
@@ -49,15 +37,15 @@ class MediainfoMetadata {
 			case 'general': {
 				switch (property) {
 					case 'bitrate':
-						return this._getProperty(track, 'overallbitrate');
+						return track.overallbitrate;
 
 					default:
-						return this._getOrDie(track, property, `[get] could not find '${property}' in '${trackType}'`);
+						return this.constructor._getOrDie(track, property, `[get] could not find '${property}' in '${trackType}'`);
 				}
 			}
 
 			default:
-				return this._getOrDie(track, property, `[get] could not find '${property}' in '${trackType}'`);
+				return this.constructor._getOrDie(track, property, `[get] could not find '${property}' in '${trackType}'`);
 		}
 	}
 }
