@@ -12,7 +12,9 @@ describe('checkFilter', () => {
 
 		mediaFile.checkFilter([
 			new FilterCondition({
-				path: 'general.dummy'
+				path: 'general.dummy',
+				operator: '>=',
+				value: 1
 			})
 		]);
 	});

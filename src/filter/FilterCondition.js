@@ -7,6 +7,11 @@ class FilterCondition {
 			path,
 			value
 		};
+
+		// Check operator exists
+		if (!this.constructor.getAvailableOperators().includes(this._options.operator)) {
+			throw new Error(`Unknown operator '${this._options.operator}' in ${JSON.stringify(this._options)}`);
+		}
 	}
 
 	get operator() {
@@ -23,6 +28,15 @@ class FilterCondition {
 
 	get pathParts() {
 		return this.path.split('.');
+	}
+
+	static getAvailableOperators() {
+		const operators = [
+			'string',
+			'>='
+		];
+
+		return operators;
 	}
 
 	static convertInput(inputValue) {
@@ -92,9 +106,7 @@ class FilterCondition {
 			}
 
 			default:
-				// Let it pass: Unknown operator? We count that as a pass
-				// TODO: Throw error here, when it is "unreachable" - i.e. after condition validation is implemented
-				console.error(`Unknown operator '${this.operator}' in condition`, this._options);
+				throw new Error(`Unknown operator '${this._options.operator}' in ${JSON.stringify(this._options)}`);
 		}
 
 		return result;

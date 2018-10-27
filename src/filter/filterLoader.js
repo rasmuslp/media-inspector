@@ -30,10 +30,7 @@ async function filterLoader(filterPath) {
 				}
 				catch (e) {
 					const filterNumber = transformedConditions.length + 1;
-					throw new Error(`Could not construct FilterCondition for '[${type}]#${filterNumber}'`, {
-						condition,
-						error: e
-					});
+					throw new Error(`Could not construct FilterCondition for '[${type}]#${filterNumber}': ${e.message}`);
 				}
 			}
 
