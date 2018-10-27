@@ -19,7 +19,7 @@ class FilterCondition {
 	}
 
 	get expectedValue() {
-		return this._options.value;
+		return this.constructor.convertValue(this._options.value);
 	}
 
 	get path() {
@@ -33,13 +33,14 @@ class FilterCondition {
 	static getAvailableOperators() {
 		const operators = [
 			'string',
+			'=',
 			'>='
 		];
 
 		return operators;
 	}
 
-	static convertInput(inputValue) {
+	static convertValue(inputValue) {
 		let value = inputValue;
 
 		// Try to convert / transform the input here
@@ -67,39 +68,34 @@ class FilterCondition {
 
 	check(inputValue) {
 		// Convert the input
-		let value = this.constructor.convertInput(inputValue);
+		let value = this.constructor.convertValue(inputValue);
 
-		// Default result is a pass
+		// Default result is a failure
 		let result = new FilterConditionResult({
 			filterCondition: this,
-			conditionStringified: `${this.operator} ${this.expectedValue}`,
 			value,
-			passed: true
+			passed: false
 		});
 
 		// Test value
 		switch (this.operator) {
 			case 'string': {
-				if (!(value.toLocaleLowerCase() === this.expectedValue.toLocaleLowerCase())) {
-					result = new FilterConditionResult({
-						filterCondition: this,
-						conditionStringified: `${this.operator} ${this.expectedValue.toLocaleLowerCase()}`,
-						value: `${value.toLocaleLowerCase()}`,
-						passed: false
-					});
+				console.log(`[FilterCondition] The 'string' operator is deprecated. Use '=' instead.`);
+			}
+
+			// falls through
+
+			case '=': {
+				if (value === this.expectedValue) {
+					result.passed = true;
 				}
 
 				break;
 			}
 
 			case '>=': {
-				if (!(value >= this.expectedValue)) {
-					result = new FilterConditionResult({
-						filterCondition: this,
-						conditionStringified: `${this.operator} ${this.expectedValue}`,
-						value,
-						passed: false
-					});
+				if (value >= this.expectedValue) {
+					result.passed = true;
 				}
 
 				break;

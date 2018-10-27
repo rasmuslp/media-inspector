@@ -1,7 +1,6 @@
 class FilterConditionResult {
-	constructor({ filterCondition, conditionStringified, value, passed = false }) {
+	constructor({ filterCondition, value, passed = false }) {
 		this._filterCondition = filterCondition;
-		this._conditionStringified = conditionStringified;
 		this._value = value;
 		this._passed = passed;
 	}
@@ -11,11 +10,15 @@ class FilterConditionResult {
 	}
 
 	get conditionStringified() {
-		return this._conditionStringified;
+		return `${this._filterCondition.operator} ${this._filterCondition.expectedValue}`;
 	}
 
 	get passed() {
 		return this._passed;
+	}
+
+	set passed(value) {
+		this._passed = value;
 	}
 
 	get value() {
