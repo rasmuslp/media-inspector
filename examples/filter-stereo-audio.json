@@ -3,7 +3,7 @@
 		[
 			{
 				"path": "audio.channels",
-				"comparator": ">=",
+				"operator": ">=",
 				"value": 2
 			}
 		]

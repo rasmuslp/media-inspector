@@ -3,12 +3,12 @@
 		[
 			{
 				"path": "video.format",
-				"comparator": "string",
+				"operator": "=",
 				"value": "hevc"
 			},
 			{
 				"path": "video.framerate",
-				"comparator": ">=",
+				"operator": ">=",
 				"value": "25"
 			}
 		]

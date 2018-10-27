@@ -3,27 +3,27 @@
 		[
 			{
 				"path": "video.format",
-				"comparator": "string",
+				"operator": "=",
 				"value": "hevc"
 			},
 			{
 				"path": "video.framerate",
-				"comparator": ">=",
-				"value": "25"
+				"operator": ">=",
+				"value": 25
 			},
 			{
 				"path": "video.scantype",
-				"comparator": "string",
+				"operator": "=",
 				"value": "progressive"
 			},
 			{
 				"path": "general.bitrate",
-				"comparator": ">=",
+				"operator": ">=",
 				"value": 1200000
 			},
 			{
 				"path": "audio.channels",
-				"comparator": ">=",
+				"operator": ">=",
 				"value": 2
 			}
 		],
@@ -31,27 +31,27 @@
 		[
 			{
 				"path": "video.format",
-				"comparator": "string",
+				"operator": "=",
 				"value": "avc"
 			},
 			{
 				"path": "video.framerate",
-				"comparator": ">=",
-				"value": "25"
+				"operator": ">=",
+				"value": 25
 			},
 			{
 				"path": "video.scantype",
-				"comparator": "string",
+				"operator": "=",
 				"value": "progressive"
 			},
 			{
 				"path": "general.bitrate",
-				"comparator": ">=",
+				"operator": ">=",
 				"value": 1800000
 			},
 			{
 				"path": "audio.channels",
-				"comparator": ">=",
+				"operator": ">=",
 				"value": 2
 			}
 		],
@@ -59,27 +59,27 @@
 		[
 			{
 				"path": "video.format",
-				"comparator": "string",
+				"operator": "=",
 				"value": "vc-1"
 			},
 			{
 				"path": "video.framerate",
-				"comparator": ">=",
-				"value": "25"
+				"operator": ">=",
+				"value": 25
 			},
 			{
 				"path": "video.scantype",
-				"comparator": "string",
+				"operator": "=",
 				"value": "progressive"
 			},
 			{
 				"path": "general.bitrate",
-				"comparator": ">=",
+				"operator": ">=",
 				"value": 1000000
 			},
 			{
 				"path": "audio.channels",
-				"comparator": ">=",
+				"operator": ">=",
 				"value": 2
 			}
 		]
