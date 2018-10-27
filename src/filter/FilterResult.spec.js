@@ -37,13 +37,13 @@ describe('one failed on passed', () => {
 		const conditions = [
 			new FilterCondition({
 				path: 'video.framerate',
-				comparator: '>=',
+				operator: '>=',
 				value: 25
 			}),
 
 			new FilterCondition({
 				path: 'audio.channels',
-				comparator: '>=',
+				operator: '>=',
 				value: 2
 			})
 		];

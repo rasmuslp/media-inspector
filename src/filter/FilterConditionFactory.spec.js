@@ -6,12 +6,12 @@ describe('#getFilterCondition', () => {
 		// Conditions
 		const condition1 = {
 			path: 'p1',
-			comparator: '>=',
+			operator: '>=',
 			value: 1
 		};
 		const condition2 = {
 			path: 'p1',
-			comparator: '>=',
+			operator: '>=',
 			value: 1
 		};
 

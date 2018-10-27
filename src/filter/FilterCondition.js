@@ -1,16 +1,16 @@
 const FilterConditionResult = require('./FilterConditionResult');
 
 class FilterCondition {
-	constructor({ comparator, path, value }) {
+	constructor({ comparator, operator, path, value }) {
 		this._options = {
-			comparator,
+			operator: operator || comparator,
 			path,
 			value
 		};
 	}
 
-	get comparator() {
-		return this._options.comparator;
+	get operator() {
+		return this._options.operator;
 	}
 
 	get expectedValue() {
@@ -58,18 +58,18 @@ class FilterCondition {
 		// Default result is a pass
 		let result = new FilterConditionResult({
 			filterCondition: this,
-			conditionStringified: `${this.comparator} ${this.expectedValue}`,
+			conditionStringified: `${this.operator} ${this.expectedValue}`,
 			value,
 			passed: true
 		});
 
 		// Test value
-		switch (this.comparator) {
+		switch (this.operator) {
 			case 'string': {
 				if (!(value.toLocaleLowerCase() === this.expectedValue.toLocaleLowerCase())) {
 					result = new FilterConditionResult({
 						filterCondition: this,
-						conditionStringified: `${this.comparator} ${this.expectedValue.toLocaleLowerCase()}`,
+						conditionStringified: `${this.operator} ${this.expectedValue.toLocaleLowerCase()}`,
 						value: `${value.toLocaleLowerCase()}`,
 						passed: false
 					});
@@ -77,11 +77,12 @@ class FilterCondition {
 
 				break;
 			}
+
 			case '>=': {
 				if (!(value >= this.expectedValue)) {
 					result = new FilterConditionResult({
 						filterCondition: this,
-						conditionStringified: `${this.comparator} ${this.expectedValue}`,
+						conditionStringified: `${this.operator} ${this.expectedValue}`,
 						value,
 						passed: false
 					});
@@ -91,9 +92,9 @@ class FilterCondition {
 			}
 
 			default:
-				// Let it pass: Unknown comparator? We count that as a pass
+				// Let it pass: Unknown operator? We count that as a pass
 				// TODO: Throw error here, when it is "unreachable" - i.e. after condition validation is implemented
-				console.error(`Unknown comparator '${this.comparator}' in condition`, this._options);
+				console.error(`Unknown operator '${this.operator}' in condition`, this._options);
 		}
 
 		return result;
