@@ -34,7 +34,11 @@ jobs:
           JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
 
     - run:
-        name: Upload coverage
+        name: Upload coverage to Codacy
+        command: cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage
+
+    - run:
+        name: Upload coverage to Codecov
         command: bash <(curl -s https://codecov.io/bash)
 
     - store_test_results:
