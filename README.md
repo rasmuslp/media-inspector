@@ -5,7 +5,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b17230f59081472092c5578031885b37)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rasmuslp/media-purger&amp;utm_campaign=Badge_Grade)
 
 Requirements:
-* [mediainfo](https://mediaarea.net/en/MediaInfo) executable in `$PATH`
+  * [mediainfo](https://mediaarea.net/en/MediaInfo) executable in `$PATH`
 
 Example
 ```bash
@@ -14,10 +14,10 @@ $ npm run start -- -f filter-example.json <folder/with/video/files>
 
 ## Notes
 
-* https://github.com/yargs/yargs
-* https://github.com/jshttp/mime-types#readme
-* https://github.com/mgcrea/node-mediainfo-parser
+  * [https://github.com/yargs/yargs]
+  * [https://github.com/jshttp/mime-types#readme]
+  * [https://github.com/mgcrea/node-mediainfo-parser]
 
-# Test files
-https://www.sample-videos.com/about.php
+## Test files
+[https://www.sample-videos.com/about.php]
 
