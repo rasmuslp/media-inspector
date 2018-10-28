@@ -7,6 +7,10 @@ class FilterRejectionPurge extends Purge {
 		this._filterResults = filterResults;
 	}
 
+	get score() {
+		return 1;
+	}
+
 	getResultsAsString() {
 		// Filter to remove any 'passed' entries, as they are stored as null
 		const filterMessages = [];

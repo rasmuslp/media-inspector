@@ -71,17 +71,6 @@ ${includeRecommended ? 'including recommended' : ''}
 		console.log(`Filtering completed. Found ${purges.length} item${purges.length === 1 ? 's' : ''} for purging`);
 	}
 
-	// TODO FIX/IMPROVE: Ensure nothing was marked twice, that would be a bug!
-	const uniquePaths = new Set();
-	for (const purge of purges) {
-		uniquePaths.add(purge.fsObject.path);
-	}
-
-	if (uniquePaths.size !== purges.length) {
-		console.error('Stop stop! Duplicates detected!');
-		process.exit(-1);
-	}
-
 	return {
 		directory,
 		purges

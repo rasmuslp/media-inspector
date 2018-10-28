@@ -61,16 +61,37 @@ class Directory extends FsObject {
 	}
 
 	async getTreePurges(options = {}) {
-		const purges = [];
+		// Gets nodes
+		const nodes = await this.getTree();
 
-		const nodes = await this.getTreeSorted();
+		// Build list of purges
+		const purges = [];
 		for (const node of nodes) {
 			// Get the nodes own list of purgeable files
 			const nodePrunes = await node.getPurges(options);
 			purges.push(...nodePrunes);
 		}
 
-		return purges;
+		// Dedupe list
+		const dedupedMap = new Map();
+		for (const purge of purges) {
+			const existing = dedupedMap.get(purge.fsObject);
+			if (existing) {
+				// Update if current has better score
+				if (existing.reason.score < purge.reason.score) {
+					dedupedMap.set(purge.fsObject, purge);
+				}
+			}
+			else {
+				// Store as unique otherwise
+				dedupedMap.set(purge.fsObject, purge);
+			}
+		}
+
+		// Sort deduped
+		const deduped = Array.from(dedupedMap.values()).sort((a, b) => this.constructor.getSortByPathDirFile(a.fsObject, b.fsObject));
+
+		return deduped;
 	}
 
 	getPurges(options = {}) {
