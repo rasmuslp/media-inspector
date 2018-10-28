@@ -1,3 +1,5 @@
+const chalk = require('chalk');
+
 const Purge = require('../fs-tree/Purge');
 
 class FilterRejectionPurge extends Purge {
@@ -11,20 +13,25 @@ class FilterRejectionPurge extends Purge {
 		return 1;
 	}
 
-	getResultsAsString() {
+	getResultsAsString({ colorized = false } = {}) {
 		// Filter to remove any 'passed' entries, as they are stored as null
 		const filterMessages = [];
 		const sorted = [...this._filterResults].sort((a, b) => a.getWeightedScore() - b.getWeightedScore()).reverse();
 		for (const filterResult of sorted) {
-			const filterMessage = `${filterResult.passed ? 'PASSED' : 'FAILED'}: ${filterResult.getResultsAsStrings().join(', ')}`;
+			let filterMessage = `${filterResult.passed ? 'PASSED' : 'FAILED'}: ${filterResult.getResultsAsStrings().join(', ')}`;
+			if (colorized) {
+				filterMessage = filterMessage.replace(/passed/gi, match => chalk.green(match));
+				filterMessage = filterMessage.replace(/failed/gi, match => chalk.red(match));
+			}
+
 			filterMessages.push(filterMessage);
 		}
 
 		return filterMessages;
 	}
 
-	getPurgeReason() {
-		return `[Filter Not Satisfied]:\n${this.getResultsAsString().map(message => '\t\t' + message).join('\n')}`;
+	getPurgeReason({ colorized = false } = {}) {
+		return `[Filter Not Satisfied]:\n${this.getResultsAsString({ colorized }).map(message => '\t\t' + message).join('\n')}`;
 	}
 }
 

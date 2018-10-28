@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
+const chalk = require('chalk');
 const mime = require('mime-types');
 
 const { filterLoader } = require('./filter');
@@ -77,8 +78,8 @@ ${includeRecommended ? 'including recommended' : ''}
 	};
 }
 
-function getLogMessageOfPurge(purge) {
-	let message = `${purge.fsObject.path}\n\t`;
+function getLogMessageOfPurge(purge, { colorized = false } = {}) {
+	let message = `${colorized ? chalk.yellow(purge.fsObject.path) : purge.fsObject.path}\n\t`;
 
 	if (purge.fsObject.isDirectory) {
 		message += `[Directory]`;
@@ -95,7 +96,7 @@ function getLogMessageOfPurge(purge) {
 	switch (purge.reason.constructor) {
 		case FilterRejectionPurge:
 		case fsTree.RecommendedPurge: {
-			message += purge.reason.getPurgeReason();
+			message += purge.reason.getPurgeReason({ colorized });
 			break;
 		}
 
@@ -103,7 +104,7 @@ function getLogMessageOfPurge(purge) {
 			message += `${purge.reason.message ? purge.reason.message : 'Error'}: ${JSON.stringify(purge.reason)}`;
 	}
 
-	return message;
+	return message + '\n';
 }
 
 async function scan({ directoryPath, filterPath, includeRecommended = false }) {
@@ -111,7 +112,7 @@ async function scan({ directoryPath, filterPath, includeRecommended = false }) {
 
 	// Log purges with reasons
 	for (const purge of purges) {
-		const message = getLogMessageOfPurge(purge);
+		const message = getLogMessageOfPurge(purge, { colorized: true });
 		console.log(message);
 	}
 

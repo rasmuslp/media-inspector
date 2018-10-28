@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/rasmuslp/media-purger#readme",
   "dependencies": {
+    "chalk": "^2.4.1",
     "debug": "^4.1.0",
     "mediainfo-parser": "^1.1.5",
     "mime-types": "^2.1.20",
