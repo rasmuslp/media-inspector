@@ -36,6 +36,7 @@ class FilterCondition {
 
 	static getAvailableOperators() {
 		const operators = [
+			'in',
 			'string',
 			'=',
 			'>='
@@ -83,6 +84,22 @@ class FilterCondition {
 
 		// Test value
 		switch (this.operator) {
+			case 'in': {
+				if (!Array.isArray(this.expectedValue)) {
+					console.error(`[FilterCondition] The 'in' operator expects an array, not '${this.expectedValue}'`, this._options);
+
+					break;
+				}
+
+				// Supports both string and number comparison
+				const pass = this.expectedValue.find(expected => this.constructor.convertValue(expected) === value);
+				if (pass) {
+					result.passed = true;
+				}
+
+				break;
+			}
+
 			case 'string': {
 				console.log(`[FilterCondition] The 'string' operator is deprecated. Use '=' instead.`);
 			}
