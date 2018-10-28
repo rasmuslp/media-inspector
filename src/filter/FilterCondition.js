@@ -8,6 +8,10 @@ class FilterCondition {
 			value
 		};
 
+		if (comparator) {
+			console.log(`[FilterCondition] The 'comparator' option is deprecated. Use 'operator' instead.`);
+		}
+
 		// Check operator exists
 		if (!this.constructor.getAvailableOperators().includes(this._options.operator)) {
 			throw new Error(`Unknown operator '${this._options.operator}' in ${JSON.stringify(this._options)}`);
