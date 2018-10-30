@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 
+const FilterConditionBetween = require('./filter-conditions/FilterConditionBetween');
 const FilterConditionEq = require('./filter-conditions/FilterConditionEq');
 const FilterConditionGe = require('./filter-conditions/FilterConditionGe');
 const FilterConditionIn = require('./filter-conditions/FilterConditionIn');
@@ -20,6 +21,9 @@ class FilterConditionFactory {
 
 		// Create and return
 		switch (condition.operator) {
+			case 'between':
+				return new FilterConditionBetween(condition);
+
 			case 'in':
 				return new FilterConditionIn(condition);
 
