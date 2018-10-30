@@ -3,6 +3,14 @@ const FilterConditionResult = require('../FilterConditionResult');
 const FilterCondition = require('./FilterCondition');
 
 class FilterConditionIn extends FilterCondition {
+	constructor(options) {
+		super(options);
+
+		if (!Array.isArray(this.expectedValue)) {
+			throw new Error(`The 'in' operator expects an array, not '${this.expectedValue}'. ${JSON.stringify(options)}`);
+		}
+	}
+
 	check(inputValue) {
 		// Convert the input
 		let value = this.constructor.convertValue(inputValue);
@@ -13,13 +21,6 @@ class FilterConditionIn extends FilterCondition {
 			value,
 			passed: false
 		});
-
-		// Check condition
-		if (!Array.isArray(this.expectedValue)) {
-			console.error(`[FilterCondition] The 'in' operator expects an array, not '${this.expectedValue}'`, this._options);
-
-			return result;
-		}
 
 		// Supports both string and number comparison
 		const pass = this.expectedValue.find(expected => this.constructor.convertValue(expected) === value);
