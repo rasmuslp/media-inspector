@@ -1,4 +1,4 @@
-const FilterCondition = require('./FilterCondition');
+const FilterConditionGe = require('./filter-conditions/FilterConditionGe');
 const FilterConditionFactory = require('./FilterConditionFactory').constructor;
 
 describe('#getFilterCondition', () => {
@@ -20,8 +20,8 @@ describe('#getFilterCondition', () => {
 		const filterCondition1 = filterConditionFactory.getFilterCondition(condition1);
 		const filterCondition2 = filterConditionFactory.getFilterCondition(condition2);
 
-		expect(filterCondition1).toBeInstanceOf(FilterCondition);
-		expect(filterCondition2).toBeInstanceOf(FilterCondition);
+		expect(filterCondition1).toBeInstanceOf(FilterConditionGe);
+		expect(filterCondition2).toBeInstanceOf(FilterConditionGe);
 
 		expect(filterCondition1).toBe(filterCondition2);
 	});

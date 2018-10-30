@@ -1,4 +1,4 @@
-const FilterCondition = require('./FilterCondition');
+const FilterConditionFactory = require('./FilterConditionFactory');
 const FilterConditionResult = require('./FilterConditionResult');
 
 const FilterResult = require('./FilterResult');
@@ -35,13 +35,13 @@ describe('one failed on passed', () => {
 	let results;
 	beforeEach(() => {
 		const conditions = [
-			new FilterCondition({
+			FilterConditionFactory.constructor._createFilterCondition({
 				path: 'video.framerate',
 				operator: '>=',
 				value: 25
 			}),
 
-			new FilterCondition({
+			FilterConditionFactory.constructor._createFilterCondition({
 				path: 'audio.channels',
 				operator: '>=',
 				value: 2

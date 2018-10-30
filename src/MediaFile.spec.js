@@ -1,4 +1,4 @@
-const FilterCondition = require('./filter/FilterCondition');
+const FilterConditionFactory = require('./filter/FilterConditionFactory');
 const MediaFile = require('./MediaFile');
 const MediainfoMetadata = require('./mediainfo/MediainfoMetadata');
 
@@ -11,7 +11,7 @@ describe('checkFilter', () => {
 		mediaFile._metadata = new MediainfoMetadata(mediainfoOutput);
 
 		mediaFile.checkFilter([
-			new FilterCondition({
+			FilterConditionFactory.constructor._createFilterCondition({
 				path: 'general.dummy',
 				operator: '>=',
 				value: 1
