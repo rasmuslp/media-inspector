@@ -5,14 +5,6 @@ class FilterConditionResult {
 		this._passed = passed;
 	}
 
-	get path() {
-		return this._filterCondition.path;
-	}
-
-	get conditionStringified() {
-		return `${this._filterCondition.operator} ${this._filterCondition.expectedValue}`;
-	}
-
 	get passed() {
 		return this._passed;
 	}
@@ -21,8 +13,11 @@ class FilterConditionResult {
 		this._passed = value;
 	}
 
-	get value() {
-		return this._value;
+	toString() {
+		let message = `${this._filterCondition.path} ${this.passed ? 'passed' : 'failed'}: `;
+		message += `'${this._value}' ${this._filterCondition}`;
+
+		return message;
 	}
 }
 

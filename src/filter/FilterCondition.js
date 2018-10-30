@@ -34,6 +34,10 @@ class FilterCondition {
 		return this.path.split('.');
 	}
 
+	toString() {
+		return `${this.operator} ${this.expectedValue}`;
+	}
+
 	static getAvailableOperators() {
 		const operators = [
 			'in',

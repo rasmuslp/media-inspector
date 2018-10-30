@@ -17,10 +17,7 @@ class FilterResult {
 	getResultsAsStrings() {
 		let messages = [];
 		for (const result of this._filterConditionResults) {
-			let message = `${result.path} ${result.passed ? 'passed' : 'failed'}: `;
-			message += `'${result.value}' ${result.conditionStringified}`;
-
-			messages.push(message);
+			messages.push(result.toString());
 		}
 
 		return messages;
