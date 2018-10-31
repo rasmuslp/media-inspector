@@ -1,6 +1,8 @@
 const fs = require('fs');
 const util = require('util');
 
+const JSON5 = require('json5');
+
 const FilterConditionFactory = require('./FilterConditionFactory');
 
 const readFileAsync = util.promisify(fs.readFile);
@@ -10,7 +12,7 @@ async function filterLoader(filterPath) {
 	let filterByType;
 	try {
 		const data = await readFileAsync(filterPath);
-		filterByType = JSON.parse(data);
+		filterByType = JSON5.parse(data);
 	}
 	catch (e) {
 		throw new Error(`Could not read and parse filter at '${filterPath}'`, e);

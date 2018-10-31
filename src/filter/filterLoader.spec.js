@@ -1,7 +1,7 @@
 const FilterCondition = require('./filter-conditions/FilterCondition');
 const filterLoader = require('./filterLoader');
 
-const filterPath = 'test-assets/filter-simple.json';
+const filterPath = 'test-assets/filter-simple.json5';
 
 describe(filterPath, () => {
 	test('can load', async () => {
