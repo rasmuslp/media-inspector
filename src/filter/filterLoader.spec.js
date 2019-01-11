@@ -3,7 +3,7 @@ const filterLoader = require('./filterLoader');
 
 const filterPath = 'test-assets/filter-simple.json5';
 
-describe(filterPath, () => {
+describe(`File '${filterPath}'`, () => {
 	test('can load', async () => {
 		// Load filters
 		const loadedFilters = await filterLoader(filterPath);
