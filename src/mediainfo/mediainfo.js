@@ -12,7 +12,7 @@ const mediainfoPath = 'mediainfo';
 
 async function read(path) {
 	// execute
-	const output = await exec(`${mediainfoPath} --Full --Output=XML "${path}"`);
+	const output = await exec(`${mediainfoPath} --Full --Output=XML "${path.replace(/`/g, '\\`')}"`);
 
 	// Parse mediainfo output
 	const parsed = await parse(output.stdout);
