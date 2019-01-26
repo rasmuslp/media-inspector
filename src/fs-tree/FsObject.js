@@ -11,6 +11,7 @@ class FsObject {
 	}
 
 	get parent() {
+		// @ts-ignore TODO
 		return this._parent;
 	}
 
@@ -23,10 +24,12 @@ class FsObject {
 	}
 
 	get isDirectory() {
+		// @ts-ignore TODO Why does these even exist here?
 		return this._fsObjectType === 'directory';
 	}
 
 	get isFile() {
+		// @ts-ignore TODO Why does these even exist here?
 		return this._fsObjectType === 'file';
 	}
 

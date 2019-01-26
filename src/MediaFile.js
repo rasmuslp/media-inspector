@@ -81,6 +81,7 @@ class MediaFile extends fsTree.File {
 	}
 
 	// Include recommended
+	// @ts-ignore TODO
 	async getPurges(options = {}) {
 		if (this.type in options.filtersByType) {
 			// Prime metadata for 'isRejected'

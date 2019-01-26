@@ -11,6 +11,9 @@ jobs:
         command: npm ci
 
     - run:
+        command: npm run build
+
+    - run:
         command: npm run lint
 
     - run:

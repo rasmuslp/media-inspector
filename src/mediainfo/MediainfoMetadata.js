@@ -4,15 +4,10 @@ class MediainfoMetadata {
 	}
 
 	_getTrack(trackType) {
-		try {
-			for (const track of this._mediainfo.media.track) {
-				if (trackType.toLocaleLowerCase() === track._type.toLocaleLowerCase()) {
-					return track;
-				}
+		for (const track of this._mediainfo.media.track) {
+			if (trackType.toLocaleLowerCase() === track._type.toLocaleLowerCase()) {
+				return track;
 			}
-		}
-		catch (e) {
-			throw new Error(`Track type '${trackType}' not found`, e);
 		}
 
 		throw new Error(`Track type '${trackType}' not found`);
@@ -40,12 +35,12 @@ class MediainfoMetadata {
 						return track.overallbitrate;
 
 					default:
-						return this.constructor._getOrDie(track, property, `[get] could not find '${property}' in '${trackType}'`);
+						return MediainfoMetadata._getOrDie(track, property, `[get] could not find '${property}' in '${trackType}'`);
 				}
 			}
 
 			default:
-				return this.constructor._getOrDie(track, property, `[get] could not find '${property}' in '${trackType}'`);
+				return MediainfoMetadata._getOrDie(track, property, `[get] could not find '${property}' in '${trackType}'`);
 		}
 	}
 }

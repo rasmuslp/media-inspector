@@ -13,7 +13,7 @@ class FilterConditionBetween extends FilterCondition {
 
 	check(inputValue) {
 		// Convert the input
-		let value = this.constructor.convertValue(inputValue);
+		let value = FilterConditionBetween.convertValue(inputValue);
 
 		// Default result is a failure
 		let result = new FilterConditionResult({

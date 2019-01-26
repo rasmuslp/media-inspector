@@ -13,7 +13,7 @@ class FilterConditionIn extends FilterCondition {
 
 	check(inputValue) {
 		// Convert the input
-		let value = this.constructor.convertValue(inputValue);
+		let value = FilterConditionIn.convertValue(inputValue);
 
 		// Default result is a failure
 		let result = new FilterConditionResult({
@@ -23,7 +23,7 @@ class FilterConditionIn extends FilterCondition {
 		});
 
 		// Supports both string and number comparison
-		const pass = this.expectedValue.find(expected => this.constructor.convertValue(expected) === value);
+		const pass = this.expectedValue.find(expected => FilterConditionIn.convertValue(expected) === value);
 		if (pass) {
 			result.passed = true;
 		}

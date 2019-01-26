@@ -13,7 +13,7 @@ class Directory extends FsObject {
 	}
 
 	// Children before parents
-	static getSortByPathDirFile(a, b) {
+	static getSortFnByPathDirFile(a, b) {
 		if (a.path.startsWith(b.path)) {
 			return -1;
 		}
@@ -29,7 +29,7 @@ class Directory extends FsObject {
 	}
 
 	get childrenSorted() {
-		const sorted = this._children.sort(this.constructor.getSortByPathDirFile);
+		const sorted = this._children.sort(Directory.getSortFnByPathDirFile);
 
 		return sorted;
 	}
@@ -55,7 +55,7 @@ class Directory extends FsObject {
 	async getTreeSorted() {
 		const tree = await this.getTree();
 		let sorted = [...tree];
-		sorted.sort(this.constructor.getSortByPathDirFile);
+		sorted.sort(Directory.getSortFnByPathDirFile);
 
 		return sorted;
 	}
@@ -89,7 +89,7 @@ class Directory extends FsObject {
 		}
 
 		// Sort deduped
-		const deduped = Array.from(dedupedMap.values()).sort((a, b) => this.constructor.getSortByPathDirFile(a.fsObject, b.fsObject));
+		const deduped = Array.from(dedupedMap.values()).sort((a, b) => Directory.getSortFnByPathDirFile(a.fsObject, b.fsObject));
 
 		return deduped;
 	}

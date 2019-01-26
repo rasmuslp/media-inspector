@@ -5,7 +5,7 @@ const FilterCondition = require('./FilterCondition');
 class FilterConditionGe extends FilterCondition {
 	check(inputValue) {
 		// Convert the input
-		let value = this.constructor.convertValue(inputValue);
+		let value = FilterConditionGe.convertValue(inputValue);
 
 		// Default result is a failure
 		let result = new FilterConditionResult({

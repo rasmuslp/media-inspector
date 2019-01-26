@@ -51,7 +51,7 @@ class FilterConditionFactory {
 		}
 
 		// Otherwise create and store for future reuse
-		const filterCondition = this.constructor._createFilterCondition(condition);
+		const filterCondition = FilterConditionFactory._createFilterCondition(condition);
 		this._filterConditions.set(hash, filterCondition);
 
 		return filterCondition;

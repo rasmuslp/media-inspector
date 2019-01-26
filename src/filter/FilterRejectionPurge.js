@@ -20,7 +20,9 @@ class FilterRejectionPurge extends Purge {
 		for (const filterResult of sorted) {
 			let filterMessage = `${filterResult.passed ? 'PASSED' : 'FAILED'}: ${filterResult.getResultsAsStrings().join(', ')}`;
 			if (colorized) {
+				// @ts-ignore TODO
 				filterMessage = filterMessage.replace(/passed/gi, match => chalk.green(match));
+				// @ts-ignore TODO
 				filterMessage = filterMessage.replace(/failed/gi, match => chalk.red(match));
 			}
 

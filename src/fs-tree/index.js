@@ -27,9 +27,9 @@ async function buildNode(nodePath, directoryBuilder = defaultDirectoryBuilder, f
 	}
 
 	if (stats.isDirectory()) {
-		let children = await readdirAsync(nodePath);
-		children = await Promise.all(children.map(name => {
-			const childPath = path.join(nodePath, name);
+		const fileNames = await readdirAsync(nodePath);
+		const children = await Promise.all(fileNames.map(fileName => {
+			const childPath = path.join(nodePath, fileName);
 			return buildNode(childPath, directoryBuilder, fileBuilder);
 		}));
 

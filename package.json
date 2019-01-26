@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "predo-deps": "rm -rf node_modules/ package-lock.json",
     "do-deps": "npm install",
     "lint": "eslint .",
@@ -33,6 +34,11 @@
     "yargs": "^11.1.0"
   },
   "devDependencies": {
+    "@types/debug": "0.0.31",
+    "@types/jest": "23.3.13",
+    "@types/mime-types": "2.1.0",
+    "@types/node": "10.12.18",
+    "@types/yargs": "12.0.8",
     "codacy-coverage": "3.4.0",
     "eslint": "5.12.0",
     "eslint-config-rasmuslp": "git+https://github.com/rasmuslp/eslint-config-rasmuslp.git",
@@ -44,7 +50,8 @@
     "eslint-plugin-standard": "4.0.0",
     "husky": "1.3.1",
     "jest": "23.6.0",
-    "jest-junit": "6.0.1"
+    "jest-junit": "6.0.1",
+    "typescript": "3.2.4"
   },
   "husky": {
     "hooks": {

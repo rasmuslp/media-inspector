@@ -15,7 +15,7 @@ async function filterLoader(filterPath) {
 		filterByType = JSON5.parse(data);
 	}
 	catch (e) {
-		throw new Error(`Could not read and parse filter at '${filterPath}'`, e);
+		throw new Error(`Could not read and parse filter at '${filterPath}': ${e.message}`);
 	}
 
 	// Transform loaded filter into FilterConditions

@@ -58,6 +58,7 @@ ${includeRecommended ? 'including recommended' : ''}
 	if (logToConsole) {
 		console.log(`Scanning files and directories...`);
 	}
+	// @ts-ignore TODO
 	const directory = await fsTree.build(directoryFullPath, undefined, fileBuilder);
 
 	// Filter
@@ -79,6 +80,7 @@ ${includeRecommended ? 'including recommended' : ''}
 }
 
 function getLogMessageOfPurge(purge, { colorized = false } = {}) {
+	// @ts-ignore TODO
 	let message = `${colorized ? chalk.yellow(purge.fsObject.path) : purge.fsObject.path}\n\t`;
 
 	if (purge.fsObject.isDirectory) {

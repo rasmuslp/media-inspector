@@ -7,7 +7,7 @@ class FilterCondition {
 	}
 
 	get expectedValue() {
-		return this.constructor.convertValue(this._options.value);
+		return FilterCondition.convertValue(this._options.value);
 	}
 
 	get path() {
