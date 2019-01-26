@@ -1,8 +1,7 @@
-const FilterConditionResult = require('../FilterConditionResult');
+import { FilterConditionResult } from '../FilterConditionResult';
+import { FilterCondition } from './FilterCondition';
 
-const FilterCondition = require('./FilterCondition');
-
-class FilterConditionEq extends FilterCondition {
+export class FilterConditionEq extends FilterCondition {
 	check(inputValue) {
 		// Convert the input
 		let value = FilterConditionEq.convertValue(inputValue);
@@ -26,5 +25,3 @@ class FilterConditionEq extends FilterCondition {
 		return `= ${this.expectedValue}`;
 	}
 }
-
-module.exports = FilterConditionEq;

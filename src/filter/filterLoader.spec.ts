@@ -1,5 +1,5 @@
-const FilterCondition = require('./filter-conditions/FilterCondition');
-const filterLoader = require('./filterLoader');
+import { FilterCondition } from './filter-conditions/FilterCondition';
+import { filterLoader } from './filterLoader';
 
 const filterPath = 'test-assets/filter-simple.json5';
 

@@ -1,5 +1,6 @@
-const FilterConditionGe = require('./filter-conditions/FilterConditionGe');
-const FilterConditionFactory = require('./FilterConditionFactory').constructor;
+import { FilterConditionGe } from './filter-conditions/FilterConditionGe';
+
+import { FilterConditionFactory } from './FilterConditionFactory';
 
 describe('#getFilterCondition', () => {
 	test('identical conditions share the same FilterCondition', () => {
@@ -16,9 +17,8 @@ describe('#getFilterCondition', () => {
 		};
 
 		// Get FilterConditions
-		const filterConditionFactory = new FilterConditionFactory();
-		const filterCondition1 = filterConditionFactory.getFilterCondition(condition1);
-		const filterCondition2 = filterConditionFactory.getFilterCondition(condition2);
+		const filterCondition1 = FilterConditionFactory.getFilterCondition(condition1);
+		const filterCondition2 = FilterConditionFactory.getFilterCondition(condition2);
 
 		expect(filterCondition1).toBeInstanceOf(FilterConditionGe);
 		expect(filterCondition2).toBeInstanceOf(FilterConditionGe);

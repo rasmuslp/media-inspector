@@ -1,16 +1,14 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
-const FilterConditionBetween = require('./filter-conditions/FilterConditionBetween');
-const FilterConditionEq = require('./filter-conditions/FilterConditionEq');
-const FilterConditionGe = require('./filter-conditions/FilterConditionGe');
-const FilterConditionIn = require('./filter-conditions/FilterConditionIn');
+import { FilterConditionBetween } from './filter-conditions/FilterConditionBetween';
+import { FilterConditionEq } from './filter-conditions/FilterConditionEq';
+import { FilterConditionGe } from './filter-conditions/FilterConditionGe';
+import { FilterConditionIn } from './filter-conditions/FilterConditionIn';
 
-class FilterConditionFactory {
-	constructor() {
-		this._filterConditions = new Map();
-	}
+export class FilterConditionFactory {
+	static _filterConditions: any = new Map();
 
-	static _createFilterCondition(inputCondition) {
+	static createFilterCondition(inputCondition) {
 		// Warn and fix input
 		if (inputCondition.comparator) {
 			console.log(`[FilterConditionFactory] The 'comparator' option is deprecated. Use 'operator' instead.`);
@@ -41,7 +39,7 @@ class FilterConditionFactory {
 		}
 	}
 
-	getFilterCondition(condition) {
+	static getFilterCondition(condition) {
 		// Calculate hash of input
 		const hash = crypto.createHash('md5').update(JSON.stringify(condition)).digest('hex');
 
@@ -51,11 +49,9 @@ class FilterConditionFactory {
 		}
 
 		// Otherwise create and store for future reuse
-		const filterCondition = FilterConditionFactory._createFilterCondition(condition);
+		const filterCondition = FilterConditionFactory.createFilterCondition(condition);
 		this._filterConditions.set(hash, filterCondition);
 
 		return filterCondition;
 	}
 }
-
-module.exports = new FilterConditionFactory();

@@ -11,10 +11,10 @@ jobs:
         command: npm ci
 
     - run:
-        command: npm run build
+        command: npm run lint
 
     - run:
-        command: npm run lint
+        command: npm run type-check
 
     - run:
         name: Install mediainfo

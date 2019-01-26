@@ -1,13 +1,13 @@
-const fs = require('fs');
-const util = require('util');
+import fs from 'fs';
+import util from 'util';
 
-const JSON5 = require('json5');
+import JSON5 from 'json5';
 
-const FilterConditionFactory = require('./FilterConditionFactory');
+import { FilterConditionFactory } from './FilterConditionFactory';
 
 const readFileAsync = util.promisify(fs.readFile);
 
-async function filterLoader(filterPath) {
+export async function filterLoader(filterPath) {
 	// Load filter
 	let filterByType;
 	try {
@@ -23,6 +23,7 @@ async function filterLoader(filterPath) {
 	for (const [type, filters] of Object.entries(filterByType)) {
 		// Transform all the filters
 		const transformedFilters = [];
+		// @ts-ignore
 		for (const filter of filters) {
 			// Transform all the conditions of a filter
 			const transformedConditions = [];
@@ -44,5 +45,3 @@ async function filterLoader(filterPath) {
 
 	return filterByType;
 }
-
-module.exports = filterLoader;

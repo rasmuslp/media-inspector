@@ -1,20 +1,21 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const chalk = require('chalk');
-const mime = require('mime-types');
+import chalk from 'chalk';
+import mime from 'mime-types';
 
-const { filterLoader } = require('./filter');
-const fsTree = require('./fs-tree');
+import { filterLoader } from './filter';
+import {buildTree, File, RecommendedPurge} from './fs-tree';
 
-const FilterRejectionPurge = require('./filter/FilterRejectionPurge');
+import { FilterRejectionPurge } from './filter/FilterRejectionPurge';
 
-const MediaFile = require('./MediaFile');
+import { MediaFile } from './MediaFile';
 
 // Extract mime 'master' type of the full mime type
 const typeExtractor = /^([^/]+)/;
 const mediaTypes = [
 	'image',
+	// 'audio', ??
 	'video'
 ];
 
@@ -33,7 +34,7 @@ function fileBuilder(objectPath, stats) {
 		}
 	}
 
-	return new fsTree.File(objectPath, stats);
+	return new File(objectPath, stats);
 }
 
 async function preProcess({ directoryPath, filterPath, includeRecommended, logToConsole = false }) {
@@ -59,7 +60,7 @@ ${includeRecommended ? 'including recommended' : ''}
 		console.log(`Scanning files and directories...`);
 	}
 	// @ts-ignore TODO
-	const directory = await fsTree.build(directoryFullPath, undefined, fileBuilder);
+	const directory = await buildTree(directoryFullPath, undefined, fileBuilder);
 
 	// Filter
 	if (logToConsole) {
@@ -80,7 +81,6 @@ ${includeRecommended ? 'including recommended' : ''}
 }
 
 function getLogMessageOfPurge(purge, { colorized = false } = {}) {
-	// @ts-ignore TODO
 	let message = `${colorized ? chalk.yellow(purge.fsObject.path) : purge.fsObject.path}\n\t`;
 
 	if (purge.fsObject.isDirectory) {
@@ -95,15 +95,15 @@ function getLogMessageOfPurge(purge, { colorized = false } = {}) {
 
 	message += ' ';
 
-	switch (purge.reason.constructor) {
+	switch (purge.constructor) {
 		case FilterRejectionPurge:
-		case fsTree.RecommendedPurge: {
-			message += purge.reason.getPurgeReason({ colorized });
+		case RecommendedPurge: {
+			message += purge.getPurgeReason({ colorized });
 			break;
 		}
 
 		default:
-			message += `${purge.reason.message ? purge.reason.message : 'Error'}: ${JSON.stringify(purge.reason)}`;
+			message += `${purge.message ? purge.message : 'Error'}: ${JSON.stringify(purge)}`;
 	}
 
 	return message + '\n';
@@ -183,7 +183,7 @@ async function remove({ directoryPath, filterPath, includeRecommended = false, d
 	}
 }
 
-module.exports = {
+export {
 	scan,
 	list,
 	remove

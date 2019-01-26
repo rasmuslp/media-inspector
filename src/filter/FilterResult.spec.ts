@@ -1,7 +1,7 @@
-const FilterConditionFactory = require('./FilterConditionFactory');
-const FilterConditionResult = require('./FilterConditionResult');
+import { FilterConditionFactory } from './FilterConditionFactory';
+import { FilterConditionResult } from './FilterConditionResult';
 
-const FilterResult = require('./FilterResult');
+import { FilterResult } from './FilterResult';
 
 describe('#passed', () => {
 	let failed1;
@@ -9,9 +9,13 @@ describe('#passed', () => {
 	let passed1;
 	let passed2;
 	beforeEach(() => {
+		// @ts-ignore
 		failed1 = new FilterConditionResult({ passed: false });
+		// @ts-ignore
 		failed2 = new FilterConditionResult({ passed: false });
+		// @ts-ignore
 		passed1 = new FilterConditionResult({ passed: true });
+		// @ts-ignore
 		passed2 = new FilterConditionResult({ passed: true });
 	});
 
@@ -35,13 +39,13 @@ describe('one failed on passed', () => {
 	let results;
 	beforeEach(() => {
 		const conditions = [
-			FilterConditionFactory.constructor._createFilterCondition({
+			FilterConditionFactory.createFilterCondition({
 				path: 'video.framerate',
 				operator: '>=',
 				value: 25
 			}),
 
-			FilterConditionFactory.constructor._createFilterCondition({
+			FilterConditionFactory.createFilterCondition({
 				path: 'audio.channels',
 				operator: '>=',
 				value: 2

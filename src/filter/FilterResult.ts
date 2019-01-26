@@ -1,4 +1,8 @@
-class FilterResult {
+import { FilterConditionResult } from './FilterConditionResult';
+
+export class FilterResult {
+	_filterConditionResults: FilterConditionResult[];
+
 	constructor(filterConditionResults = []) {
 		this._filterConditionResults = filterConditionResults;
 	}
@@ -46,5 +50,3 @@ class FilterResult {
 		return score;
 	}
 }
-
-module.exports = FilterResult;

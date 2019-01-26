@@ -1,9 +1,9 @@
-const childProcess = require('child_process');
-const util = require('util');
+import childProcess from 'child_process';
+import util from 'util';
 
-const mediainfoParser = require('mediainfo-parser');
+import * as mediainfoParser from 'mediainfo-parser';
 
-const MediainfoMetadata = require('./MediainfoMetadata');
+import { MediainfoMetadata } from './MediainfoMetadata';
 
 const exec = util.promisify(childProcess.exec);
 const parse = util.promisify(mediainfoParser.parse);
@@ -29,7 +29,9 @@ async function getMetadata(path) {
 	return mediainfoMetadata;
 }
 
-module.exports = {
+export {
+	MediainfoMetadata,
+
 	read,
 	getMetadata
 };

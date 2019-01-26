@@ -1,14 +1,14 @@
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
+import fs from 'fs';
+import path from 'path';
+import { promisify } from 'util';
 
-const statAsync = util.promisify(fs.stat);
-const readdirAsync = util.promisify(fs.readdir);
+const statAsync = promisify(fs.stat);
+const readdirAsync = promisify(fs.readdir);
 
-const Directory = require('./Directory');
-const File = require('./File');
+import { Directory } from './Directory';
+import { File } from './File';
 
-const RecommendedPurge = require('./RecommendedPurge');
+import { RecommendedPurge } from './RecommendedPurge';
 
 function defaultDirectoryBuilder(objectPath, stats, children) {
 	return new Directory(objectPath, stats, children);
@@ -40,11 +40,11 @@ async function buildNode(nodePath, directoryBuilder = defaultDirectoryBuilder, f
 	throw new Error('WAT?!');
 }
 
-module.exports = {
+export {
 	Directory,
 	File,
 
 	RecommendedPurge,
 
-	build: buildNode
+	buildNode as buildTree
 };

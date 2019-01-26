@@ -1,6 +1,6 @@
-const path = require('path');
+import path from 'path';
 
-const FsObject = require('./FsObject');
+const { FsObject } = require('./FsObject');
 
 describe('FsObject', () => {
 	const pathToFsObject = path.join(__dirname, 'FsObject.js');

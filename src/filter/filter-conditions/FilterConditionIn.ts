@@ -1,8 +1,7 @@
-const FilterConditionResult = require('../FilterConditionResult');
+import { FilterConditionResult } from '../FilterConditionResult';
+import { FilterCondition } from './FilterCondition';
 
-const FilterCondition = require('./FilterCondition');
-
-class FilterConditionIn extends FilterCondition {
+export class FilterConditionIn extends FilterCondition {
 	constructor(options) {
 		super(options);
 
@@ -35,5 +34,3 @@ class FilterConditionIn extends FilterCondition {
 		return `in [${this.expectedValue.join(', ')}]`;
 	}
 }
-
-module.exports = FilterConditionIn;

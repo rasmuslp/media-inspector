@@ -1,10 +1,13 @@
-const chalk = require('chalk');
+import chalk from 'chalk'
 
-const Purge = require('../fs-tree/Purge');
+import { Purge } from '../fs-tree/Purge';
+import { FilterResult } from './FilterResult';
 
-class FilterRejectionPurge extends Purge {
-	constructor(message, file, filterResults = []) {
-		super(message, file);
+export class FilterRejectionPurge extends Purge {
+	_filterResults: FilterResult[];
+
+	constructor(message, fsObject, filterResults = []) {
+		super(message, fsObject);
 
 		this._filterResults = filterResults;
 	}
@@ -20,9 +23,7 @@ class FilterRejectionPurge extends Purge {
 		for (const filterResult of sorted) {
 			let filterMessage = `${filterResult.passed ? 'PASSED' : 'FAILED'}: ${filterResult.getResultsAsStrings().join(', ')}`;
 			if (colorized) {
-				// @ts-ignore TODO
 				filterMessage = filterMessage.replace(/passed/gi, match => chalk.green(match));
-				// @ts-ignore TODO
 				filterMessage = filterMessage.replace(/failed/gi, match => chalk.red(match));
 			}
 
@@ -36,5 +37,3 @@ class FilterRejectionPurge extends Purge {
 		return `[Filter Not Satisfied]:\n${this.getResultsAsString({ colorized }).map(message => '\t\t' + message).join('\n')}`;
 	}
 }
-
-module.exports = FilterRejectionPurge;

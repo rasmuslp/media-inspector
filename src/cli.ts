@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const yargs = require('yargs');
+import yargs from 'yargs';
 
-const lib = require('./lib');
+import * as lib from'./lib';
 
 // TODO: Ideas for other options:
 // --ignore-ext [ext]

@@ -1,11 +1,13 @@
-const FsObject = require('./FsObject');
-const RecommendedPurge = require('./RecommendedPurge');
+import {FsObject, FsObjectType} from './FsObject';
+import {RecommendedPurge} from './RecommendedPurge';
 
-class Directory extends FsObject {
+export class Directory extends FsObject {
+	_children: FsObject[];
+
 	constructor(objectPath, stats, children = []) {
 		super(objectPath, stats);
 		this._children = children;
-		this._fsObjectType = 'directory';
+		this._fsObjectType = FsObjectType.DIRECTORY;
 
 		for (const child of children) {
 			child._parent = this;
@@ -35,11 +37,11 @@ class Directory extends FsObject {
 	}
 
 	get directories() {
-		return this._children.filter(i => i._type === 'directory');
+		return this._children.filter(i => i.isDirectory);
 	}
 
 	get files() {
-		return this._children.filter(i => i._type === 'file');
+		return this._children.filter(i => i.isFile);
 	}
 
 	// Returns list of tree, this included
@@ -78,7 +80,7 @@ class Directory extends FsObject {
 			const existing = dedupedMap.get(purge.fsObject);
 			if (existing) {
 				// Update if current has better score
-				if (existing.reason.score < purge.reason.score) {
+				if (existing.score < purge.score) {
 					dedupedMap.set(purge.fsObject, purge);
 				}
 			}
@@ -95,12 +97,10 @@ class Directory extends FsObject {
 	}
 
 	getPurges(options = {}) {
+		// @ts-ignore
 		if (options.includeRecommended) {
 			if (!this.children || this.children.length === 0) {
-				return [{
-					fsObject: this,
-					reason: new RecommendedPurge(`Directory empty`)
-				}];
+				return [new RecommendedPurge(`Directory empty`, this)];
 			}
 		}
 
@@ -108,7 +108,7 @@ class Directory extends FsObject {
 	}
 
 	async traverseTree(nodeFn) {
-		const queue = [this];
+		const queue: [FsObject] = [this];
 		while (queue.length) {
 			// Get node
 			const node = queue.pop();
@@ -145,5 +145,3 @@ class Directory extends FsObject {
 		return sizes.reduce((sum, cur) => sum + cur, 0);
 	}
 }
-
-module.exports = Directory;

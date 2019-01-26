@@ -1,4 +1,6 @@
-class MediainfoMetadata {
+export class MediainfoMetadata {
+	_mediainfo: any;
+
 	constructor(mediainfo) {
 		this._mediainfo = mediainfo;
 	}
@@ -44,5 +46,3 @@ class MediainfoMetadata {
 		}
 	}
 }
-
-module.exports = MediainfoMetadata;

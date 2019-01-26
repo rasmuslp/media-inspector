@@ -1,9 +1,13 @@
-class FilterCondition {
-	constructor({ path, value }) {
-		this._options = {
-			path,
-			value
-		};
+interface FilterConditionOptions {
+	path: String,
+	value: any // TODO Check this!!
+}
+
+export class FilterCondition {
+	_options: FilterConditionOptions;
+
+	constructor(options: FilterConditionOptions) {
+		this._options = options;
 	}
 
 	get expectedValue() {
@@ -20,6 +24,10 @@ class FilterCondition {
 
 	toString() {
 		throw new Error('Override this!');
+	}
+
+	toStringForValue(inputValue) {
+		return `${inputValue} ${this.toString()}`;
 	}
 
 	static convertValue(inputValue) {
@@ -48,5 +56,3 @@ class FilterCondition {
 		return value;
 	}
 }
-
-module.exports = FilterCondition;

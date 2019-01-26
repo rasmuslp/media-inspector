@@ -1,8 +1,7 @@
-const FilterConditionResult = require('../FilterConditionResult');
+import { FilterConditionResult } from '../FilterConditionResult';
+import { FilterCondition } from './FilterCondition';
 
-const FilterCondition = require('./FilterCondition');
-
-class FilterConditionBetween extends FilterCondition {
+export class FilterConditionBetween extends FilterCondition {
 	constructor(options) {
 		super(options);
 
@@ -38,5 +37,3 @@ class FilterConditionBetween extends FilterCondition {
 		return `${this.expectedValue[0]} <= ${inputValue} <= ${this.expectedValue[1]}`;
 	}
 }
-
-module.exports = FilterConditionBetween;

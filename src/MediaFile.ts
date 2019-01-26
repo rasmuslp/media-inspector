@@ -1,12 +1,16 @@
 const debug = require('debug')('MediaFile');
 
-const fsTree = require('./fs-tree');
-const mediainfo = require('./mediainfo');
+import { File, RecommendedPurge } from './fs-tree';
+import { getMetadata, MediainfoMetadata } from './mediainfo';
 
-const FilterResult = require('./filter/FilterResult');
-const FilterRejectionPurge = require('./filter/FilterRejectionPurge');
+import { FilterResult } from './filter/FilterResult';
+import { FilterRejectionPurge } from './filter/FilterRejectionPurge';
 
-class MediaFile extends fsTree.File {
+export class MediaFile extends File {
+	_type: string;
+	_mimeType: string;
+	_metadata: MediainfoMetadata;
+
 	constructor(objectPath, stats, type, mimeType) {
 		super(objectPath, stats);
 
@@ -26,7 +30,7 @@ class MediaFile extends fsTree.File {
 	}
 
 	async fetchMetadata() {
-		this._metadata = await mediainfo.getMetadata(this.path);
+		this._metadata = await getMetadata(this.path);
 
 		return this.metadata;
 	}
@@ -83,38 +87,39 @@ class MediaFile extends fsTree.File {
 	// Include recommended
 	// @ts-ignore TODO
 	async getPurges(options = {}) {
+		// @ts-ignore
 		if (this.type in options.filtersByType) {
 			// Prime metadata for 'isRejected'
 			await this.fetchMetadata();
 
+			// @ts-ignore
 			const rejected = this.isRejected(options.filtersByType[this.type]);
 			if (!rejected) {
 				return [];
 			}
 
 			// Rejected
+			// @ts-ignore
 			if (options.includeRecommended) {
 				// Take parent and all children when this was the majority
 				if (this.size >= 0.9 * await this.parent.getSizeOfTree()) {
 					// Mark parent and tree
 					const parentTree = await this.parent.getTreeSorted();
-					const purges = parentTree.map(node => ({
-						fsObject: node,
-						reason: this === node ? rejected : new fsTree.RecommendedPurge(`Auxiliary file or folder to ${this.path}`)
-					}));
+					const purges = parentTree.map(node => {
+						if (this === node) {
+							return rejected;
+						}
+
+						return new RecommendedPurge(`Auxiliary file or folder to ${this.path}`, this);
+					});
 
 					return purges;
 				}
 			}
 
-			return [{
-				fsObject: this,
-				reason: rejected
-			}];
+			return [rejected];
 		}
 
 		return [];
 	}
 }
-
-module.exports = MediaFile;
