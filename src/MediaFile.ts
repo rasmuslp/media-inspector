@@ -7,22 +7,10 @@ import { FilterResult } from './filter/FilterResult';
 import { FilterRejectionPurge } from './filter/FilterRejectionPurge';
 
 export class MediaFile extends File {
-	_type: string;
-	_mimeType: string;
 	_metadata: MediainfoMetadata;
 
-	constructor(objectPath, stats, type, mimeType) {
-		super(objectPath, stats);
-
-		// Mime type -part
-		this._type = type;
-
-		// Full mime type
-		this._mimeType = mimeType;
-	}
-
-	get type() {
-		return this._type;
+	constructor(objectPath, stats, mimeType) {
+		super(objectPath, stats, mimeType);
 	}
 
 	get metadata() {

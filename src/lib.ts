@@ -2,39 +2,29 @@ import fs from 'fs';
 import path from 'path';
 
 import chalk from 'chalk';
-import mime from 'mime-types';
 
 import { filterLoader } from './filter';
-import {buildTree, File, RecommendedPurge} from './fs-tree';
+import {FsTree, File, RecommendedPurge} from './fs-tree';
 
 import { FilterRejectionPurge } from './filter/FilterRejectionPurge';
 
 import { MediaFile } from './MediaFile';
 
-// Extract mime 'master' type of the full mime type
-const typeExtractor = /^([^/]+)/;
 const mediaTypes = [
 	'image',
 	// 'audio', ??
 	'video'
 ];
 
-function fileBuilder(objectPath, stats) {
-	const mimeType = mime.lookup(objectPath);
+function fileBuilder(objectPath: string, stats, mimeType: string) {
 	if (mimeType) {
-		const match = mimeType.match(typeExtractor);
-		if (match) {
-			const type = match[1];
-			if (mediaTypes.includes(type)) {
-				return new MediaFile(objectPath, stats, type, mimeType);
-			}
-		}
-		else {
-			console.log(`Could not extract type from ${mimeType} at ${objectPath}`);
+		const type = File.getTypeFrom(mimeType);
+		if (type && mediaTypes.includes(type)) {
+			return new MediaFile(objectPath, stats, mimeType);
 		}
 	}
 
-	return new File(objectPath, stats);
+	return new File(objectPath, stats, mimeType);
 }
 
 async function preProcess({ directoryPath, filterPath, includeRecommended, logToConsole = false }) {
@@ -60,7 +50,7 @@ ${includeRecommended ? 'including recommended' : ''}
 		console.log(`Scanning files and directories...`);
 	}
 	// @ts-ignore TODO
-	const directory = await buildTree(directoryFullPath, undefined, fileBuilder);
+	const directory = await FsTree.read(directoryFullPath, undefined, fileBuilder);
 
 	// Filter
 	if (logToConsole) {

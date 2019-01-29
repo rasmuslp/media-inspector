@@ -4,7 +4,7 @@ export enum FsObjectType {
 	FILE
 }
 
-export class FsObject {
+export abstract class FsObject {
 	_fsObjectType: FsObjectType;
 	_path: string;
 	_stats: any;
