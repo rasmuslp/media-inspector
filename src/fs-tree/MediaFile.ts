@@ -7,6 +7,9 @@ export abstract class MediaFile extends File {
 	constructor(objectPath, stats, mimeType, metadata: Metadata) {
 		super(objectPath, stats, mimeType);
 		this._metadata = metadata;
+	}
 
+	get metadata() {
+		return this._metadata;
 	}
 }

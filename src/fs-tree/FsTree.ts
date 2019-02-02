@@ -93,4 +93,22 @@ export class FsTree {
 
 		return sizes.reduce((sum, cur) => sum + cur, 0);
 	}
+
+	// Returns list of tree, this included
+	static async getAsList(node: FsObject): Promise<FsObject[]> {
+		const nodes = [];
+		await FsTree.traverse(node, node => {
+			nodes.push(node);
+		});
+
+		return nodes;
+	}
+
+	static async getAsSortedList(node: FsObject): Promise<FsObject[]> {
+		const tree = await FsTree.getAsList(node);
+		let sorted = [...tree];
+		sorted.sort(Directory.getSortFnByPathDirFile);
+
+		return sorted;
+	}
 }

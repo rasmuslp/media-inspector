@@ -33,28 +33,14 @@ export abstract class FilterCondition {
 	abstract check(inputValue): FilterConditionResult;
 
 	static convertValue(inputValue) {
-		let value = inputValue;
-
-		// Try to convert / transform the input here
-		// eslint-disable-next-line default-case
-		switch (typeof inputValue) {
-			case 'number': {
-				// Try parsing to Number
-				const num = Number(inputValue);
-				if (!isNaN(num)) {
-					value = num;
-				}
-
-				break;
-			}
-
-			case 'string': {
-				value = inputValue.toLocaleLowerCase();
-
-				break;
-			}
+		if (!isNaN(Number(inputValue.toString()))) {
+			return Number(inputValue.toString());
 		}
 
-		return value;
+		if (typeof inputValue === 'string') {
+			return inputValue.toLocaleLowerCase();
+		}
+
+		return inputValue;
 	}
 }

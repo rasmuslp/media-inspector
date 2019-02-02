@@ -49,13 +49,13 @@ export class FilterConditionFactory {
 		const hash = crypto.createHash('md5').update(JSON.stringify(condition)).digest('hex');
 
 		// Check if already available
-		if (this._filterConditions.has(hash)) {
-			return this._filterConditions.get(hash);
+		if (FilterConditionFactory._filterConditions.has(hash)) {
+			return FilterConditionFactory._filterConditions.get(hash);
 		}
 
 		// Otherwise create and store for future reuse
 		const filterCondition = FilterConditionFactory.createFilterCondition(condition);
-		this._filterConditions.set(hash, filterCondition);
+		FilterConditionFactory._filterConditions.set(hash, filterCondition);
 
 		return filterCondition;
 	}

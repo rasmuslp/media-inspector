@@ -4,12 +4,12 @@ import path from 'path';
 import chalk from 'chalk';
 
 import { FilterFactory } from './filter';
-import {FsTree, File} from './fs-tree';
+import {FsTree, File, MediaFile} from './fs-tree';
 
 import { FilterMatchPurge } from './purge/FilterMatchPurge';
 import { RecommendedPurge } from './purge/RecommendedPurge';
 
-import { MediaFile } from './MediaFile';
+import { FilterMatcher } from './FilterMatcher';
 
 async function preProcess({ directoryPath, filterPath, includeRecommended, logToConsole = false }) {
 	// Build full paths
@@ -33,18 +33,13 @@ ${includeRecommended ? 'including recommended' : ''}
 	if (logToConsole) {
 		console.log(`Scanning files and directories...`);
 	}
-	// @ts-ignore TODO
 	const directory = await FsTree.read(directoryFullPath);
 
 	// Filter
 	if (logToConsole) {
 		console.log(`Filtering...`);
 	}
-	// @ts-ignore
-	let purges = await directory.getTreePurges({
-		filtersByType,
-		includeRecommended
-	});
+	const purges = await FilterMatcher.getPurges(directory, filtersByType);
 	if (logToConsole) {
 		console.log(`Filtering completed. Found ${purges.length} item${purges.length === 1 ? 's' : ''} for purging`);
 	}
@@ -100,7 +95,7 @@ async function scan({ directoryPath, filterPath, includeRecommended = false }) {
 	console.log('Space freeable: ', spaceFreeable);
 
 	// @ts-ignore
-	const size = await directory.getSizeOfTree();
+	const size = await FsTree.getSize(directory);
 	console.log('Total Size: ', size);
 
 	const reduction = spaceFreeable / size * 100;

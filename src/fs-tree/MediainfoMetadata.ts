@@ -2,7 +2,7 @@ import { Metadata } from './Metadata';
 
 export class MediainfoMetadata extends Metadata {
 	constructor(mediainfo) {
-		super(mediainfo); // TODO: Check what it acutally is
+		super(mediainfo);
 	}
 
 	_getTrack(trackType) {

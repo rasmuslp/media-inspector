@@ -41,8 +41,4 @@ export abstract class FsObject {
 	get isFile() {
 		return this._fsObjectType === FsObjectType.FILE;
 	}
-
-	getPurges() {
-		return [];
-	}
 }

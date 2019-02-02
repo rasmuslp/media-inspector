@@ -1,5 +1,4 @@
 import {FsObject, FsObjectType} from './FsObject';
-import {MediaFile} from "../MediaFile";
 
 export class File extends FsObject {
 	_mimeType: string;
