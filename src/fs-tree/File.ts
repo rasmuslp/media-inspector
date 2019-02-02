@@ -15,7 +15,7 @@ export class File extends FsObject {
 		return File.getTypeFrom(this._mimeType);
 	}
 
-	static getTypeFrom(mimeType): string {
+	static getTypeFrom(mimeType: string): string {
 		const match = mimeType.match(File._typeExtractor);
 		if (match) {
 			const type = match[1];

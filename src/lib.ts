@@ -10,23 +10,6 @@ import { FilterRejectionPurge } from './filter/FilterRejectionPurge';
 
 import { MediaFile } from './MediaFile';
 
-const mediaTypes = [
-	'image',
-	// 'audio', ??
-	'video'
-];
-
-function fileBuilder(objectPath: string, stats, mimeType: string) {
-	if (mimeType) {
-		const type = File.getTypeFrom(mimeType);
-		if (type && mediaTypes.includes(type)) {
-			return new MediaFile(objectPath, stats, mimeType);
-		}
-	}
-
-	return new File(objectPath, stats, mimeType);
-}
-
 async function preProcess({ directoryPath, filterPath, includeRecommended, logToConsole = false }) {
 	// Build full paths
 	const directoryFullPath = path.resolve(process.cwd(), directoryPath);
@@ -50,12 +33,13 @@ ${includeRecommended ? 'including recommended' : ''}
 		console.log(`Scanning files and directories...`);
 	}
 	// @ts-ignore TODO
-	const directory = await FsTree.read(directoryFullPath, undefined, fileBuilder);
+	const directory = await FsTree.read(directoryFullPath);
 
 	// Filter
 	if (logToConsole) {
 		console.log(`Filtering...`);
 	}
+	// @ts-ignore
 	let purges = await directory.getTreePurges({
 		filtersByType,
 		includeRecommended
@@ -114,6 +98,7 @@ async function scan({ directoryPath, filterPath, includeRecommended = false }) {
 
 	console.log('Space freeable: ', spaceFreeable);
 
+	// @ts-ignore
 	const size = await directory.getSizeOfTree();
 	console.log('Total Size: ', size);
 
