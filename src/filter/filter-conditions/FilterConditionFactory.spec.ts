@@ -1,4 +1,4 @@
-import { FilterConditionGe } from './filter-conditions/FilterConditionGe';
+import { FilterConditionGe } from './FilterConditionGe';
 
 import { FilterConditionFactory } from './FilterConditionFactory';
 

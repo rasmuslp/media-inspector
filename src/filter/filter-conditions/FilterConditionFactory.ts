@@ -1,9 +1,9 @@
 import crypto from 'crypto';
 
-import { FilterConditionBetween } from './filter-conditions/FilterConditionBetween';
-import { FilterConditionEq } from './filter-conditions/FilterConditionEq';
-import { FilterConditionGe } from './filter-conditions/FilterConditionGe';
-import { FilterConditionIn } from './filter-conditions/FilterConditionIn';
+import { FilterConditionBetween } from './FilterConditionBetween';
+import { FilterConditionEq } from './FilterConditionEq';
+import { FilterConditionGe } from './FilterConditionGe';
+import { FilterConditionIn } from './FilterConditionIn';
 
 export class FilterConditionFactory {
 	static _filterConditions: any = new Map();
