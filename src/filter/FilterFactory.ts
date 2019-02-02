@@ -3,7 +3,7 @@ import util from 'util';
 
 import JSON5 from 'json5';
 
-import { FilterConditionFactory } from './filter-conditions/FilterConditionFactory';
+import { FilterConditionFactory } from './filter-condition/FilterConditionFactory';
 
 const readFileAsync = util.promisify(fs.readFile);
 

@@ -1,5 +1,5 @@
-import { FilterConditionFactory } from './filter-conditions/FilterConditionFactory';
-import { FilterConditionResult } from './FilterConditionResult';
+import { FilterConditionFactory } from './filter-condition/FilterConditionFactory';
+import { FilterConditionResult } from './filter-condition/FilterConditionResult';
 
 import { FilterResult } from './FilterResult';
 

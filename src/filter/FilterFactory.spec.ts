@@ -1,4 +1,4 @@
-import { FilterCondition } from './filter-conditions/FilterCondition';
+import { FilterCondition } from './filter-condition/FilterCondition';
 import { FilterFactory } from './FilterFactory';
 
 const filterPath = 'test-assets/filter-simple.json5';

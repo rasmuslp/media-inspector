@@ -1,4 +1,4 @@
-import { FilterConditionFactory } from './filter/filter-conditions/FilterConditionFactory';
+import { FilterConditionFactory } from './filter/filter-condition/FilterConditionFactory';
 import { MediaFile } from'./MediaFile';
 import { MediainfoMetadata } from'./mediainfo/MediainfoMetadata';
 
