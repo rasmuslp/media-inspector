@@ -4,6 +4,8 @@ import { FilterConditionBetween } from './FilterConditionBetween';
 import { FilterConditionEq } from './FilterConditionEq';
 import { FilterConditionGe } from './FilterConditionGe';
 import { FilterConditionIn } from './FilterConditionIn';
+import { FilterConditionLt } from './FilterConditionLt';
+import { FilterConditionNe } from './FilterConditionNe';
 
 export class FilterConditionFactory {
 	static _filterConditions: any = new Map();
@@ -25,11 +27,14 @@ export class FilterConditionFactory {
 			case 'in':
 				return new FilterConditionIn(condition);
 
-			case 'string':
-				console.log(`[FilterConditionFactory] The 'string' operator is deprecated. Use '=' instead.`);
-				// falls through
 			case '=':
 				return new FilterConditionEq(condition);
+
+			case '!=':
+				return new FilterConditionNe(condition);
+
+			case '<':
+				return new FilterConditionLt(condition);
 
 			case '>=':
 				return new FilterConditionGe(condition);

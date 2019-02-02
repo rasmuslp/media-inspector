@@ -6,7 +6,7 @@ export class FilterConditionResult {
 	_value: any;
 	_passed: boolean;
 
-	constructor({ filterCondition, value, passed = false }) {
+	constructor({ filterCondition, value, passed }) {
 		this._filterCondition = filterCondition;
 		this._value = value;
 		this._passed = passed;
