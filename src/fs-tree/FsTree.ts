@@ -31,7 +31,7 @@ export class FsTree {
 
 		switch (type) {
 			case 'video':
-				const metadata = await MediainfoMetadataFactory.getMetadataFromFile(nodePath);
+				const metadata = await MediainfoMetadataFactory.getFromFile(nodePath);
 				return new VideoFile(nodePath, stats, mimeType, metadata);
 
 			default:

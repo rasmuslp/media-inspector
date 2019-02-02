@@ -1,6 +1,6 @@
 interface FilterConditionOptions {
 	path: String,
-	value: any // TODO Check this!!
+	value: boolean | number | string
 }
 
 export class FilterCondition {

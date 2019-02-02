@@ -3,7 +3,7 @@ import path from 'path';
 
 import chalk from 'chalk';
 
-import { filterLoader } from './filter';
+import { FilterFactory } from './filter';
 import {FsTree, File, RecommendedPurge} from './fs-tree';
 
 import { FilterRejectionPurge } from './filter/FilterRejectionPurge';
@@ -16,7 +16,7 @@ async function preProcess({ directoryPath, filterPath, includeRecommended, logTo
 	const filterFullPath = path.resolve(process.cwd(), filterPath);
 
 	// Load filters
-	const filtersByType = await filterLoader(filterFullPath);
+	const filtersByType = await FilterFactory.getFromFile(filterFullPath);
 
 	if (logToConsole) {
 		const bootMessage = `

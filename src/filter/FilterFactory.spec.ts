@@ -1,12 +1,12 @@
 import { FilterCondition } from './filter-conditions/FilterCondition';
-import { filterLoader } from './filterLoader';
+import { FilterFactory } from './FilterFactory';
 
 const filterPath = 'test-assets/filter-simple.json5';
 
-describe(`File '${filterPath}'`, () => {
-	test('can load', async () => {
+describe('FilterFactory', () => {
+	test(`can getFromFile '${filterPath}'`, async () => {
 		// Load filters
-		const loadedFilters = await filterLoader(filterPath);
+		const loadedFilters = await FilterFactory.getFromFile(filterPath);
 
 		// Test content of transformed filters
 		expect(loadedFilters).toHaveProperty('video');

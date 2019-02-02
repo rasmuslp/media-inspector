@@ -21,7 +21,7 @@ export class MediainfoMetadataFactory {
 		return parsed;
 	}
 
-	static async getMetadataFromFile(path) {
+	static async getFromFile(path) {
 		const metadata = await MediainfoMetadataFactory._readFromFile(path);
 
 		// Lets wrap that up
