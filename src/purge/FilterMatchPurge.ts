@@ -1,9 +1,9 @@
 import chalk from 'chalk'
 
-import { Purge } from '../fs-tree/Purge';
-import { FilterResult } from './FilterResult';
+import { Purge } from './Purge';
+import { FilterResult } from '../filter/FilterResult';
 
-export class FilterRejectionPurge extends Purge {
+export class FilterMatchPurge extends Purge {
 	_filterResults: FilterResult[];
 
 	constructor(message, fsObject, filterResults = []) {

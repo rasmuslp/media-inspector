@@ -1,10 +1,11 @@
 const debug = require('debug')('MediaFile');
 
-import { File, RecommendedPurge } from './fs-tree';
+import { File } from './fs-tree';
 import { getMetadata, MediainfoMetadata } from './mediainfo';
 
 import { FilterResult } from './filter/FilterResult';
-import { FilterRejectionPurge } from './filter/FilterRejectionPurge';
+import { FilterMatchPurge } from './purge/FilterMatchPurge';
+import { RecommendedPurge } from './purge/RecommendedPurge'
 
 export class MediaFile extends File {
 	_metadata: MediainfoMetadata;
@@ -69,7 +70,7 @@ export class MediaFile extends File {
 		}
 
 		// Otherwise reject
-		return new FilterRejectionPurge(`Filters failed with::`, this, results);
+		return new FilterMatchPurge(`Filters failed with::`, this, results);
 	}
 
 	// Include recommended

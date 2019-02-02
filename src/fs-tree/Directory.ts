@@ -1,5 +1,5 @@
 import {FsObject, FsObjectType} from './FsObject';
-import {RecommendedPurge} from './RecommendedPurge';
+import {RecommendedPurge} from '../purge/RecommendedPurge';
 
 export class Directory extends FsObject {
 	_children: FsObject[];

@@ -1,6 +1,6 @@
-import { FsObject} from './FsObject';
+import { FsObject} from '../fs-tree/FsObject';
 
-export class Purge {
+export abstract class Purge {
 	_message: string;
 	fsObject: FsObject; // TODO
 
@@ -13,8 +13,5 @@ export class Purge {
 		return 0;
 	}
 
-	// NB: Override this!
-	getPurgeReason() {
-		return `[UNKNOWN] ${this._message}`;
-	}
+	abstract getPurgeReason(): string
 }

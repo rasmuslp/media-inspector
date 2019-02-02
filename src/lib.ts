@@ -4,9 +4,10 @@ import path from 'path';
 import chalk from 'chalk';
 
 import { FilterFactory } from './filter';
-import {FsTree, File, RecommendedPurge} from './fs-tree';
+import {FsTree, File} from './fs-tree';
 
-import { FilterRejectionPurge } from './filter/FilterRejectionPurge';
+import { FilterMatchPurge } from './purge/FilterMatchPurge';
+import { RecommendedPurge } from './purge/RecommendedPurge';
 
 import { MediaFile } from './MediaFile';
 
@@ -70,7 +71,7 @@ function getLogMessageOfPurge(purge, { colorized = false } = {}) {
 	message += ' ';
 
 	switch (purge.constructor) {
-		case FilterRejectionPurge:
+		case FilterMatchPurge:
 		case RecommendedPurge: {
 			message += purge.getPurgeReason({ colorized });
 			break;
