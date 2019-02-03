@@ -96,7 +96,6 @@ export async function run(options: libOptions) {
 
 		console.log('Space freeable: ', spaceFreeable);
 
-		// @ts-ignore
 		const size = await FsTree.getSize(directory);
 		console.log('Total Size: ', size);
 

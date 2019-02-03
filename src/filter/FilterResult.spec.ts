@@ -1,5 +1,4 @@
 import { FilterConditionFactory } from './filter-condition/FilterConditionFactory';
-import { FilterConditionResult } from './filter-condition/FilterConditionResult';
 
 import { FilterResult } from './FilterResult';
 
@@ -9,14 +8,15 @@ describe('#passed', () => {
 	let passed1;
 	let passed2;
 	beforeEach(() => {
-		// @ts-ignore
-		failed1 = new FilterConditionResult({ passed: false });
-		// @ts-ignore
-		failed2 = new FilterConditionResult({ passed: false });
-		// @ts-ignore
-		passed1 = new FilterConditionResult({ passed: true });
-		// @ts-ignore
-		passed2 = new FilterConditionResult({ passed: true });
+		const filterCondition = FilterConditionFactory.createFilterCondition({
+			path: 'dummy',
+			operator: '=',
+			value: 'yesyes'
+		});
+		failed1 = filterCondition.check('nono');
+		failed2 = filterCondition.check('nono');
+		passed1 = filterCondition.check('yesyes');
+		passed2 = filterCondition.check('yesyes');
 	});
 
 	test('passes on empty input', () => {

@@ -12,21 +12,14 @@ export class FilterConditionBetween extends FilterCondition {
 
 	check(inputValue) {
 		// Convert the input
-		let value = FilterConditionBetween.convertValue(inputValue);
-
-		// Default result is a failure
-		let result = new FilterConditionResult({
-			filterCondition: this,
-			value,
-			passed: false
-		});
+		const value = FilterConditionBetween.convertValue(inputValue);
 
 		// Check condition
 		if (this.expectedValue[0] <= value && value <= this.expectedValue[1]) {
-			result.passed = true;
+			return new FilterConditionResult(this, value, true);
 		}
 
-		return result;
+		return new FilterConditionResult(this, value, false);
 	}
 
 	toString() {

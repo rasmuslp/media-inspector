@@ -12,22 +12,15 @@ export class FilterConditionIn extends FilterCondition {
 
 	check(inputValue) {
 		// Convert the input
-		let value = FilterConditionIn.convertValue(inputValue);
-
-		// Default result is a failure
-		let result = new FilterConditionResult({
-			filterCondition: this,
-			value,
-			passed: false
-		});
+		const value = FilterConditionIn.convertValue(inputValue);
 
 		// Supports both string and number comparison
 		const match = this.expectedValue.find(expected => FilterConditionIn.convertValue(expected) === value);
 		if (match) {
-			result.passed = true;
+			return new FilterConditionResult(this, value, true);
 		}
 
-		return result;
+		return new FilterConditionResult(this, value, false);
 	}
 
 	toString() {
