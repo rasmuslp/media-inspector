@@ -1,4 +1,5 @@
 import {FsObject, FsObjectType} from './FsObject';
+import { Serialized } from './Serialized';
 
 export class File extends FsObject {
 	_mimeType: string;
@@ -22,4 +23,13 @@ export class File extends FsObject {
 			return type;
 		}
 	}
+
+	serializeData() {
+		const superData = super.serializeData();
+		return Object.assign(superData, {
+			mimeType: this._mimeType
+		});
+	}
+
+	deserialize(obj: Serialized) {}
 }

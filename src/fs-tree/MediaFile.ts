@@ -12,4 +12,11 @@ export abstract class MediaFile extends File {
 	get metadata() {
 		return this._metadata;
 	}
+
+	serializeData() {
+		const superData = super.serializeData();
+		return Object.assign(superData, {
+			metadata: this._metadata
+		});
+	}
 }

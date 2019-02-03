@@ -14,6 +14,13 @@ const argv = yargs
 		requiresArg: true,
 		type: 'string'
 	})
+	.options('write', {
+		alias: ['w', 'writePath'],
+		describe: 'Path to write results of read',
+		implies: ['read'],
+		requiresArg: true,
+		type: 'string'
+	})
 	.options('filter', {
 		alias: ['f', 'filterPath'],
 		describe: 'Filter configuration file in JSON or JavaScript',
@@ -38,7 +45,8 @@ const argv = yargs
 async function run() {
 	try {
 		await lib.run({
-			directoryPath: argv.readPath as string,
+			readPath: argv.readPath as string,
+			writePath: argv.writePath as string,
 			filterPath: argv.filterPath as string,
 			includeRecommended: argv.includeRecommended as boolean,
 			verbose: argv.verbose as boolean

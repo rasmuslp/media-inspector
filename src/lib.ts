@@ -1,4 +1,6 @@
+import fs from 'fs';
 import path from 'path';
+import { promisify } from 'util';
 
 import chalk from 'chalk';
 
@@ -10,26 +12,36 @@ import { RecommendedPurge } from './purge/RecommendedPurge';
 
 import { FilterMatcher } from './FilterMatcher';
 
+const writeFile = promisify(fs.writeFile);
+
 export interface libOptions {
-	directoryPath: string,
+	readPath: string,
+	writePath?: string,
 	filterPath?: string,
 	includeRecommended?: boolean,
 	verbose?: boolean
 }
 
 export async function run(options: libOptions) {
-	const directory = await readPath(options.directoryPath, options.verbose);
+	const node = await readPath(options.readPath, options.verbose);
+
+	if (options.writePath) {
+		const serialized = node.serialize();
+		await writeFile(options.writePath, JSON.stringify(serialized, null, 4));
+
+		return;
+	}
 
 	const purges = [];
 
 	if (options.filterPath) {
-		const filterMatchPurges = await filter(directory, options.filterPath, options.verbose);
+		const filterMatchPurges = await filter(node, options.filterPath, options.verbose);
 		purges.push(...filterMatchPurges);
 	}
 
 	if (options.includeRecommended) {
 		// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for purge
-		await FsTree.traverse(directory, async node => {
+		await FsTree.traverse(node, async node => {
 			if (node.isDirectory()) {
 				if (!node.children || node.children.length === 0) {
 					purges.push(new RecommendedPurge(`Directory empty`, node));
@@ -96,7 +108,7 @@ export async function run(options: libOptions) {
 
 		console.log('Space freeable: ', spaceFreeable);
 
-		const size = await FsTree.getSize(directory);
+		const size = await FsTree.getSize(node);
 		console.log('Total Size: ', size);
 
 		const reduction = spaceFreeable / size * 100;
@@ -111,9 +123,9 @@ async function readPath(nodePath: string, verbose: boolean = false, outputPath?:
 	if (verbose) {
 		console.log(`Reading files and directories at ${absoluteNodePath}`);
 	}
-	const directory = await FsTree.read(absoluteNodePath);
+	const node = await FsTree.read(absoluteNodePath);
 
-	return directory;
+	return node;
 }
 
 async function filter(node: FsObject, filterPath: string, verbose: boolean = false) {

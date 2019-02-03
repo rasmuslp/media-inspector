@@ -42,4 +42,15 @@ export class Directory extends FsObject {
 	get files() {
 		return this._children.filter(i => i.isFile());
 	}
+
+	serializeData() {
+		const superData = super.serializeData();
+		const serializedChildren = this._children.map(node => node.serialize());
+		return Object.assign(superData, {
+			children: serializedChildren
+		});
+	}
+
+	deserialize() {
+	}
 }
