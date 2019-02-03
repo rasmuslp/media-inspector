@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
+import zlib from 'zlib';
 
 import chalk from 'chalk';
 
@@ -13,6 +14,7 @@ import { RecommendedPurge } from './purge/RecommendedPurge';
 import { FilterMatcher } from './FilterMatcher';
 
 const writeFile = promisify(fs.writeFile);
+const gzip = promisify(zlib.gzip);
 
 export interface libOptions {
 	readPath: string,
@@ -27,7 +29,12 @@ export async function run(options: libOptions) {
 
 	if (options.writePath) {
 		const serialized = node.serialize();
-		await writeFile(options.writePath, JSON.stringify(serialized, null, 4));
+		let data = JSON.stringify(serialized, null, 4);
+		let zipped;
+		if (options.writePath.endsWith('.gz')) {
+			zipped = await gzip(data);
+		}
+		await writeFile(options.writePath, zipped || data);
 
 		return;
 	}
