@@ -1,1 +1,1 @@
-export * from './filterLoader';
+export * from './FilterFactory';

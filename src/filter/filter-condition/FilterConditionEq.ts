@@ -1,10 +1,10 @@
-import { FilterConditionResult } from '../FilterConditionResult';
+import { FilterConditionResult } from './FilterConditionResult';
 import { FilterCondition } from './FilterCondition';
 
-export class FilterConditionGe extends FilterCondition {
+export class FilterConditionEq extends FilterCondition {
 	check(inputValue) {
 		// Convert the input
-		let value = FilterConditionGe.convertValue(inputValue);
+		let value = FilterConditionEq.convertValue(inputValue);
 
 		// Default result is a failure
 		let result = new FilterConditionResult({
@@ -14,7 +14,7 @@ export class FilterConditionGe extends FilterCondition {
 		});
 
 		// Check condition
-		if (value >= this.expectedValue) {
+		if (value === this.expectedValue) {
 			result.passed = true;
 		}
 
@@ -22,6 +22,6 @@ export class FilterConditionGe extends FilterCondition {
 	}
 
 	toString() {
-		return `>= ${this.expectedValue}`;
+		return `= ${this.expectedValue}`;
 	}
 }

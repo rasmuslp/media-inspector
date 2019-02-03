@@ -10,6 +10,7 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "type-check": "tsc",
+    "full-test": "npm run type-check && npm run lint && npm run test",
     "start": "node -r ts-node/register $NODE_DEBUG_OPTION src/cli.ts"
   },
   "repository": {

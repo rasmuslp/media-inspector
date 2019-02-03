@@ -4,81 +4,48 @@ import yargs from 'yargs';
 
 import * as lib from'./lib';
 
-// TODO: Ideas for other options:
-// --ignore-ext [ext]
-// --ignore-mime [mimetype]
-
-function getSharedBuilder(yargs) {
-	return yargs
-		.options('filter', {
-			alias: ['f', 'filterPath'],
-			demandOption: true,
-			describe: 'Filter configuration file in JSON or JavaScript',
-			type: 'string'
-
-		})
-		.options('include-recommended', {
-			alias: ['i', 'includeRecommended'],
-			default: false,
-			describe: `Will also include empty directories and 'container' directories`,
-			type: 'boolean'
-		});
-}
-
-// eslint-disable-next-line no-unused-vars
 const argv = yargs
 	.wrap(yargs.terminalWidth() || 0)
 	.env()
-	.command(['scan <directory>', 's'], 'Outputs status and full result', {
-		builder: yargs => {
-			return getSharedBuilder(yargs);
-		},
-		handler: argv => {
-			return lib.scan({
-				directoryPath: argv.directory,
-				filterPath: argv.filterPath,
-				includeRecommended: argv.includeRecommended
-			});
-		}
+	.options('read', {
+		alias: ['r', 'readPath'],
+		demandOption: true,
+		describe: 'Path or pre-read JSON file to read',
+		requiresArg: true,
+		type: 'string'
 	})
-	.command(['list <directory>', 'ls'], 'Outputs paths. (useful for piping the output)', { // At least, that's the goal
-		builder: yargs => {
-			return getSharedBuilder(yargs);
-		},
-		handler: argv => {
-			return lib.list({
-				directoryPath: argv.directory,
-				filterPath: argv.filterPath,
-				includeRecommended: argv.includeRecommended
-			});
-		}
+	.options('filter', {
+		alias: ['f', 'filterPath'],
+		describe: 'Filter configuration file in JSON or JavaScript',
+		implies: ['read'],
+		requiresArg: true,
+		type: 'string'
 	})
-	.command(['remove <directory>', 'rm'], 'Deletes files and directories not satisfying the filter configuration', {
-		builder: yargs => {
-			return getSharedBuilder(yargs)
-				.option('dry-run', {
-					alias: ['n', 'dryRun'],
-					default: true,
-					describe: 'Do not write changes',
-					type: 'boolean'
-
-				})
-				.option('skip-log', {
-					alias: 'skipLog',
-					default: false,
-					describe: `Don't write history in current working directory`,
-					type: 'boolean'
-				});
-		},
-		handler: argv => {
-			return lib.remove({
-				directoryPath: argv.directory,
-				filterPath: argv.filterPath,
-				includeRecommended: argv.includeRecommended,
-				dryRun: argv.dryRun,
-				skipLog: argv.skipLog
-			});
-		}
+	.options('include-recommended', {
+		alias: ['i', 'includeRecommended'],
+		default: false,
+		describe: `Will also include empty directories and 'container' directories`,
+		type: 'boolean'
 	})
-	.demandCommand()
+	.option('verbose', {
+		alias: ['v'],
+		default: false,
+		describe: `Get more details of the operation and state`,
+		type: 'boolean'
+	})
 	.argv;
+
+async function run() {
+	try {
+		await lib.run({
+			directoryPath: argv.readPath as string,
+			filterPath: argv.filterPath as string,
+			includeRecommended: argv.includeRecommended as boolean,
+			verbose: argv.verbose as boolean
+		});
+	} catch (e) {
+		console.log(`Error occured!`, e);
+	}
+}
+
+run();

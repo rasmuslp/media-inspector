@@ -1,4 +1,4 @@
-import { FilterConditionResult } from '../FilterConditionResult';
+import { FilterConditionResult } from './FilterConditionResult';
 import { FilterCondition } from './FilterCondition';
 
 export class FilterConditionBetween extends FilterCondition {

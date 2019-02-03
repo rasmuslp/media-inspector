@@ -1,4 +1,4 @@
-import { FilterConditionResult } from '../FilterConditionResult';
+import { FilterConditionResult } from './FilterConditionResult';
 import { FilterCondition } from './FilterCondition';
 
 export class FilterConditionIn extends FilterCondition {
@@ -22,8 +22,8 @@ export class FilterConditionIn extends FilterCondition {
 		});
 
 		// Supports both string and number comparison
-		const pass = this.expectedValue.find(expected => FilterConditionIn.convertValue(expected) === value);
-		if (pass) {
+		const match = this.expectedValue.find(expected => FilterConditionIn.convertValue(expected) === value);
+		if (match) {
 			result.passed = true;
 		}
 

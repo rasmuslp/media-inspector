@@ -1,9 +1,11 @@
 import crypto from 'crypto';
 
-import { FilterConditionBetween } from './filter-conditions/FilterConditionBetween';
-import { FilterConditionEq } from './filter-conditions/FilterConditionEq';
-import { FilterConditionGe } from './filter-conditions/FilterConditionGe';
-import { FilterConditionIn } from './filter-conditions/FilterConditionIn';
+import { FilterConditionBetween } from './FilterConditionBetween';
+import { FilterConditionEq } from './FilterConditionEq';
+import { FilterConditionGe } from './FilterConditionGe';
+import { FilterConditionIn } from './FilterConditionIn';
+import { FilterConditionLt } from './FilterConditionLt';
+import { FilterConditionNe } from './FilterConditionNe';
 
 export class FilterConditionFactory {
 	static _filterConditions: any = new Map();
@@ -25,11 +27,14 @@ export class FilterConditionFactory {
 			case 'in':
 				return new FilterConditionIn(condition);
 
-			case 'string':
-				console.log(`[FilterConditionFactory] The 'string' operator is deprecated. Use '=' instead.`);
-				// falls through
 			case '=':
 				return new FilterConditionEq(condition);
+
+			case '!=':
+				return new FilterConditionNe(condition);
+
+			case '<':
+				return new FilterConditionLt(condition);
 
 			case '>=':
 				return new FilterConditionGe(condition);
@@ -44,13 +49,13 @@ export class FilterConditionFactory {
 		const hash = crypto.createHash('md5').update(JSON.stringify(condition)).digest('hex');
 
 		// Check if already available
-		if (this._filterConditions.has(hash)) {
-			return this._filterConditions.get(hash);
+		if (FilterConditionFactory._filterConditions.has(hash)) {
+			return FilterConditionFactory._filterConditions.get(hash);
 		}
 
 		// Otherwise create and store for future reuse
 		const filterCondition = FilterConditionFactory.createFilterCondition(condition);
-		this._filterConditions.set(hash, filterCondition);
+		FilterConditionFactory._filterConditions.set(hash, filterCondition);
 
 		return filterCondition;
 	}

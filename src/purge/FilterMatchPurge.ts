@@ -1,12 +1,13 @@
 import chalk from 'chalk'
 
-import { Purge } from '../fs-tree/Purge';
-import { FilterResult } from './FilterResult';
+import { Purge } from './Purge';
+import { FilterResult } from '../filter/FilterResult';
+import {FsObject} from '../fs-tree';
 
-export class FilterRejectionPurge extends Purge {
+export class FilterMatchPurge extends Purge {
 	_filterResults: FilterResult[];
 
-	constructor(message, fsObject, filterResults = []) {
+	constructor(message: string, fsObject: FsObject, filterResults = []) {
 		super(message, fsObject);
 
 		this._filterResults = filterResults;

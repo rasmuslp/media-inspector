@@ -4,7 +4,7 @@ export enum FsObjectType {
 	FILE
 }
 
-export class FsObject {
+export abstract class FsObject {
 	_fsObjectType: FsObjectType;
 	_path: string;
 	_stats: any;
@@ -34,15 +34,11 @@ export class FsObject {
 		return this._stats.size;
 	}
 
-	get isDirectory() {
+	isDirectory() {
 		return this._fsObjectType === FsObjectType.DIRECTORY;
 	}
 
-	get isFile() {
+	isFile() {
 		return this._fsObjectType === FsObjectType.FILE;
-	}
-
-	getPurges() {
-		return [];
 	}
 }
