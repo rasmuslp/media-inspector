@@ -5,7 +5,7 @@ import { FilterResult } from './filter/FilterResult';
 import { FilterMatchPurge } from './purge/FilterMatchPurge';
 
 export class FilterMatcher {
-	static async getPurges(node: FsObject, filtersByType = {}) {
+	static async getPurges(node: FsObject, filtersByType) {
 		// Build list of purges
 		const purges = [];
 		await FsTree.traverse(node, async node => {

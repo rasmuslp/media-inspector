@@ -1,53 +1,84 @@
-import fs from 'fs';
 import path from 'path';
 
 import chalk from 'chalk';
 
 import { FilterFactory } from './filter';
-import {FsTree, File, MediaFile} from './fs-tree';
+import {FsTree, File, MediaFile, FsObject} from './fs-tree';
 
 import { FilterMatchPurge } from './purge/FilterMatchPurge';
 import { RecommendedPurge } from './purge/RecommendedPurge';
 
 import { FilterMatcher } from './FilterMatcher';
 
-async function preProcess({ directoryPath, filterPath, includeRecommended, logToConsole = false }) {
-	// Build full paths
-	const directoryFullPath = path.resolve(process.cwd(), directoryPath);
+export interface libOptions {
+	directoryPath: string,
+	filterPath?: string,
+	includeRecommended?: boolean,
+	verbose?: boolean
+}
+
+export async function run(options: libOptions) {
+	const directory = await readPath(options.directoryPath, options.verbose);
+
+	const purges = [];
+
+	if (options.filterPath) {
+		const filterMatchPurges = await filter(directory, options.filterPath, options.verbose);
+		purges.push(...filterMatchPurges);
+	}
+
+	for (const purge of purges) {
+		if (options.verbose) {
+			const message = getLogMessageOfPurge(purge, { colorized: true });
+			console.log(message);
+		}
+		else {
+			console.log(purge.fsObject.path);
+		}
+	}
+
+	if (options.verbose) {
+		const spaceFreeable = purges
+			.map(purge => purge.fsObject.size)
+			.reduce((acc, cur) => (acc += cur), 0);
+
+		console.log('Space freeable: ', spaceFreeable);
+
+		// @ts-ignore
+		const size = await FsTree.getSize(directory);
+		console.log('Total Size: ', size);
+
+		const reduction = spaceFreeable / size * 100;
+		console.log(`Reduction: ${reduction.toFixed(2)}%`);
+	}
+}
+
+async function readPath(nodePath: string, verbose: boolean = false, outputPath?: string) {
+	const absoluteNodePath = path.resolve(process.cwd(), nodePath);
+	const absoluteOutputPath = path.resolve(process.cwd(), outputPath);
+
+	if (verbose) {
+		console.log(`Reading files and directories at ${absoluteNodePath}`);
+	}
+	const directory = await FsTree.read(absoluteNodePath);
+
+	return directory;
+}
+
+async function filter(node: FsObject, filterPath: string, verbose: boolean = false) {
 	const filterFullPath = path.resolve(process.cwd(), filterPath);
 
-	// Load filters
 	const filtersByType = await FilterFactory.getFromFile(filterFullPath);
 
-	if (logToConsole) {
-		const bootMessage = `
-media-purger starting up
-scanning directory at ${directoryFullPath}
-with filter at ${filterFullPath}
-${includeRecommended ? 'including recommended' : ''}
-`;
-		console.log(bootMessage);
-	}
-
-	// Scan directory structure
-	if (logToConsole) {
-		console.log(`Scanning files and directories...`);
-	}
-	const directory = await FsTree.read(directoryFullPath);
-
-	// Filter
-	if (logToConsole) {
+	if (verbose) {
 		console.log(`Filtering...`);
 	}
-	const purges = await FilterMatcher.getPurges(directory, filtersByType);
-	if (logToConsole) {
+	const purges = await FilterMatcher.getPurges(node, filtersByType);
+	if (verbose) {
 		console.log(`Filtering completed. Found ${purges.length} item${purges.length === 1 ? 's' : ''} for purging`);
 	}
 
-	return {
-		directory,
-		purges
-	};
+	return purges;
 }
 
 function getLogMessageOfPurge(purge, { colorized = false } = {}) {
@@ -78,84 +109,3 @@ function getLogMessageOfPurge(purge, { colorized = false } = {}) {
 
 	return message + '\n';
 }
-
-async function scan({ directoryPath, filterPath, includeRecommended = false }) {
-	const { directory, purges } = await preProcess({ directoryPath, filterPath, includeRecommended, logToConsole: true });
-
-	// Log purges with reasons
-	for (const purge of purges) {
-		const message = getLogMessageOfPurge(purge, { colorized: true });
-		console.log(message);
-	}
-
-	const spaceFreeable = purges
-		.map(purge => purge.fsObject.size)
-		.reduce((acc, cur) => (acc += cur), 0);
-
-	console.log('Space freeable: ', spaceFreeable);
-
-	// @ts-ignore
-	const size = await FsTree.getSize(directory);
-	console.log('Total Size: ', size);
-
-	const reduction = spaceFreeable / size * 100;
-	console.log(`Reduction: ${reduction.toFixed(2)}%`);
-}
-
-async function list({ directoryPath, filterPath, includeRecommended = false }) {
-	const { purges } = await preProcess({ directoryPath, filterPath, includeRecommended });
-
-	// List purges
-	for (const purge of purges) {
-		console.log(purge.fsObject.path);
-	}
-}
-
-async function remove({ directoryPath, filterPath, includeRecommended = false, dryRun = true, skipLog = false }) {
-	const { purges } = await preProcess({ directoryPath, filterPath, includeRecommended });
-
-	// Let the purge begin!
-	const logFileFullPath = path.join(process.cwd(), `media-purger-${Date.now()}.log`);
-	for (const purge of purges) {
-		// Build a log message of the purge
-		let message = getLogMessageOfPurge(purge);
-
-		console.log(message);
-
-		// If not skip log, write intent to log before performing removal
-		if (!skipLog) {
-			try {
-				fs.appendFileSync(logFileFullPath, message + '\n');
-			}
-			catch (e) {
-				console.error(`Could not write log:`, e);
-				process.exit(-1);
-			}
-		}
-
-		// Remove
-		if (!dryRun) {
-			try {
-				if (purge.fsObject.isDirectory) {
-					fs.rmdirSync(purge.fsObject.path);
-				}
-				else if (purge.fsObject.isFile) {
-					fs.unlinkSync(purge.fsObject.path);
-				}
-				else {
-					console.log(`Err, dunno? ${purge.fsObject.path}`);
-				}
-			}
-			catch (e) {
-				console.error(`Could not unlink: ${purge.fsObject.path}`, e);
-				process.exit(-1);
-			}
-		}
-	}
-}
-
-export {
-	scan,
-	list,
-	remove
-};
