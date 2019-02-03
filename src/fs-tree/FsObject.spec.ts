@@ -1,6 +1,8 @@
 import path from 'path';
 
-const { FsObject } = require('./FsObject');
+import { FsObject } from './FsObject';
+
+class FsObjectImpl extends FsObject {}
 
 describe('FsObject', () => {
 	const pathToFsObject = path.join(__dirname, 'FsObject.js');
@@ -10,7 +12,7 @@ describe('FsObject', () => {
 
 	let fsObject;
 	beforeEach(() => {
-		fsObject = new FsObject(pathToFsObject, stats);
+		fsObject = new FsObjectImpl(pathToFsObject, stats);
 	});
 
 	test('path', () => {
