@@ -36,10 +36,10 @@ export class Directory extends FsObject {
 	}
 
 	get directories() {
-		return this._children.filter(i => i.isDirectory);
+		return this._children.filter(i => i.isDirectory());
 	}
 
 	get files() {
-		return this._children.filter(i => i.isFile);
+		return this._children.filter(i => i.isFile());
 	}
 }

@@ -34,11 +34,11 @@ export abstract class FsObject {
 		return this._stats.size;
 	}
 
-	get isDirectory() {
+	isDirectory() {
 		return this._fsObjectType === FsObjectType.DIRECTORY;
 	}
 
-	get isFile() {
+	isFile() {
 		return this._fsObjectType === FsObjectType.FILE;
 	}
 }

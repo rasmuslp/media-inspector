@@ -4,7 +4,6 @@ import yargs from 'yargs';
 
 import * as lib from'./lib';
 
-
 const argv = yargs
 	.wrap(yargs.terminalWidth() || 0)
 	.env()
@@ -39,7 +38,7 @@ const argv = yargs
 async function run() {
 	try {
 		await lib.run({
-			directoryPath: argv.directory as string,
+			directoryPath: argv.readPath as string,
 			filterPath: argv.filterPath as string,
 			includeRecommended: argv.includeRecommended as boolean,
 			verbose: argv.verbose as boolean

@@ -32,27 +32,7 @@ export class FilterMatcher {
 			}
 		});
 
-		// Dedupe list
-		const dedupedMap = new Map();
-		for (const purge of purges) {
-			const existing = dedupedMap.get(purge.fsObject);
-			if (existing) {
-				// Update if current has better score
-				if (existing.score < purge.score) {
-					dedupedMap.set(purge.fsObject, purge);
-				}
-			}
-			else {
-				// Store as unique otherwise
-				dedupedMap.set(purge.fsObject, purge);
-			}
-		}
-
-		// Sort deduped
-		const deduped = Array.from(dedupedMap.values()).sort((a, b) => Directory.getSortFnByPathDirFile(a.fsObject, b.fsObject));
-
-		return deduped;
-
+		return purges;
 	}
 
 	static _checkFilterForMediaFile(filter, mediaFile: MediaFile) {

@@ -3,7 +3,7 @@ import path from 'path';
 import chalk from 'chalk';
 
 import { FilterFactory } from './filter';
-import {FsTree, File, MediaFile, FsObject} from './fs-tree';
+import {FsTree, Directory, MediaFile, FsObject} from './fs-tree';
 
 import { FilterMatchPurge } from './purge/FilterMatchPurge';
 import { RecommendedPurge } from './purge/RecommendedPurge';
@@ -27,7 +27,59 @@ export async function run(options: libOptions) {
 		purges.push(...filterMatchPurges);
 	}
 
+	if (options.includeRecommended) {
+		// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for purge
+		await FsTree.traverse(directory, async node => {
+			if (node.isDirectory()) {
+				if (!node.children || node.children.length === 0) {
+					purges.push(new RecommendedPurge(`Directory empty`, node));
+				}
+				else {
+					const childPaths = node.children.map(fsObject => fsObject.path);
+					const purgedChildren = purges.filter(purge => childPaths.includes(purge.fsObject.path));
+
+					// Get sizes of purged children
+					const sizesOfPurgedChildrenPromises = purgedChildren.map(purge => FsTree.getSize(purge.fsObject));
+					const sizesOfPurgedChildren = await Promise.all(sizesOfPurgedChildrenPromises);
+					const totalSizeOfPurgedChildren = purgedChildren
+						.map(purge => purge.fsObject.size)
+						.reduce((acc, cur) => (acc += cur), 0);
+
+					const sizeOfTree = await FsTree.getSize(node);
+
+					// Take parent and all children when this was the majority
+					if (totalSizeOfPurgedChildren >= 0.9 * sizeOfTree) {
+						// Mark tree from directory as Purgable
+						const treeAsList = await FsTree.getAsSortedList(node);
+						const recommendedPurges = treeAsList.map(childNode => new RecommendedPurge(`Auxiliary file or folder to ${node.path}`, childNode));
+
+						purges.push(...recommendedPurges);
+					}
+				}
+			}
+		});
+	}
+
+	// Dedupe list
+	const dedupedMap = new Map();
 	for (const purge of purges) {
+		const existing = dedupedMap.get(purge.fsObject);
+		if (existing) {
+			// Update if current has better score
+			if (existing.score < purge.score) {
+				dedupedMap.set(purge.fsObject, purge);
+			}
+		}
+		else {
+			// Store as unique otherwise
+			dedupedMap.set(purge.fsObject, purge);
+		}
+	}
+
+	// Sort deduped
+	const dedupedPurgres = Array.from(dedupedMap.values()).sort((a, b) => Directory.getSortFnByPathDirFile(a.fsObject, b.fsObject));
+
+	for (const purge of dedupedPurgres) {
 		if (options.verbose) {
 			const message = getLogMessageOfPurge(purge, { colorized: true });
 			console.log(message);
@@ -38,7 +90,7 @@ export async function run(options: libOptions) {
 	}
 
 	if (options.verbose) {
-		const spaceFreeable = purges
+		const spaceFreeable = dedupedPurgres
 			.map(purge => purge.fsObject.size)
 			.reduce((acc, cur) => (acc += cur), 0);
 
@@ -84,7 +136,7 @@ async function filter(node: FsObject, filterPath: string, verbose: boolean = fal
 function getLogMessageOfPurge(purge, { colorized = false } = {}) {
 	let message = `${colorized ? chalk.yellow(purge.fsObject.path) : purge.fsObject.path}\n\t`;
 
-	if (purge.fsObject.isDirectory) {
+	if (purge.fsObject.isDirectory()) {
 		message += `[Directory]`;
 	}
 	else if (purge.fsObject instanceof MediaFile) {
