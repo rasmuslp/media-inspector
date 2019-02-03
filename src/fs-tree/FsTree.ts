@@ -57,10 +57,14 @@ export class FsTree {
 	}
 
 	static async traverse(node: FsObject, nodeFn: Function) {
+		await FsTree.traverseBfs(node, nodeFn);
+	}
+
+	static async traverseBfs(node: FsObject, nodeFn: Function) {
 		const queue: [FsObject] = [node];
 		while (queue.length) {
 			// Get node
-			const node = queue.pop();
+			const node = queue.shift();
 
 			// Queue any children
 			if (node.children.length > 0) {
