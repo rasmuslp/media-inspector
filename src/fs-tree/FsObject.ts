@@ -56,7 +56,7 @@ export abstract class FsObject implements Serializable {
 		return {
 			fsObjectType: this._fsObjectType,
 			path: this._path,
-			_stats: Object.assign({}, this._stats)
+			stats: Object.assign({}, this._stats)
 		};
 	}
 

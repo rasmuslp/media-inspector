@@ -16,7 +16,7 @@ export abstract class MediaFile extends File {
 	serializeData() {
 		const superData = super.serializeData();
 		return Object.assign(superData, {
-			metadata: this._metadata
+			metadata: this._metadata.serialize()
 		});
 	}
 }
