@@ -2,10 +2,19 @@ import { FsNode } from './FsNode';
 import { Directory } from './Directory';
 
 import {DirectoryFactory} from './DirectoryFactory';
+import {MediaFile} from './MediaFile';
 
 export class FsTree {
-	static async read(nodePath: string) {
-		return DirectoryFactory.getTreeFromPath(nodePath);
+	static async read(nodePath: string): Promise<FsNode> {
+		const node = await DirectoryFactory.getTreeFromPath(nodePath);
+
+		await FsTree.traverse(node, async node => {
+			if (node instanceof MediaFile) {
+				await node.readMetadataFromFileSystem();
+			}
+		});
+
+		return node;
 	}
 
 	static async traverse(node: FsNode, nodeFn: Function) {

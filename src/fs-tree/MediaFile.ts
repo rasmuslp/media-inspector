@@ -4,7 +4,7 @@ import { Metadata } from './Metadata';
 export abstract class MediaFile extends File {
 	_metadata: Metadata;
 
-	constructor(objectPath, stats, mimeType, metadata: Metadata) {
+	constructor(objectPath, stats, mimeType, metadata?: Metadata) {
 		super(objectPath, stats, mimeType);
 		this._metadata = metadata;
 	}
@@ -12,6 +12,12 @@ export abstract class MediaFile extends File {
 	get metadata() {
 		return this._metadata;
 	}
+
+	set metadata(metadata: Metadata) {
+		this._metadata = metadata;
+	}
+
+	abstract async readMetadataFromFileSystem();
 
 	serializeData() {
 		const superData = super.serializeData();
