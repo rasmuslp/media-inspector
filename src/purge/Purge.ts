@@ -1,16 +1,16 @@
-import { FsObject} from '../fs-tree/FsObject';
+import { FsNode} from '../fs-tree/FsNode';
 
 export abstract class Purge {
 	_message: string;
-	_fsObject: FsObject;
+	_fsNode: FsNode;
 
-	constructor(message, fsObject) {
+	constructor(message, fsNode) {
 		this._message = message;
-		this._fsObject = fsObject;
+		this._fsNode = fsNode;
 	}
 
-	get fsObject() {
-		return this._fsObject;
+	get fsNode() {
+		return this._fsNode;
 	}
 
 	get score() {

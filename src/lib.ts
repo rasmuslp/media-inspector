@@ -6,7 +6,7 @@ import zlib from 'zlib';
 import chalk from 'chalk';
 
 import { FilterFactory } from './filter';
-import {FsTree, Directory, MediaFile, FsObject} from './fs-tree';
+import {FsTree, Directory, MediaFile, FsNode} from './fs-tree';
 
 import { FilterMatchPurge } from './purge/FilterMatchPurge';
 import { RecommendedPurge } from './purge/RecommendedPurge';
@@ -54,14 +54,14 @@ export async function run(options: libOptions) {
 					purges.push(new RecommendedPurge(`Directory empty`, node));
 				}
 				else {
-					const childPaths = node.children.map(fsObject => fsObject.path);
-					const purgedChildren = purges.filter(purge => childPaths.includes(purge.fsObject.path));
+					const childPaths = node.children.map(fsNode => fsNode.path);
+					const purgedChildren = purges.filter(purge => childPaths.includes(purge.fsNode.path));
 
 					// Get sizes of purged children
-					const sizesOfPurgedChildrenPromises = purgedChildren.map(purge => FsTree.getSize(purge.fsObject));
+					const sizesOfPurgedChildrenPromises = purgedChildren.map(purge => FsTree.getSize(purge.fsNode));
 					const sizesOfPurgedChildren = await Promise.all(sizesOfPurgedChildrenPromises);
 					const totalSizeOfPurgedChildren = purgedChildren
-						.map(purge => purge.fsObject.size)
+						.map(purge => purge.fsNode.size)
 						.reduce((acc, cur) => (acc += cur), 0);
 
 					const sizeOfTree = await FsTree.getSize(node);
@@ -82,21 +82,21 @@ export async function run(options: libOptions) {
 	// Dedupe list
 	const dedupedMap = new Map();
 	for (const purge of purges) {
-		const existing = dedupedMap.get(purge.fsObject);
+		const existing = dedupedMap.get(purge.fsNode);
 		if (existing) {
 			// Update if current has better score
 			if (existing.score < purge.score) {
-				dedupedMap.set(purge.fsObject, purge);
+				dedupedMap.set(purge.fsNode, purge);
 			}
 		}
 		else {
 			// Store as unique otherwise
-			dedupedMap.set(purge.fsObject, purge);
+			dedupedMap.set(purge.fsNode, purge);
 		}
 	}
 
 	// Sort deduped
-	const dedupedPurgres = Array.from(dedupedMap.values()).sort((a, b) => Directory.getSortFnByPathDirFile(a.fsObject, b.fsObject));
+	const dedupedPurgres = Array.from(dedupedMap.values()).sort((a, b) => Directory.getSortFnByPathDirFile(a.fsNode, b.fsNode));
 
 	for (const purge of dedupedPurgres) {
 		if (options.verbose) {
@@ -104,13 +104,13 @@ export async function run(options: libOptions) {
 			console.log(message);
 		}
 		else {
-			console.log(purge.fsObject.path);
+			console.log(purge.fsNode.path);
 		}
 	}
 
 	if (options.verbose) {
 		const spaceFreeable = dedupedPurgres
-			.map(purge => purge.fsObject.size)
+			.map(purge => purge.fsNode.size)
 			.reduce((acc, cur) => (acc += cur), 0);
 
 		console.log('Space freeable: ', spaceFreeable);
@@ -135,7 +135,7 @@ async function readPath(nodePath: string, verbose: boolean = false, outputPath?:
 	return node;
 }
 
-async function filter(node: FsObject, filterPath: string, verbose: boolean = false) {
+async function filter(node: FsNode, filterPath: string, verbose: boolean = false) {
 	const filterFullPath = path.resolve(process.cwd(), filterPath);
 
 	const filtersByType = await FilterFactory.getFromFile(filterFullPath);
@@ -152,12 +152,12 @@ async function filter(node: FsObject, filterPath: string, verbose: boolean = fal
 }
 
 function getLogMessageOfPurge(purge, { colorized = false } = {}) {
-	let message = `${colorized ? chalk.yellow(purge.fsObject.path) : purge.fsObject.path}\n\t`;
+	let message = `${colorized ? chalk.yellow(purge.fsNode.path) : purge.fsNode.path}\n\t`;
 
-	if (purge.fsObject.isDirectory()) {
+	if (purge.fsNode.isDirectory()) {
 		message += `[Directory]`;
 	}
-	else if (purge.fsObject instanceof MediaFile) {
+	else if (purge.fsNode instanceof MediaFile) {
 		message += `[Media file]`;
 	}
 	else {

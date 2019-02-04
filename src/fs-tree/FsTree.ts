@@ -4,7 +4,7 @@ import { promisify } from 'util';
 
 import mime from 'mime-types';
 
-import { FsObject } from './FsObject';
+import { FsNode } from './FsNode';
 import { Directory } from './Directory';
 import { File } from './File';
 import { VideoFile } from "./VideoFile";
@@ -56,12 +56,12 @@ export class FsTree {
 		throw new Error(`FsTree cannot determine is at ${nodePath}`);
 	}
 
-	static async traverse(node: FsObject, nodeFn: Function) {
+	static async traverse(node: FsNode, nodeFn: Function) {
 		await FsTree.traverseBfs(node, nodeFn);
 	}
 
-	static async traverseBfs(node: FsObject, nodeFn: Function) {
-		const queue: [FsObject] = [node];
+	static async traverseBfs(node: FsNode, nodeFn: Function) {
+		const queue: [FsNode] = [node];
 		while (queue.length) {
 			// Get node
 			const node = queue.shift();
@@ -76,7 +76,7 @@ export class FsTree {
 		}
 	}
 
-	static async find(node: FsObject, matchFn: Function) {
+	static async find(node: FsNode, matchFn: Function) {
 		const matches = [];
 
 		await FsTree.traverse(node, async node => {
@@ -90,7 +90,7 @@ export class FsTree {
 		return matches;
 	}
 
-	static async getSize(node: FsObject) {
+	static async getSize(node: FsNode) {
 		let sizes = [];
 
 		await FsTree.traverse(node,node => sizes.push(node.size));
@@ -99,7 +99,7 @@ export class FsTree {
 	}
 
 	// Returns list of tree, this included
-	static async getAsList(node: FsObject): Promise<FsObject[]> {
+	static async getAsList(node: FsNode): Promise<FsNode[]> {
 		const nodes = [];
 		await FsTree.traverse(node, node => {
 			nodes.push(node);
@@ -108,7 +108,7 @@ export class FsTree {
 		return nodes;
 	}
 
-	static async getAsSortedList(node: FsObject): Promise<FsObject[]> {
+	static async getAsSortedList(node: FsNode): Promise<FsNode[]> {
 		const tree = await FsTree.getAsList(node);
 		let sorted = [...tree];
 		sorted.sort(Directory.getSortFnByPathDirFile);

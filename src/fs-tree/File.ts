@@ -1,13 +1,13 @@
-import {FsObject, FsObjectType} from './FsObject';
+import {FsNode, FsNodeType} from './FsNode';
 import { Serialized } from './Serialized';
 
-export class File extends FsObject {
+export class File extends FsNode {
 	_mimeType: string;
 	static _typeExtractor = /^([^/]+)/;
 
 	constructor(objectPath, stats, mimeType: string) {
 		super(objectPath, stats);
-		this._fsObjectType = FsObjectType.FILE;
+		this._fsNodeType = FsNodeType.FILE;
 		this._mimeType = mimeType;
 	}
 

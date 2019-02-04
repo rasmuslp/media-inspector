@@ -1,19 +1,19 @@
 import { Serializable } from './Serializable';
 import { Serialized } from './Serialized';
 
-export enum FsObjectType {
+export enum FsNodeType {
 	UNKNOWN,
 	DIRECTORY,
 	FILE
 }
 
-export abstract class FsObject implements Serializable {
-	_fsObjectType: FsObjectType;
+export abstract class FsNode implements Serializable {
+	_fsNodeType: FsNodeType;
 	_path: string;
 	_stats: any;
 
 	constructor(objectPath: string, stats) {
-		this._fsObjectType = FsObjectType.UNKNOWN;
+		this._fsNodeType = FsNodeType.UNKNOWN;
 		this._path = objectPath;
 		this._stats = {
 			size: stats.size
@@ -38,11 +38,11 @@ export abstract class FsObject implements Serializable {
 	}
 
 	isDirectory() {
-		return this._fsObjectType === FsObjectType.DIRECTORY;
+		return this._fsNodeType === FsNodeType.DIRECTORY;
 	}
 
 	isFile() {
-		return this._fsObjectType === FsObjectType.FILE;
+		return this._fsNodeType === FsNodeType.FILE;
 	}
 
 	serialize(): Serialized {
@@ -54,7 +54,7 @@ export abstract class FsObject implements Serializable {
 
 	serializeData() {
 		return {
-			fsObjectType: this._fsObjectType,
+			fsNodeType: this._fsNodeType,
 			path: this._path,
 			stats: Object.assign({}, this._stats)
 		};

@@ -1,11 +1,11 @@
 const debug = require('debug')('FilterMatcher');
 
-import { FsTree, FsObject, MediaFile, Directory } from './fs-tree';
+import { FsTree, FsNode, MediaFile, Directory } from './fs-tree';
 import { FilterResult } from './filter/FilterResult';
 import { FilterMatchPurge } from './purge/FilterMatchPurge';
 
 export class FilterMatcher {
-	static async getPurges(node: FsObject, filtersByType) {
+	static async getPurges(node: FsNode, filtersByType) {
 		// Build list of purges
 		const purges = [];
 		await FsTree.traverse(node, async node => {

@@ -1,12 +1,12 @@
-import { FsObject, FsObjectType } from './FsObject';
+import { FsNode, FsNodeType } from './FsNode';
 
-export class Directory extends FsObject {
-	_children: FsObject[];
+export class Directory extends FsNode {
+	_children: FsNode[];
 
 	constructor(objectPath, stats, children = []) {
 		super(objectPath, stats);
 		this._children = children;
-		this._fsObjectType = FsObjectType.DIRECTORY;
+		this._fsNodeType = FsNodeType.DIRECTORY;
 
 		for (const child of children) {
 			child._parent = this;
