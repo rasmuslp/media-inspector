@@ -1,8 +1,15 @@
+import fs from 'fs';
+import { promisify } from 'util';
+import zlib from 'zlib';
+
 import { FsNode } from './FsNode';
 import { Directory } from './Directory';
 
 import {DirectoryFactory} from './DirectoryFactory';
 import {MediaFile} from './MediaFile';
+
+const writeFile = promisify(fs.writeFile);
+const gzip = promisify(zlib.gzip);
 
 export class FsTree {
 	static async read(nodePath: string): Promise<FsNode> {
@@ -15,6 +22,22 @@ export class FsTree {
 		});
 
 		return node;
+	}
+
+	static async write(node: FsNode, writePath: string) {
+		const serialized = node.serialize();
+		let data = JSON.stringify(serialized, null, 4);
+
+		if (writePath.endsWith('.gz')) {
+			const zipped = await gzip(data);
+			return await writeFile(writePath, zipped);
+		}
+
+		return await writeFile(writePath, data);
+	}
+
+	static isSerializePath(serializePath: string) {
+		return serializePath.endsWith('.json') || serializePath.endsWith('.json.gz');
 	}
 
 	static async traverse(node: FsNode, nodeFn: Function) {

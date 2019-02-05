@@ -1,7 +1,4 @@
-import fs from 'fs';
 import path from 'path';
-import { promisify } from 'util';
-import zlib from 'zlib';
 
 import chalk from 'chalk';
 
@@ -12,9 +9,6 @@ import { FilterMatchPurge } from './purge/FilterMatchPurge';
 import { RecommendedPurge } from './purge/RecommendedPurge';
 
 import { FilterMatcher } from './FilterMatcher';
-
-const writeFile = promisify(fs.writeFile);
-const gzip = promisify(zlib.gzip);
 
 export interface libOptions {
 	readPath: string,
@@ -28,13 +22,14 @@ export async function run(options: libOptions) {
 	const node = await readPath(options.readPath, options.verbose);
 
 	if (options.writePath) {
-		const serialized = node.serialize();
-		let data = JSON.stringify(serialized, null, 4);
-		let zipped;
-		if (options.writePath.endsWith('.gz')) {
-			zipped = await gzip(data);
+		if (!FsTree.isSerializePath(options.writePath)) {
+			throw new Error(`Write path should end with .json or .json.gz`);
 		}
-		await writeFile(options.writePath, zipped || data);
+		const absoluteWritePath = path.resolve(process.cwd(), options.writePath);
+		if (options.verbose) {
+			console.log(`Writing ${absoluteWritePath}`);
+		}
+		await FsTree.write(node, absoluteWritePath);
 
 		return;
 	}
@@ -123,14 +118,12 @@ export async function run(options: libOptions) {
 	}
 }
 
-async function readPath(nodePath: string, verbose: boolean = false, outputPath?: string) {
-	const absoluteNodePath = path.resolve(process.cwd(), nodePath);
-	const absoluteOutputPath = path.resolve(process.cwd(), outputPath);
-
+async function readPath(nodePath: string, verbose: boolean = false) {
+	const absoluteReadPath = path.resolve(process.cwd(), nodePath);
 	if (verbose) {
-		console.log(`Reading files and directories at ${absoluteNodePath}`);
+		console.log(`Reading ${absoluteReadPath}`);
 	}
-	const node = await FsTree.read(absoluteNodePath);
+	const node = await FsTree.read(absoluteReadPath);
 
 	return node;
 }
