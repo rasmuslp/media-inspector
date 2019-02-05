@@ -29,4 +29,10 @@ export class MediainfoMetadataFactory {
 
 		return mediainfoMetadata;
 	}
+
+	static createFromSerialized(serialized) {
+		const mediainfoMetadata = new MediainfoMetadata(serialized.data);
+
+		return mediainfoMetadata;
+	}
 }

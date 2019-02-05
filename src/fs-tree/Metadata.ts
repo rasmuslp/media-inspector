@@ -18,9 +18,7 @@ export abstract class Metadata implements Serializable {
 	}
 
 	serializeData() {
-		return {
-			metadata: this._metadata
-		};
+		return JSON.parse(JSON.stringify(this._metadata));
 	}
 
 	abstract deserialize(obj: Serialized);

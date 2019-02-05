@@ -19,11 +19,29 @@ export interface libOptions {
 }
 
 export async function run(options: libOptions) {
-	const node = await readPath(options.readPath, options.verbose);
+	if (FsTree.isSerializePath(options.readPath) && options.writePath) {
+		throw new Error(`Why would you read json just to write it again?! (」ﾟﾛﾟ)｣`);
+	}
+
+	const absoluteReadPath = path.resolve(process.cwd(), options.readPath);
+
+	let node;
+	if (FsTree.isSerializePath(options.readPath)) {
+		if (options.verbose) {
+			console.log(`Reading from json ${absoluteReadPath}`);
+		}
+		node = await FsTree.readFromSerialized(absoluteReadPath);
+	}
+	else {
+		if (options.verbose) {
+			console.log(`Reading from file system ${absoluteReadPath}`);
+		}
+		node = await FsTree.readFromFileSystem(absoluteReadPath);
+	}
 
 	if (options.writePath) {
 		if (!FsTree.isSerializePath(options.writePath)) {
-			throw new Error(`Write path should end with .json or .json.gz`);
+			throw new Error(`Write path should end with .json`);
 		}
 		const absoluteWritePath = path.resolve(process.cwd(), options.writePath);
 		if (options.verbose) {
@@ -116,16 +134,6 @@ export async function run(options: libOptions) {
 		const reduction = spaceFreeable / size * 100;
 		console.log(`Reduction: ${reduction.toFixed(2)}%`);
 	}
-}
-
-async function readPath(nodePath: string, verbose: boolean = false) {
-	const absoluteReadPath = path.resolve(process.cwd(), nodePath);
-	if (verbose) {
-		console.log(`Reading ${absoluteReadPath}`);
-	}
-	const node = await FsTree.read(absoluteReadPath);
-
-	return node;
 }
 
 async function filter(node: FsNode, filterPath: string, verbose: boolean = false) {

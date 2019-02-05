@@ -54,7 +54,6 @@ export abstract class FsNode implements Serializable {
 
 	serializeData() {
 		return {
-			fsNodeType: this._fsNodeType,
 			path: this._path,
 			stats: Object.assign({}, this._stats)
 		};

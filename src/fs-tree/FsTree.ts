@@ -1,6 +1,5 @@
 import fs from 'fs';
 import { promisify } from 'util';
-import zlib from 'zlib';
 
 import { FsNode } from './FsNode';
 import { Directory } from './Directory';
@@ -8,11 +7,12 @@ import { Directory } from './Directory';
 import {DirectoryFactory} from './DirectoryFactory';
 import {MediaFile} from './MediaFile';
 
+const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
-const gzip = promisify(zlib.gzip);
 
 export class FsTree {
-	static async read(nodePath: string): Promise<FsNode> {
+
+	static async readFromFileSystem(nodePath: string): Promise<FsNode> {
 		const node = await DirectoryFactory.getTreeFromPath(nodePath);
 
 		await FsTree.traverse(node, async node => {
@@ -24,20 +24,27 @@ export class FsTree {
 		return node;
 	}
 
+	static async readFromSerialized(serializePath: string): Promise<FsNode> {
+		const fileContent = await readFile(serializePath, 'utf8');
+		const parsed = JSON.parse(fileContent);
+		const node = await DirectoryFactory.getTreeFromSerialized(parsed.data);
+		return node;
+	}
+
 	static async write(node: FsNode, writePath: string) {
-		const serialized = node.serialize();
-		let data = JSON.stringify(serialized, null, 4);
+		const serialized = {
+			metadata: {
+				createdAt: Date.now()
+			},
+			data: node.serialize()
+		};
+		const json = JSON.stringify(serialized, null, 4);
 
-		if (writePath.endsWith('.gz')) {
-			const zipped = await gzip(data);
-			return await writeFile(writePath, zipped);
-		}
-
-		return await writeFile(writePath, data);
+		return await writeFile(writePath, json, 'utf8');
 	}
 
 	static isSerializePath(serializePath: string) {
-		return serializePath.endsWith('.json') || serializePath.endsWith('.json.gz');
+		return serializePath.endsWith('.json');
 	}
 
 	static async traverse(node: FsNode, nodeFn: Function) {

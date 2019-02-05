@@ -45,4 +45,32 @@ export class DirectoryFactory {
 
 		return children;
 	}
+
+	static getTreeFromSerialized(data) {
+		return DirectoryFactory._getFsNodeFromSerialized(data)
+	}
+
+	static _getFsNodeFromSerialized(data) {
+		switch(data.instance) {
+			case 'Directory': {
+				return DirectoryFactory.createFromSerialized(data);
+			}
+
+			case 'File':
+			case 'VideoFile': {
+				return FileFactory.createFromSerialized(data);
+			}
+		}
+	}
+
+	static createFromSerialized(serialized): Directory {
+		const children = DirectoryFactory._getChildrenFromSerialized(serialized.data.children);
+
+		return new Directory(serialized.data.path, serialized.data.stats, children);
+	}
+
+	static _getChildrenFromSerialized(serializedChildren: any[]): FsNode[] {
+		const children = serializedChildren.map(child => DirectoryFactory._getFsNodeFromSerialized(child));
+		return children;
+	}
 }
