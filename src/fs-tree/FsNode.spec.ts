@@ -4,7 +4,8 @@ import { FsNode } from './FsNode';
 import {Serialized} from './Serialized';
 
 class FsNodeImpl extends FsNode {
-	deserialize(obj: Serialized) {}
+	// @ts-ignore TODO Handle better
+	serialize() {}
 }
 
 describe('FsNode', () => {
