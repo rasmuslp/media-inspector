@@ -1,14 +1,22 @@
-import {FsNode, FsNodeType} from './FsNode';
+import {SerializedFsNodeData, FsNode, FsNodeType} from './FsNode';
 import { Serialized } from './Serialized';
 
+export interface SerializedFileData extends SerializedFsNodeData {
+	mimeType: string
+}
+
 export class File extends FsNode {
-	_mimeType: string;
 	static _typeExtractor = /^([^/]+)/;
+	_mimeType: string;
 
 	constructor(nodePath, stats, mimeType: string) {
 		super(nodePath, stats);
 		this._fsNodeType = FsNodeType.FILE;
 		this._mimeType = mimeType;
+	}
+
+	get mimeType() {
+		return this._mimeType;
 	}
 
 	get type() {
@@ -24,12 +32,16 @@ export class File extends FsNode {
 		}
 	}
 
-	serializeData() {
-		const superData = super.serializeData();
-		return Object.assign(superData, {
+	serialize(): Serialized<SerializedFileData> {
+		return {
+			instance: this.constructor.name,
+			data: this.serializeData()
+		};
+	}
+
+	serializeData(): SerializedFileData {
+		return Object.assign({}, super.serializeData(), {
 			mimeType: this._mimeType
 		});
 	}
-
-	deserialize(obj: Serialized) {}
 }

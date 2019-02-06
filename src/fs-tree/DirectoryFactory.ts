@@ -2,9 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 
-import {Directory} from './Directory';
+import {Directory, SerializedDirectoryData} from './Directory';
 import {FileFactory} from './FileFactory';
-import {FsNode} from './FsNode';
+import {FsNode, SerializedFsNodeData} from './FsNode';
+import {Serialized} from './Serialized';
 
 const statAsync = promisify(fs.stat);
 const readdirAsync = promisify(fs.readdir);
@@ -46,11 +47,11 @@ export class DirectoryFactory {
 		return children;
 	}
 
-	static getTreeFromSerialized(data) {
+	static getTreeFromSerialized(data: Serialized): FsNode {
 		return DirectoryFactory._getFsNodeFromSerialized(data)
 	}
 
-	static _getFsNodeFromSerialized(data) {
+	static _getFsNodeFromSerialized(data: Serialized): FsNode {
 		switch(data.instance) {
 			case 'Directory': {
 				return DirectoryFactory.createFromSerialized(data);
@@ -63,13 +64,15 @@ export class DirectoryFactory {
 		}
 	}
 
-	static createFromSerialized(serialized): Directory {
-		const children = DirectoryFactory._getChildrenFromSerialized(serialized.data.children);
+	static createFromSerialized(serialized: Serialized): Directory {
+		const data = <SerializedDirectoryData> serialized.data;
 
-		return new Directory(serialized.data.path, serialized.data.stats, children);
+		const children = DirectoryFactory._getChildrenFromSerialized(data.children);
+
+		return new Directory(data.path, data.stats, children);
 	}
 
-	static _getChildrenFromSerialized(serializedChildren: any[]): FsNode[] {
+	static _getChildrenFromSerialized(serializedChildren: Serialized<SerializedFsNodeData>[]): FsNode[] {
 		const children = serializedChildren.map(child => DirectoryFactory._getFsNodeFromSerialized(child));
 		return children;
 	}

@@ -1,5 +1,10 @@
-import { File } from './File';
+import {File, SerializedFileData} from './File';
 import { Metadata } from './Metadata';
+import {Serialized} from './Serialized';
+
+export interface SerializedMediaFileData extends SerializedFileData {
+	metadata: object
+}
 
 export abstract class MediaFile extends File {
 	_metadata: Metadata;
@@ -19,9 +24,15 @@ export abstract class MediaFile extends File {
 
 	abstract async readMetadataFromFileSystem();
 
-	serializeData() {
-		const superData = super.serializeData();
-		return Object.assign(superData, {
+	serialize(): Serialized<SerializedMediaFileData> {
+		return {
+			instance: this.constructor.name,
+			data: this.serializeData()
+		};
+	}
+
+	serializeData(): SerializedMediaFileData {
+		return Object.assign({}, super.serializeData(), {
 			metadata: this._metadata.serialize()
 		});
 	}

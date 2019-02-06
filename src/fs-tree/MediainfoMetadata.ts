@@ -1,5 +1,4 @@
 import { Metadata } from './Metadata';
-import {Serialized} from './Serialized';
 
 export class MediainfoMetadata extends Metadata {
 	constructor(mediainfo) {
@@ -46,6 +45,4 @@ export class MediainfoMetadata extends Metadata {
 				return MediainfoMetadata._getOrDie(track, property, `[get] could not find '${property}' in '${trackType}'`);
 		}
 	}
-
-	deserialize(obj: Serialized) {}
 }

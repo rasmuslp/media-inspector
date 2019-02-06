@@ -1,9 +1,7 @@
 import { Serialized } from './Serialized';
 
-export interface Serializable {
-	serialize(): Serialized;
+export abstract class Serializable {
+	abstract serialize(): Serialized;
 
-	serializeData();
-
-	deserialize(obj: Serialized);
+	abstract serializeData();
 }

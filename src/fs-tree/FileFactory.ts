@@ -1,8 +1,10 @@
 import mime from 'mime-types';
 
-import {File} from './File';
+import {Serialized} from './Serialized';
+import {SerializedFileData, File} from './File';
 import {VideoFile} from './VideoFile';
 import {MediainfoMetadataFactory} from './MediainfoMetadataFactory';
+import {SerializedMediaFileData} from './MediaFile';
 
 export class FileFactory {
 	static async createFileFrom(nodePath: string, stats): Promise<File> {
@@ -17,13 +19,15 @@ export class FileFactory {
 		return new File(nodePath, stats, mimeType);
 	}
 	
-	static createFromSerialized(serialized): File {
-		const data = serialized.data;
+	static createFromSerialized(serialized: Serialized): File {
 		switch (serialized.instance) {
-			case 'File':
+			case 'File': {
+				const data = <SerializedFileData> serialized.data;
 				return new File(data.path, data.stats, data.mimeType);
+			}
 
 			case 'VideoFile': {
+				const data = <SerializedMediaFileData> serialized.data;
 				const metadata = MediainfoMetadataFactory.createFromSerialized(data.metadata);
 				return new VideoFile(data.path, data.stats, data.mimeType, metadata);
 			}

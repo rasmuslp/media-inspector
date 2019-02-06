@@ -4,6 +4,7 @@ import util from 'util';
 import * as mediainfoParser from 'mediainfo-parser';
 
 import { MediainfoMetadata } from './MediainfoMetadata';
+import {MetadataData} from './Metadata';
 
 const exec = util.promisify(childProcess.exec);
 const parse = util.promisify(mediainfoParser.parse);
@@ -30,8 +31,9 @@ export class MediainfoMetadataFactory {
 		return mediainfoMetadata;
 	}
 
-	static createFromSerialized(serialized) {
-		const mediainfoMetadata = new MediainfoMetadata(serialized.data);
+	static createFromSerialized(serialized): MediainfoMetadata {
+		const data = <MetadataData> serialized.data;
+		const mediainfoMetadata = new MediainfoMetadata(data.metadata);
 
 		return mediainfoMetadata;
 	}

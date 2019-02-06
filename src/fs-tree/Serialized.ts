@@ -1,4 +1,4 @@
-export interface Serialized {
+export interface Serialized<SerializedData = object> {
 	instance: string,
-	data: object
+	data: SerializedData
 }

@@ -1,5 +1,9 @@
 import { Serializable } from './Serializable';
-import { Serialized } from './Serialized';
+
+export interface SerializedFsNodeData {
+	path: string;
+	stats: any;
+}
 
 export enum FsNodeType {
 	UNKNOWN,
@@ -7,16 +11,17 @@ export enum FsNodeType {
 	FILE
 }
 
-export abstract class FsNode implements Serializable {
+export abstract class FsNode extends Serializable {
 	_fsNodeType: FsNodeType;
 	_path: string;
 	_stats: any;
 
 	constructor(nodePath: string, stats) {
+		super();
 		this._fsNodeType = FsNodeType.UNKNOWN;
 		this._path = nodePath;
 		this._stats = {
-			size: stats.size
+			size: stats.size || 0
 		};
 	}
 
@@ -45,19 +50,11 @@ export abstract class FsNode implements Serializable {
 		return this._fsNodeType === FsNodeType.FILE;
 	}
 
-	serialize(): Serialized {
-		return {
-			instance: this.constructor.name,
-			data: this.serializeData()
-		}
-	}
-
-	serializeData() {
+	serializeData(): SerializedFsNodeData {
 		return {
 			path: this._path,
-			stats: Object.assign({}, this._stats)
+			stats: this._stats
 		};
 	}
-
-	abstract deserialize(obj: Serialized);
 }
+

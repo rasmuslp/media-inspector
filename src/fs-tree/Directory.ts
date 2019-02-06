@@ -1,4 +1,10 @@
-import { FsNode, FsNodeType } from './FsNode';
+import {FsNode, FsNodeType, SerializedFsNodeData} from './FsNode';
+import {Serialized} from './Serialized';
+import {SerializedFileData} from './File';
+
+export interface SerializedDirectoryData extends SerializedFsNodeData {
+	children: Serialized<SerializedFsNodeData>[]
+}
 
 export class Directory extends FsNode {
 	_children: FsNode[];
@@ -43,14 +49,18 @@ export class Directory extends FsNode {
 		return this._children.filter(i => i.isFile());
 	}
 
-	serializeData() {
+	serialize(): Serialized<SerializedDirectoryData> {
+		return {
+			instance: this.constructor.name,
+			data: this.serializeData()
+		};
+	}
+
+	serializeData(): SerializedDirectoryData {
 		const superData = super.serializeData();
 		const serializedChildren = this._children.map(node => node.serialize());
 		return Object.assign(superData, {
-			children: serializedChildren
+			children: <Serialized<SerializedFsNodeData>[]> serializedChildren
 		});
-	}
-
-	deserialize() {
 	}
 }
