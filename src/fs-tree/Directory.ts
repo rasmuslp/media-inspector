@@ -3,8 +3,8 @@ import { FsNode, FsNodeType } from './FsNode';
 export class Directory extends FsNode {
 	_children: FsNode[];
 
-	constructor(objectPath, stats, children = []) {
-		super(objectPath, stats);
+	constructor(nodePath, stats, children = []) {
+		super(nodePath, stats);
 		this._children = children;
 		this._fsNodeType = FsNodeType.DIRECTORY;
 

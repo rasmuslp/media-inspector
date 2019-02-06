@@ -12,9 +12,9 @@ export abstract class FsNode implements Serializable {
 	_path: string;
 	_stats: any;
 
-	constructor(objectPath: string, stats) {
+	constructor(nodePath: string, stats) {
 		this._fsNodeType = FsNodeType.UNKNOWN;
-		this._path = objectPath;
+		this._path = nodePath;
 		this._stats = {
 			size: stats.size
 		};

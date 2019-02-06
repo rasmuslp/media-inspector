@@ -5,8 +5,8 @@ export class File extends FsNode {
 	_mimeType: string;
 	static _typeExtractor = /^([^/]+)/;
 
-	constructor(objectPath, stats, mimeType: string) {
-		super(objectPath, stats);
+	constructor(nodePath, stats, mimeType: string) {
+		super(nodePath, stats);
 		this._fsNodeType = FsNodeType.FILE;
 		this._mimeType = mimeType;
 	}
