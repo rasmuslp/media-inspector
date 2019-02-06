@@ -11,7 +11,7 @@ const parse = util.promisify(mediainfoParser.parse);
 const mediainfoPath = 'mediainfo';
 
 export class MediainfoMetadataFactory {
-	static async _readFromFile(path) {
+	static async _readFromFileSystem(path) {
 		// execute
 		const output = await exec(`${mediainfoPath} --Full --Output=XML "${path.replace(/`/g, '\\`')}"`);
 
@@ -21,8 +21,8 @@ export class MediainfoMetadataFactory {
 		return parsed;
 	}
 
-	static async getFromFile(path) {
-		const metadata = await MediainfoMetadataFactory._readFromFile(path);
+	static async getFromFileSystem(path) {
+		const metadata = await MediainfoMetadataFactory._readFromFileSystem(path);
 
 		// Lets wrap that up
 		const mediainfoMetadata = new MediainfoMetadata(metadata);

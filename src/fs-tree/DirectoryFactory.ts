@@ -10,17 +10,17 @@ const statAsync = promisify(fs.stat);
 const readdirAsync = promisify(fs.readdir);
 
 export class DirectoryFactory {
-	static async getTreeFromPath(nodePath: string): Promise<FsNode> {
-		return await DirectoryFactory._getFsNodeFromPath(nodePath);
+	static async getTreeFromFileSystem(nodePath: string): Promise<FsNode> {
+		return await DirectoryFactory._getFsNodeFromFileSystem(nodePath);
 	}
 
-	static async createDirectoryFromPath(nodePath: string, stats): Promise<Directory> {
-		const children = await DirectoryFactory._getChildrenFromPath(nodePath);
+	static async createDirectoryFromFileSystem(nodePath: string, stats): Promise<Directory> {
+		const children = await DirectoryFactory._getChildrenFromFileSystem(nodePath);
 
 		return new Directory(nodePath, stats, children);
 	}
 
-	static async _getFsNodeFromPath(nodePath: string): Promise<FsNode> {
+	static async _getFsNodeFromFileSystem(nodePath: string): Promise<FsNode> {
 		const stats = await statAsync(nodePath);
 
 		if (stats.isFile()) {
@@ -29,18 +29,18 @@ export class DirectoryFactory {
 		}
 
 		if (stats.isDirectory()) {
-			const directory = await DirectoryFactory.createDirectoryFromPath(nodePath, stats);
+			const directory = await DirectoryFactory.createDirectoryFromFileSystem(nodePath, stats);
 			return directory;
 		}
 
 		throw new Error(`DirectoryFactory cannot determine what this is: ${nodePath}`);
 	}
 
-	static async _getChildrenFromPath(nodePath: string): Promise<(FsNode)[]> {
+	static async _getChildrenFromFileSystem(nodePath: string): Promise<(FsNode)[]> {
 		const fileNames = await readdirAsync(nodePath);
 		const children = await Promise.all(fileNames.map(fileName => {
 			const childPath = path.join(nodePath, fileName);
-			return DirectoryFactory._getFsNodeFromPath(childPath);
+			return DirectoryFactory._getFsNodeFromFileSystem(childPath);
 		}));
 
 		return children;

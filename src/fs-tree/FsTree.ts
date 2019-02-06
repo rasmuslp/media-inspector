@@ -13,7 +13,7 @@ const writeFile = promisify(fs.writeFile);
 export class FsTree {
 
 	static async readFromFileSystem(nodePath: string): Promise<FsNode> {
-		const node = await DirectoryFactory.getTreeFromPath(nodePath);
+		const node = await DirectoryFactory.getTreeFromFileSystem(nodePath);
 
 		await FsTree.traverse(node, async node => {
 			if (node instanceof MediaFile) {
