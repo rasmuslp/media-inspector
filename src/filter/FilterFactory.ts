@@ -27,11 +27,10 @@ export class FilterFactory {
 
 		// Transform loaded filter into FilterConditions
 		// For each type
-		for (const [type, filters] of Object.entries(filterByType)) {
+		for (const type in filterByType) {
 			// Transform all the filters
 			const transformedFilters = [];
-			// @ts-ignore
-			for (const filter of filters) {
+			for (const filter of filterByType[type]) {
 				// Transform all the conditions of a filter
 				const transformedConditions = [];
 				for (const condition of filter) {
