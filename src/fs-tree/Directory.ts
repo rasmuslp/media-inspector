@@ -13,10 +13,6 @@ export class Directory extends FsNode {
 		super(nodePath, stats);
 		this._children = children;
 		this._fsNodeType = FsNodeType.DIRECTORY;
-
-		for (const child of children) {
-			child._parent = this;
-		}
 	}
 
 	// Children before parents

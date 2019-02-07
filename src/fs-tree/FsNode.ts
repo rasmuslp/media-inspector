@@ -29,11 +29,6 @@ export abstract class FsNode extends Serializable {
 		return this._path;
 	}
 
-	get parent() {
-		// @ts-ignore TODO
-		return this._parent;
-	}
-
 	get children() {
 		return [];
 	}
