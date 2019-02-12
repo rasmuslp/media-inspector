@@ -1,4 +1,6 @@
+import fs from 'fs';
 import path from 'path';
+import {promisify} from 'util';
 
 import chalk from 'chalk';
 
@@ -9,6 +11,8 @@ import { FilterMatchPurge } from './purge/FilterMatchPurge';
 import { RecommendedPurge } from './purge/RecommendedPurge';
 
 import { FilterMatcher } from './FilterMatcher';
+
+const readFile = promisify(fs.readFile);
 
 export interface libOptions {
 	readPath: string,
@@ -137,14 +141,24 @@ export async function run(options: libOptions) {
 }
 
 async function filter(node: FsNode, filterPath: string, verbose: boolean = false) {
-	const filterFullPath = path.resolve(process.cwd(), filterPath);
+	const absoluteFilterPath = path.resolve(process.cwd(), filterPath);
 
-	const filtersByType = await FilterFactory.getFromFile(filterFullPath);
+	if (verbose) {
+		console.log(`Reading rules from json at ${absoluteFilterPath}`);
+	}
+	let fileContent;
+	try {
+		fileContent = await readFile(absoluteFilterPath, 'utf8');
+	}
+	catch (e) {
+		throw new Error(`Could not read filter at '${absoluteFilterPath}': ${e.message}`);
+	}
+	const filterRules = FilterFactory.getFromSerialized(fileContent);
 
 	if (verbose) {
 		console.log(`Filtering...`);
 	}
-	const purges = await FilterMatcher.getPurges(node, filtersByType);
+	const purges = await FilterMatcher.getPurges(node, filterRules);
 	if (verbose) {
 		console.log(`Filtering completed. Found ${purges.length} item${purges.length === 1 ? 's' : ''} for purging`);
 	}

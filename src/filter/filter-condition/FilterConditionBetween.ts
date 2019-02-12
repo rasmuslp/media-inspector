@@ -2,11 +2,11 @@ import { FilterConditionResult } from './FilterConditionResult';
 import { FilterCondition } from './FilterCondition';
 
 export class FilterConditionBetween extends FilterCondition {
-	constructor(options) {
-		super(options);
+	constructor(path: string, value) {
+		super(path, value);
 
 		if (!Array.isArray(this.expectedValue)) {
-			throw new Error(`The 'between' operator expects an array of 2 values, not '${this.expectedValue}'. ${JSON.stringify(options)}`);
+			throw new Error(`The 'between' operator expects an array of 2 values, not '${this.expectedValue}'. Path: ${path} Value: ${value}`);
 		}
 	}
 

@@ -1,9 +1,11 @@
-import { FilterConditionResult } from './filter-condition/FilterConditionResult';
+import { FilterConditionResult } from '../filter-condition/FilterConditionResult';
+import {FilterRuleResult} from './FilterRuleResult';
 
-export class FilterResult {
+export class FilterMetadataRuleResult extends FilterRuleResult {
 	_filterConditionResults: FilterConditionResult[];
 
 	constructor(filterConditionResults = []) {
+		super();
 		this._filterConditionResults = filterConditionResults;
 	}
 

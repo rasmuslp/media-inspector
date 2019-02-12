@@ -2,11 +2,11 @@ import { FilterConditionResult } from './FilterConditionResult';
 import { FilterCondition } from './FilterCondition';
 
 export class FilterConditionIn extends FilterCondition {
-	constructor(options) {
-		super(options);
+	constructor(path: string, value) {
+		super(path, value);
 
 		if (!Array.isArray(this.expectedValue)) {
-			throw new Error(`The 'in' operator expects an array, not '${this.expectedValue}'. ${JSON.stringify(options)}`);
+			throw new Error(`The 'in' operator expects an array, not '${this.expectedValue}'. Path: ${path} Value: ${value}`);
 		}
 	}
 

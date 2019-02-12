@@ -1,0 +1,28 @@
+[
+	{
+		mimeType: 'video',
+		type: 'metadata',
+		conditions: [
+			{
+				"path": "video.format",
+				"operator": "in",
+				"value": [
+					"avc", // https://en.wikipedia.org/wiki/H.264/MPEG-4_AVC - MPEG-4 Part 10: H264
+					"vc-1" // https://en.wikipedia.org/wiki/VC-1 - Somewhat similar MS alternative
+				]
+			},
+			{
+				"path": "general.bitrate",
+				"operator": "<",
+				"value": 12000000
+			}
+		]
+	},
+
+	{
+		mimeType: 'video',
+		type: 'season-size-discrepancy',
+		tolerance: 5,
+		matchPattern: '.*'
+	}
+]

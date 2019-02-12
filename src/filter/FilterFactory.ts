@@ -6,8 +6,33 @@ import JSON5 from 'json5';
 import { FilterConditionFactory } from './filter-condition/FilterConditionFactory';
 
 const readFileAsync = util.promisify(fs.readFile);
+import {FilterRule, FilterRuleData} from './filter-rule/FilterRule';
+import {FilterRuleFactory} from './filter-rule/FilterRuleFactory';
 
 export class FilterFactory {
+	static getFromSerialized(data): FilterRule[] {
+		const filterRuleDatas = FilterFactory._parse(data);
+		const filterRules = [];
+		for (const filterRuleData of filterRuleDatas) {
+			const filterRule = FilterRuleFactory.getFromSerialized(filterRuleData);
+			if (filterRule) {
+				filterRules.push(filterRule);
+			}
+		}
+
+		return filterRules;
+	}
+
+	static _parse(data): FilterRuleData[] {
+		try {
+			const parsed = <FilterRuleData[]> JSON5.parse(data);
+			return parsed;
+		}
+		catch (e) {
+			throw new Error(`Could not parse filter: ${e.message}`);
+		}
+	}
+
 	static async _readFromFile(filterPath) {
 		// Load filter
 		let filterByType;

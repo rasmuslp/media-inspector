@@ -1,11 +1,11 @@
 import chalk from 'chalk'
 
 import { Purge } from './Purge';
-import { FilterResult } from '../filter/FilterResult';
+import { FilterMetadataRuleResult } from '../filter/filter-rule/FilterMetadataRuleResult';
 import {FsNode} from '../fs-tree';
 
 export class FilterMatchPurge extends Purge {
-	_filterResults: FilterResult[];
+	_filterResults: FilterMetadataRuleResult[];
 
 	constructor(message: string, fsNode: FsNode, filterResults = []) {
 		super(message, fsNode);

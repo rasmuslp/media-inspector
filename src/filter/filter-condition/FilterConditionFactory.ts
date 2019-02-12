@@ -7,44 +7,44 @@ import { FilterConditionIn } from './FilterConditionIn';
 import { FilterConditionLt } from './FilterConditionLt';
 import { FilterConditionNe } from './FilterConditionNe';
 
+export interface FilterConditionData {
+	path: string;
+	operator: string // TODO: enum
+	value: any | any[]
+}
+
 export class FilterConditionFactory {
 	static _filterConditions: any = new Map();
 
-	static createFilterCondition(inputCondition) {
-		// Warn and fix input
-		if (inputCondition.comparator) {
-			console.log(`[FilterConditionFactory] The 'comparator' option is deprecated. Use 'operator' instead.`);
-		}
-		const condition = Object.assign({}, inputCondition, {
-			operator: inputCondition.operator || inputCondition.comparator
-		});
+	static createFilterCondition(inputCondition: FilterConditionData) {
+		const condition = Object.assign({}, inputCondition);
 
 		// Create and return
 		switch (condition.operator) {
 			case 'between':
-				return new FilterConditionBetween(condition);
+				return new FilterConditionBetween(condition.path, condition.value);
 
 			case 'in':
-				return new FilterConditionIn(condition);
+				return new FilterConditionIn(condition.path, condition.value);
 
 			case '=':
-				return new FilterConditionEq(condition);
+				return new FilterConditionEq(condition.path, condition.value);
 
 			case '!=':
-				return new FilterConditionNe(condition);
+				return new FilterConditionNe(condition.path, condition.value);
 
 			case '<':
-				return new FilterConditionLt(condition);
+				return new FilterConditionLt(condition.path, condition.value);
 
 			case '>=':
-				return new FilterConditionGe(condition);
+				return new FilterConditionGe(condition.path, condition.value);
 
 			default:
 				throw new Error(`Unknown operator '${condition.operator}' in ${JSON.stringify(inputCondition)}`);
 		}
 	}
 
-	static getFilterCondition(condition) {
+	static getFilterCondition(condition: FilterConditionData) {
 		// Calculate hash of input
 		const hash = crypto.createHash('md5').update(JSON.stringify(condition)).digest('hex');
 

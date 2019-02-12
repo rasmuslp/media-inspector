@@ -1,23 +1,20 @@
 import {FilterConditionResult} from './FilterConditionResult';
 
-interface FilterConditionOptions {
-	path: String,
-	value: boolean | number | string
-}
-
 export abstract class FilterCondition {
-	_options: FilterConditionOptions;
+	_path: string;
+	_value;
 
-	constructor(options: FilterConditionOptions) {
-		this._options = options;
+	constructor(path: string, value) {
+		this._path = path;
+		this._value = value;
 	}
 
 	get expectedValue() {
-		return FilterCondition.convertValue(this._options.value);
+		return FilterCondition.convertValue(this._value);
 	}
 
 	get path() {
-		return this._options.path;
+		return this._path;
 	}
 
 	get pathParts() {
