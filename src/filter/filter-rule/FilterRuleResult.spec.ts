@@ -1,6 +1,6 @@
 import { FilterConditionFactory } from './filter-condition/FilterConditionFactory';
 
-import { FilterMetadataRuleResult } from './FilterMetadataRuleResult';
+import { FilterRuleResult } from './FilterRuleResult';
 
 describe('#passed', () => {
 	let failed1;
@@ -20,17 +20,17 @@ describe('#passed', () => {
 	});
 
 	test('passes on empty input', () => {
-		const result = new FilterMetadataRuleResult();
+		const result = new FilterRuleResult();
 		expect(result.passed).toBe(true);
 	});
 
 	test('passes if all conditions passed', () => {
-		const result = new FilterMetadataRuleResult([passed1, passed2]);
+		const result = new FilterRuleResult([passed1, passed2]);
 		expect(result.passed).toBe(true);
 	});
 
 	test('fails if any condition failed', () => {
-		const result = new FilterMetadataRuleResult([failed1, failed2, passed1, passed2]);
+		const result = new FilterRuleResult([failed1, failed2, passed1, passed2]);
 		expect(result.passed).toBe(false);
 	});
 });
@@ -67,7 +67,7 @@ describe('one failed on passed', () => {
 	});
 
 	test('#getResultsAsStrings', () => {
-		const filterResult = new FilterMetadataRuleResult(results);
+		const filterResult = new FilterRuleResult(results);
 		const resultAsStrings = filterResult.getResultsAsStrings();
 
 		// Test
@@ -77,7 +77,7 @@ describe('one failed on passed', () => {
 	});
 
 	test('#getWeightedScore', () => {
-		const filterResult = new FilterMetadataRuleResult(results);
+		const filterResult = new FilterRuleResult(results);
 		const score = filterResult.getWeightedScore();
 		expect(score).toBe(4);
 	});
