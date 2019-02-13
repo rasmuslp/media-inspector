@@ -22,12 +22,12 @@ export class FileFactory {
 	static createFromSerialized(serialized: Serialized): File {
 		switch (serialized.instance) {
 			case 'File': {
-				const data = <SerializedFileData> serialized.data;
+				const data = serialized.data as SerializedFileData;
 				return new File(data.path, data.stats, data.mimeType);
 			}
 
 			case 'VideoFile': {
-				const data = <SerializedMediaFileData> serialized.data;
+				const data = serialized.data as SerializedMediaFileData;
 				const metadata = MediainfoMetadataFactory.createFromSerialized(data.metadata);
 				return new VideoFile(data.path, data.stats, data.mimeType, metadata);
 			}

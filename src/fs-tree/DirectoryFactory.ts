@@ -65,7 +65,7 @@ export class DirectoryFactory {
 	}
 
 	static createFromSerialized(serialized: Serialized): Directory {
-		const data = <SerializedDirectoryData> serialized.data;
+		const data = serialized.data as SerializedDirectoryData;
 
 		const children = DirectoryFactory._getChildrenFromSerialized(data.children);
 

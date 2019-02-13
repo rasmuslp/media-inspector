@@ -25,7 +25,7 @@ export class FilterFactory {
 
 	static _parse(data): FilterRuleData[] {
 		try {
-			const parsed = <FilterRuleData[]> JSON5.parse(data);
+			const parsed = JSON5.parse(data) as FilterRuleData[];
 			return parsed;
 		}
 		catch (e) {

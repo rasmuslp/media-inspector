@@ -56,7 +56,7 @@ export class Directory extends FsNode {
 		const superData = super.serializeData();
 		const serializedChildren = this._children.map(node => node.serialize());
 		return Object.assign(superData, {
-			children: <Serialized<SerializedFsNodeData>[]> serializedChildren
+			children: serializedChildren as Serialized<SerializedFsNodeData>[]
 		});
 	}
 }
