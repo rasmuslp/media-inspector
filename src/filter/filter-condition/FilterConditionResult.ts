@@ -2,10 +2,10 @@ import { FilterCondition } from './FilterCondition';
 
 export class FilterConditionResult {
 	_filterCondition: FilterCondition;
-	_value: any;
+	_value;
 	_passed: boolean;
 
-	constructor(filterCondition: FilterCondition, value: any, passed: boolean) {
+	constructor(filterCondition: FilterCondition, value, passed: boolean) {
 		this._filterCondition = filterCondition;
 		this._value = value;
 		this._passed = passed;

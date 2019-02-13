@@ -10,11 +10,11 @@ import { FilterConditionNe } from './FilterConditionNe';
 export interface FilterConditionData {
 	path: string;
 	operator: string; // TODO: enum
-	value: any | any[];
+	value;
 }
 
 export class FilterConditionFactory {
-	static _filterConditions: any = new Map();
+	static _filterConditions = new Map();
 
 	static createFilterCondition(inputCondition: FilterConditionData) {
 		const condition = Object.assign({}, inputCondition);

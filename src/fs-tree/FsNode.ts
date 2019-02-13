@@ -2,7 +2,7 @@ import { Serializable } from './Serializable';
 
 export interface SerializedFsNodeData {
 	path: string;
-	stats: any;
+	stats;
 }
 
 export enum FsNodeType {
@@ -14,7 +14,7 @@ export enum FsNodeType {
 export abstract class FsNode extends Serializable {
 	_fsNodeType: FsNodeType;
 	_path: string;
-	_stats: any;
+	_stats;
 
 	constructor(nodePath: string, stats) {
 		super();

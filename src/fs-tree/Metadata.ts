@@ -2,11 +2,11 @@ import { Serializable } from './Serializable';
 import { Serialized } from './Serialized';
 
 export interface MetadataData {
-	metadata: any;
+	metadata;
 }
 
 export abstract class Metadata implements Serializable {
-	_metadata: any;
+	_metadata;
 
 	constructor(metadata) {
 		this._metadata = metadata;
