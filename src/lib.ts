@@ -75,16 +75,14 @@ export async function run(options: LibOptions) {
 					const purgedChildren = purges.filter(purge => childPaths.includes(purge.fsNode.path));
 
 					// Get sizes of purged children
-					const sizesOfPurgedChildrenPromises = purgedChildren.map(purge => FsTree.getSize(purge.fsNode));
-					const sizesOfPurgedChildren = await Promise.all(sizesOfPurgedChildrenPromises);
-					const totalSizeOfPurgedChildren = purgedChildren
+					const sizeOfPurgedChildren = purgedChildren
 						.map(purge => purge.fsNode.size)
 						.reduce((acc, cur) => (acc += cur), 0);
 
 					const sizeOfTree = await FsTree.getSize(node);
 
 					// Take parent and all children when this was the majority
-					if (totalSizeOfPurgedChildren >= 0.9 * sizeOfTree) {
+					if (sizeOfPurgedChildren >= 0.9 * sizeOfTree) {
 						// Mark tree from directory as Purgable
 						const treeAsList = await FsTree.getAsSortedList(node);
 						const recommendedPurges = treeAsList.map(childNode => new RecommendedPurge(`Auxiliary file or folder to ${node.path}`, childNode));

@@ -1,7 +1,6 @@
 import path from 'path';
 
 import { FsNode } from './FsNode';
-import { Serialized } from './Serialized';
 
 class FsNodeImpl extends FsNode {
 	// @ts-ignore TODO Handle better

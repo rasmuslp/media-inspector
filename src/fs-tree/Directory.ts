@@ -1,6 +1,5 @@
 import { FsNode, FsNodeType, SerializedFsNodeData } from './FsNode';
 import { Serialized } from './Serialized';
-import { SerializedFileData } from './File';
 
 export interface SerializedDirectoryData extends SerializedFsNodeData {
 	children: Serialized<SerializedFsNodeData>[];
