@@ -1,6 +1,6 @@
-import { FilterCondition } from '../filter-condition/FilterCondition';
+import { FilterCondition } from './filter-condition/FilterCondition';
 import { FilterRule, FilterRuleData } from './FilterRule';
-import { FilterConditionData } from '../filter-condition/FilterConditionFactory';
+import { FilterConditionData } from './filter-condition/FilterConditionFactory';
 import { FilterMetadataRuleResult } from './FilterMetadataRuleResult';
 
 const debug = require('debug')('FilterMetadataRule');

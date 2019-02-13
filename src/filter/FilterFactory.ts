@@ -3,7 +3,7 @@ import util from 'util';
 
 import JSON5 from 'json5';
 
-import { FilterConditionFactory } from './filter-condition/FilterConditionFactory';
+import { FilterConditionFactory } from './filter-rule/filter-condition/FilterConditionFactory';
 import { FilterRule, FilterRuleData } from './filter-rule/FilterRule';
 import { FilterRuleFactory } from './filter-rule/FilterRuleFactory';
 

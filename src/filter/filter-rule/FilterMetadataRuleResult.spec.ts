@@ -1,4 +1,4 @@
-import { FilterConditionFactory } from '../filter-condition/FilterConditionFactory';
+import { FilterConditionFactory } from './filter-condition/FilterConditionFactory';
 
 import { FilterMetadataRuleResult } from './FilterMetadataRuleResult';
 

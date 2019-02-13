@@ -1,4 +1,4 @@
-import { FilterConditionResult } from '../filter-condition/FilterConditionResult';
+import { FilterConditionResult } from './filter-condition/FilterConditionResult';
 import { FilterRuleResult } from './FilterRuleResult';
 
 export class FilterMetadataRuleResult extends FilterRuleResult {
