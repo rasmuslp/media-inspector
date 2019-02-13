@@ -1,5 +1,5 @@
 import { FilterConditionResult } from '../filter-condition/FilterConditionResult';
-import {FilterRuleResult} from './FilterRuleResult';
+import { FilterRuleResult } from './FilterRuleResult';
 
 export class FilterMetadataRuleResult extends FilterRuleResult {
 	_filterConditionResults: FilterConditionResult[];

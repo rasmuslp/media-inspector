@@ -2,10 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 
-import {Directory, SerializedDirectoryData} from './Directory';
-import {FileFactory} from './FileFactory';
-import {FsNode, SerializedFsNodeData} from './FsNode';
-import {Serialized} from './Serialized';
+import { Directory, SerializedDirectoryData } from './Directory';
+import { FileFactory } from './FileFactory';
+import { FsNode, SerializedFsNodeData } from './FsNode';
+import { Serialized } from './Serialized';
 
 const statAsync = promisify(fs.stat);
 const readdirAsync = promisify(fs.readdir);
@@ -48,11 +48,11 @@ export class DirectoryFactory {
 	}
 
 	static getTreeFromSerialized(data: Serialized): FsNode {
-		return DirectoryFactory._getFsNodeFromSerialized(data)
+		return DirectoryFactory._getFsNodeFromSerialized(data);
 	}
 
 	static _getFsNodeFromSerialized(data: Serialized): FsNode {
-		switch(data.instance) {
+		switch (data.instance) {
 			case 'Directory': {
 				return DirectoryFactory.createFromSerialized(data);
 			}

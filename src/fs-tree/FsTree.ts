@@ -4,14 +4,13 @@ import { promisify } from 'util';
 import { FsNode } from './FsNode';
 import { Directory } from './Directory';
 
-import {DirectoryFactory} from './DirectoryFactory';
-import {MediaFile} from './MediaFile';
+import { DirectoryFactory } from './DirectoryFactory';
+import { MediaFile } from './MediaFile';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
 export class FsTree {
-
 	static async readFromFileSystem(nodePath: string): Promise<FsNode> {
 		const node = await DirectoryFactory.getTreeFromFileSystem(nodePath);
 
@@ -84,7 +83,7 @@ export class FsTree {
 	static async getSize(node: FsNode) {
 		let sizes = [];
 
-		await FsTree.traverse(node,node => sizes.push(node.size));
+		await FsTree.traverse(node, node => sizes.push(node.size));
 
 		return sizes.reduce((sum, cur) => sum + cur, 0);
 	}

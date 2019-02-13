@@ -2,7 +2,7 @@
 
 import yargs from 'yargs';
 
-import * as lib from'./lib';
+import * as lib from './lib';
 
 const argv = yargs
 	.wrap(yargs.terminalWidth() || 0)
@@ -51,7 +51,8 @@ async function run() {
 			includeRecommended: argv.includeRecommended as boolean,
 			verbose: argv.verbose as boolean
 		});
-	} catch (e) {
+	}
+	catch (e) {
 		console.log(`Error occured!`, e);
 	}
 }

@@ -1,10 +1,6 @@
 import { Metadata } from './Metadata';
 
 export class MediainfoMetadata extends Metadata {
-	constructor(mediainfo) {
-		super(mediainfo);
-	}
-
 	_getTrack(trackType) {
 		for (const track of this._metadata.media.track) {
 			if (trackType.toLocaleLowerCase() === track._type.toLocaleLowerCase()) {

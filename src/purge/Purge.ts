@@ -1,4 +1,4 @@
-import { FsNode} from '../fs-tree/FsNode';
+import { FsNode } from '../fs-tree/FsNode';
 
 export abstract class Purge {
 	_message: string;

@@ -4,10 +4,10 @@ import util from 'util';
 import JSON5 from 'json5';
 
 import { FilterConditionFactory } from './filter-condition/FilterConditionFactory';
+import { FilterRule, FilterRuleData } from './filter-rule/FilterRule';
+import { FilterRuleFactory } from './filter-rule/FilterRuleFactory';
 
 const readFileAsync = util.promisify(fs.readFile);
-import {FilterRule, FilterRuleData} from './filter-rule/FilterRule';
-import {FilterRuleFactory} from './filter-rule/FilterRuleFactory';
 
 export class FilterFactory {
 	static getFromSerialized(data): FilterRule[] {

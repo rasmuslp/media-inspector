@@ -1,8 +1,8 @@
-import {FilterRuleResult} from './FilterRuleResult';
+import { FilterRuleResult } from './FilterRuleResult';
 
 export interface FilterRuleData {
 	mimeType: string;
-	type: FilterRuleType
+	type: FilterRuleType;
 }
 
 export enum FilterRuleType {

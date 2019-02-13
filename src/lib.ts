@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import {promisify} from 'util';
+import { promisify } from 'util';
 
 import chalk from 'chalk';
 
 import { FilterFactory } from './filter';
-import {FsTree, Directory, MediaFile, FsNode} from './fs-tree';
+import { FsTree, Directory, MediaFile, FsNode } from './fs-tree';
 
 import { FilterMatchPurge } from './purge/FilterMatchPurge';
 import { RecommendedPurge } from './purge/RecommendedPurge';
@@ -14,15 +14,15 @@ import { FilterMatcher } from './FilterMatcher';
 
 const readFile = promisify(fs.readFile);
 
-export interface libOptions {
-	readPath: string,
-	writePath?: string,
-	filterPath?: string,
-	includeRecommended?: boolean,
-	verbose?: boolean
+export interface LibOptions {
+	readPath: string;
+	writePath?: string;
+	filterPath?: string;
+	includeRecommended?: boolean;
+	verbose?: boolean;
 }
 
-export async function run(options: libOptions) {
+export async function run(options: LibOptions) {
 	if (FsTree.isSerializePath(options.readPath) && options.writePath) {
 		throw new Error(`Why would you read json just to write it again?! (」ﾟﾛﾟ)｣`);
 	}

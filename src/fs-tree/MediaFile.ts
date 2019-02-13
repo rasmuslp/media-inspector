@@ -1,9 +1,9 @@
-import {File, SerializedFileData} from './File';
+import { File, SerializedFileData } from './File';
 import { Metadata } from './Metadata';
-import {Serialized} from './Serialized';
+import { Serialized } from './Serialized';
 
 export interface SerializedMediaFileData extends SerializedFileData {
-	metadata: object
+	metadata: object;
 }
 
 export abstract class MediaFile extends File {

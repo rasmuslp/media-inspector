@@ -1,13 +1,13 @@
 import mime from 'mime-types';
 
-import {Serialized} from './Serialized';
-import {SerializedFileData, File} from './File';
-import {VideoFile} from './VideoFile';
-import {MediainfoMetadataFactory} from './MediainfoMetadataFactory';
-import {SerializedMediaFileData} from './MediaFile';
+import { Serialized } from './Serialized';
+import { SerializedFileData, File } from './File';
+import { VideoFile } from './VideoFile';
+import { MediainfoMetadataFactory } from './MediainfoMetadataFactory';
+import { SerializedMediaFileData } from './MediaFile';
 
 export class FileFactory {
-	static async createFileFrom(nodePath: string, stats): Promise<File> {
+	static createFileFrom(nodePath: string, stats): File {
 		const mimeType = mime.lookup(nodePath) || 'application/octet-stream';
 		const type = File.getTypeFrom(mimeType);
 
@@ -18,7 +18,7 @@ export class FileFactory {
 
 		return new File(nodePath, stats, mimeType);
 	}
-	
+
 	static createFromSerialized(serialized: Serialized): File {
 		switch (serialized.instance) {
 			case 'File': {

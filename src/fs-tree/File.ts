@@ -1,8 +1,8 @@
-import {SerializedFsNodeData, FsNode, FsNodeType} from './FsNode';
+import { SerializedFsNodeData, FsNode, FsNodeType } from './FsNode';
 import { Serialized } from './Serialized';
 
 export interface SerializedFileData extends SerializedFsNodeData {
-	mimeType: string
+	mimeType: string;
 }
 
 export class File extends FsNode {

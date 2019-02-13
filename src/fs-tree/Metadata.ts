@@ -2,7 +2,7 @@ import { Serializable } from './Serializable';
 import { Serialized } from './Serialized';
 
 export interface MetadataData {
-	metadata: any
+	metadata: any;
 }
 
 export abstract class Metadata implements Serializable {
@@ -18,7 +18,7 @@ export abstract class Metadata implements Serializable {
 		return {
 			instance: this.constructor.name,
 			data: this.serializeData()
-		}
+		};
 	}
 
 	serializeData(): MetadataData {

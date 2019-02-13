@@ -52,4 +52,3 @@ export abstract class FsNode extends Serializable {
 		};
 	}
 }
-

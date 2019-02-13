@@ -4,7 +4,7 @@ import util from 'util';
 import * as mediainfoParser from 'mediainfo-parser';
 
 import { MediainfoMetadata } from './MediainfoMetadata';
-import {MetadataData} from './Metadata';
+import { MetadataData } from './Metadata';
 
 const exec = util.promisify(childProcess.exec);
 const parse = util.promisify(mediainfoParser.parse);

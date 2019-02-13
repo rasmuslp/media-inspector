@@ -3,7 +3,7 @@ import { FsNode } from './FsNode';
 import { Directory } from './Directory';
 import { File } from './File';
 import { MediaFile } from './MediaFile';
-import { VideoFile} from './VideoFile';
+import { VideoFile } from './VideoFile';
 
 export {
 	FsTree,

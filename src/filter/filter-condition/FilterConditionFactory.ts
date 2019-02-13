@@ -9,8 +9,8 @@ import { FilterConditionNe } from './FilterConditionNe';
 
 export interface FilterConditionData {
 	path: string;
-	operator: string // TODO: enum
-	value: any | any[]
+	operator: string; // TODO: enum
+	value: any | any[];
 }
 
 export class FilterConditionFactory {

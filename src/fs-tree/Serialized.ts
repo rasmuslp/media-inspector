@@ -1,4 +1,4 @@
 export interface Serialized<SerializedData = object> {
-	instance: string,
-	data: SerializedData
+	instance: string;
+	data: SerializedData;
 }

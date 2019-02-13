@@ -5,7 +5,7 @@ export class FilterMatcher {
 	static async getPurges(node: FsNode, filterRules) {
 		// Build list of purges
 		const purges = [];
-		await FsTree.traverse(node, async node => {
+		await FsTree.traverse(node, node => {
 			// Check all rules
 			const filterRuleResults = [];
 			for (const filterRule of filterRules) {

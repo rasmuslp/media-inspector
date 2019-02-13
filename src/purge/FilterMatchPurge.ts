@@ -1,8 +1,8 @@
-import chalk from 'chalk'
+import chalk from 'chalk';
 
 import { Purge } from './Purge';
 import { FilterMetadataRuleResult } from '../filter/filter-rule/FilterMetadataRuleResult';
-import {FsNode} from '../fs-tree';
+import { FsNode } from '../fs-tree';
 
 export class FilterMatchPurge extends Purge {
 	_filterResults: FilterMetadataRuleResult[];

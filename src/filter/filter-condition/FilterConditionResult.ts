@@ -1,4 +1,4 @@
-import {FilterCondition} from "./FilterCondition";
+import { FilterCondition } from './FilterCondition';
 
 export class FilterConditionResult {
 	_filterCondition: FilterCondition;

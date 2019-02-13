@@ -6,7 +6,7 @@
   "scripts": {
     "predo-deps": "rm -rf node_modules/ package-lock.json",
     "do-deps": "npm install",
-    "lint": "eslint .",
+    "lint": "eslint --ext .js,.ts .",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "type-check": "tsc",
