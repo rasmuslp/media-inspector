@@ -1,17 +1,25 @@
+import fs from 'fs';
+import util from 'util';
+
 import { Condition } from './filter-rule/condition/Condition';
 import { FilterFactory } from './FilterFactory';
+import { Rule } from './filter-rule/Rule';
 
-const filterPath = 'test-assets/filter-simple.json5';
+const readFileAsync = util.promisify(fs.readFile);
 
 describe('FilterFactory', () => {
-	test(`can getFromFile '${filterPath}'`, async () => {
-		// Load filters
-		const loadedFilters = await FilterFactory.getFromFile(filterPath);
+	const filterPath = 'test-assets/filter-simple.json5';
 
-		// Test content of transformed filters
-		expect(loadedFilters).toHaveProperty('video');
-		for (const filter of loadedFilters.video) {
-			for (const condition of filter) {
+	test(`can getFromSerialized '${filterPath}'`, async () => {
+		const data = await readFileAsync(filterPath, 'utf8');
+
+		const rules = await FilterFactory.getFromSerialized(data);
+
+		// Test content of loaded rules
+		expect(Array.isArray(rules)).toBe(true);
+		for (const rule of rules) {
+			expect(rule).toBeInstanceOf(Rule);
+			for (const condition of rule._conditions) {
 				expect(condition).toBeInstanceOf(Condition);
 			}
 		}

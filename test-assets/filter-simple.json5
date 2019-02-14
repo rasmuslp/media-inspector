@@ -1,6 +1,7 @@
-{
-	"video": [
-		[
+[
+	{
+		mimeType: 'video',
+		conditions: [
 			{
 				"path": "video.format",
 				"operator": "=",
@@ -12,5 +13,5 @@
 				"value": "25"
 			}
 		]
-	]
-}
+	}
+]
