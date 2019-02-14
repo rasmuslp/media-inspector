@@ -1,5 +1,5 @@
 {
-  "name": "media-purger",
+  "name": "media-inspector",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rasmuslp/media-purger.git"
+    "url": "git+https://github.com/rasmuslp/media-inspector.git"
   },
   "author": {
     "name": "Rasmus Ljungmann Pedersen",
@@ -23,9 +23,9 @@
   },
   "license": "",
   "bugs": {
-    "url": "https://github.com/rasmuslp/media-purger/issues"
+    "url": "https://github.com/rasmuslp/media-inspector/issues"
   },
-  "homepage": "https://github.com/rasmuslp/media-purger#readme",
+  "homepage": "https://github.com/rasmuslp/media-inspector#readme",
   "dependencies": {
     "chalk": "^2.4.1",
     "debug": "^4.1.0",
