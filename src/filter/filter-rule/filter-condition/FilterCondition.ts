@@ -1,4 +1,4 @@
-import { FilterConditionResult } from './FilterConditionResult';
+import { FilterConditionResult } from './filter-condition-result/FilterConditionResult';
 
 export abstract class FilterCondition {
 	_path: string;

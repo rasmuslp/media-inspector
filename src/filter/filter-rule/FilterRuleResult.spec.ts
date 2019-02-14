@@ -2,11 +2,11 @@ import { FilterConditionFactory } from './filter-condition/FilterConditionFactor
 
 import { FilterRuleResult } from './FilterRuleResult';
 
-describe('#passed', () => {
+describe('#satisfied', () => {
 	let failed1;
 	let failed2;
-	let passed1;
-	let passed2;
+	let satisfied1;
+	let satisfied2;
 	beforeEach(() => {
 		const filterCondition = FilterConditionFactory.createFilterCondition({
 			path: 'dummy',
@@ -15,27 +15,27 @@ describe('#passed', () => {
 		});
 		failed1 = filterCondition.check('nono');
 		failed2 = filterCondition.check('nono');
-		passed1 = filterCondition.check('yesyes');
-		passed2 = filterCondition.check('yesyes');
+		satisfied1 = filterCondition.check('yesyes');
+		satisfied2 = filterCondition.check('yesyes');
 	});
 
 	test('passes on empty input', () => {
 		const result = new FilterRuleResult();
-		expect(result.passed).toBe(true);
+		expect(result.satisfied).toBe(true);
 	});
 
-	test('passes if all conditions passed', () => {
-		const result = new FilterRuleResult([passed1, passed2]);
-		expect(result.passed).toBe(true);
+	test('passes if all conditions are satisfied', () => {
+		const result = new FilterRuleResult([satisfied1, satisfied2]);
+		expect(result.satisfied).toBe(true);
 	});
 
 	test('fails if any condition failed', () => {
-		const result = new FilterRuleResult([failed1, failed2, passed1, passed2]);
-		expect(result.passed).toBe(false);
+		const result = new FilterRuleResult([failed1, failed2, satisfied1, satisfied2]);
+		expect(result.satisfied).toBe(false);
 	});
 });
 
-describe('one failed on passed', () => {
+describe('one failed on satisfied', () => {
 	let results;
 	beforeEach(() => {
 		const conditions = [
@@ -62,8 +62,8 @@ describe('one failed on passed', () => {
 
 		// NB: Is it bad practice to check the test input here?
 		// Check input
-		expect(results[0].passed).toBe(true);
-		expect(results[1].passed).toBe(false);
+		expect(results[0].satisfied).toBe(true);
+		expect(results[1].satisfied).toBe(false);
 	});
 
 	test('#getResultsAsStrings', () => {
@@ -72,7 +72,7 @@ describe('one failed on passed', () => {
 
 		// Test
 		expect(resultAsStrings).toHaveLength(2);
-		expect(resultAsStrings[0]).toMatch(/passed/);
+		expect(resultAsStrings[0]).toMatch(/satisfied/);
 		expect(resultAsStrings[1]).toMatch(/failed/);
 	});
 

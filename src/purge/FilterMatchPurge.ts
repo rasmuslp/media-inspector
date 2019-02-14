@@ -22,9 +22,10 @@ export class FilterMatchPurge extends Purge {
 		const filterMessages = [];
 		const sorted = [...this._filterResults].sort((a, b) => a.getWeightedScore() - b.getWeightedScore()).reverse();
 		for (const filterResult of sorted) {
-			let filterMessage = `${filterResult.passed ? 'PASSED' : 'FAILED'}: ${filterResult.getResultsAsStrings().join(', ')}`;
+			let filterMessage = `${filterResult.satisfied ? 'MATCHED' : 'failed'}: ${filterResult.getResultsAsStrings().join(', ')}`;
 			if (colorized) {
-				filterMessage = filterMessage.replace(/passed/gi, match => chalk.green(match));
+				filterMessage = filterMessage.replace(/matched/gi, match => chalk.green(match));
+				filterMessage = filterMessage.replace(/satisfied/gi, match => chalk.green(match));
 				filterMessage = filterMessage.replace(/failed/gi, match => chalk.red(match));
 			}
 
@@ -35,6 +36,6 @@ export class FilterMatchPurge extends Purge {
 	}
 
 	getPurgeReason({ colorized = false } = {}) {
-		return `[Filter Not Satisfied]:\n${this.getResultsAsString({ colorized }).map(message => '\t\t' + message).join('\n')}`;
+		return `[Filter Matched]:\n${this.getResultsAsString({ colorized }).map(message => '\t\t' + message).join('\n')}`;
 	}
 }

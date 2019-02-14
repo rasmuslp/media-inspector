@@ -1,5 +1,6 @@
-import { FilterConditionResult } from './FilterConditionResult';
 import { FilterCondition } from './FilterCondition';
+import { FilterConditionSatisfied } from './filter-condition-result/FilterConditionSatisfied';
+import { FilterConditionFailed } from './filter-condition-result/FilterConditionFailed';
 
 export class FilterConditionBetween extends FilterCondition {
 	constructor(path: string, value) {
@@ -16,10 +17,10 @@ export class FilterConditionBetween extends FilterCondition {
 
 		// Check condition
 		if (this.expectedValue[0] <= value && value <= this.expectedValue[1]) {
-			return new FilterConditionResult(this, value, true);
+			return new FilterConditionSatisfied(this, value);
 		}
 
-		return new FilterConditionResult(this, value, false);
+		return new FilterConditionFailed(this, value);
 	}
 
 	toString() {

@@ -1,5 +1,6 @@
-import { FilterConditionResult } from './FilterConditionResult';
 import { FilterCondition } from './FilterCondition';
+import { FilterConditionSatisfied } from './filter-condition-result/FilterConditionSatisfied';
+import { FilterConditionFailed } from './filter-condition-result/FilterConditionFailed';
 
 export class FilterConditionIn extends FilterCondition {
 	constructor(path: string, value) {
@@ -17,10 +18,10 @@ export class FilterConditionIn extends FilterCondition {
 		// Supports both string and number comparison
 		const match = this.expectedValue.find(expected => FilterConditionIn.convertValue(expected) === value);
 		if (match) {
-			return new FilterConditionResult(this, value, true);
+			return new FilterConditionSatisfied(this, value);
 		}
 
-		return new FilterConditionResult(this, value, false);
+		return new FilterConditionFailed(this, value);
 	}
 
 	toString() {

@@ -1,4 +1,4 @@
-import { FilterConditionResult } from './filter-condition/FilterConditionResult';
+import { FilterConditionResult } from './filter-condition/filter-condition-result/FilterConditionResult';
 
 export class FilterRuleResult {
 	_filterConditionResults: FilterConditionResult[];
@@ -7,14 +7,13 @@ export class FilterRuleResult {
 		this._filterConditionResults = filterConditionResults;
 	}
 
-	get passed() {
-		// Check if _any_ failed
-		const anyFailed = this._filterConditionResults.find(result => !result.passed);
-		if (anyFailed) {
+	get satisfied(): boolean {
+		// Check if _any_ condition was not satisfied failed
+		const anyNotSatisfied = this._filterConditionResults.find(result => !result.satisfied);
+		if (anyNotSatisfied) {
 			return false;
 		}
 
-		// Otherwise must have succeeded
 		return true;
 	}
 
@@ -27,10 +26,10 @@ export class FilterRuleResult {
 		return messages;
 	}
 
-	// Ratio of passes/results
+	// Ratio of: # satisfied / # conditions
 	getScore() {
-		const passed = this._filterConditionResults.filter(result => result.passed);
-		const score = passed.length / this._filterConditionResults.length;
+		const satisfiedConditions = this._filterConditionResults.filter(result => result.satisfied);
+		const score = satisfiedConditions.length / this._filterConditionResults.length;
 
 		return score;
 	}
@@ -40,7 +39,7 @@ export class FilterRuleResult {
 		let score = 0;
 		for (let i = 0; i < this._filterConditionResults.length; i++) {
 			const result = this._filterConditionResults[i];
-			if (result.passed) {
+			if (result.satisfied) {
 				const weigth = this._filterConditionResults.length - i;
 				const partialScore = Math.pow(weigth, 2);
 				score += partialScore;

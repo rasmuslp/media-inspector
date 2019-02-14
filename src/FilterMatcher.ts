@@ -1,5 +1,6 @@
 import { FsTree, FsNode, File, MediaFile } from './fs-tree';
 import { FilterMatchPurge } from './purge/FilterMatchPurge';
+import { FilterRuleResult } from './filter/filter-rule/FilterRuleResult';
 
 export class FilterMatcher {
 	static async getPurges(node: FsNode, filterRules) {
@@ -7,7 +8,7 @@ export class FilterMatcher {
 		const purges = [];
 		await FsTree.traverse(node, node => {
 			// Check all rules
-			const filterRuleResults = [];
+			const filterRuleResults: FilterRuleResult[] = [];
 			for (const filterRule of filterRules) {
 				if (node instanceof File && node.mimeType.startsWith(filterRule.mimeType)) {
 					if (node instanceof MediaFile) {
@@ -18,8 +19,8 @@ export class FilterMatcher {
 			}
 
 			// See if any matched all it's conditions
-			const anyPassed = filterRuleResults.find(result => result.passed);
-			if (anyPassed) {
+			const anyMatch = filterRuleResults.find(result => result.satisfied);
+			if (anyMatch) {
 				purges.push(new FilterMatchPurge(`Filters matched with::`, node, filterRuleResults));
 			}
 		});
