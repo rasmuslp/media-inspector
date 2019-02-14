@@ -1,8 +1,8 @@
-import { FilterCondition } from './FilterCondition';
-import { FilterConditionSatisfied } from './filter-condition-result/FilterConditionSatisfied';
-import { FilterConditionFailed } from './filter-condition-result/FilterConditionFailed';
+import { Condition } from './Condition';
+import { ConditionSatisfied } from './condition-result/ConditionSatisfied';
+import { ConditionFailed } from './condition-result/ConditionFailed';
 
-export class FilterConditionBetween extends FilterCondition {
+export class ConditionBetween extends Condition {
 	constructor(path: string, value) {
 		super(path, value);
 
@@ -13,14 +13,14 @@ export class FilterConditionBetween extends FilterCondition {
 
 	check(inputValue) {
 		// Convert the input
-		const value = FilterConditionBetween.convertValue(inputValue);
+		const value = ConditionBetween.convertValue(inputValue);
 
 		// Check condition
 		if (this.expectedValue[0] <= value && value <= this.expectedValue[1]) {
-			return new FilterConditionSatisfied(this, value);
+			return new ConditionSatisfied(this, value);
 		}
 
-		return new FilterConditionFailed(this, value);
+		return new ConditionFailed(this, value);
 	}
 
 	toString() {

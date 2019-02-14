@@ -1,6 +1,6 @@
-import { FilterConditionResult } from './filter-condition-result/FilterConditionResult';
+import { ConditionResult } from './condition-result/ConditionResult';
 
-export abstract class FilterCondition {
+export abstract class Condition {
 	_path: string;
 	_value;
 
@@ -10,7 +10,7 @@ export abstract class FilterCondition {
 	}
 
 	get expectedValue() {
-		return FilterCondition.convertValue(this._value);
+		return Condition.convertValue(this._value);
 	}
 
 	get path() {
@@ -27,7 +27,7 @@ export abstract class FilterCondition {
 		return `${inputValue} ${this.toString()}`;
 	}
 
-	abstract check(inputValue): FilterConditionResult;
+	abstract check(inputValue): ConditionResult;
 
 	static convertValue(inputValue) {
 		if (!isNaN(Number(inputValue.toString()))) {

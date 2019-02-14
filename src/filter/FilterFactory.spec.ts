@@ -1,4 +1,4 @@
-import { FilterCondition } from './filter-rule/filter-condition/FilterCondition';
+import { Condition } from './filter-rule/condition/Condition';
 import { FilterFactory } from './FilterFactory';
 
 const filterPath = 'test-assets/filter-simple.json5';
@@ -12,7 +12,7 @@ describe('FilterFactory', () => {
 		expect(loadedFilters).toHaveProperty('video');
 		for (const filter of loadedFilters.video) {
 			for (const condition of filter) {
-				expect(condition).toBeInstanceOf(FilterCondition);
+				expect(condition).toBeInstanceOf(Condition);
 			}
 		}
 	});

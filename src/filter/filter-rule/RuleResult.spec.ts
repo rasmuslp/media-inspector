@@ -1,6 +1,6 @@
-import { FilterConditionFactory } from './filter-condition/FilterConditionFactory';
+import { ConditionFactory } from './condition/ConditionFactory';
 
-import { FilterRuleResult } from './FilterRuleResult';
+import { RuleResult } from './RuleResult';
 
 describe('#satisfied', () => {
 	let failed1;
@@ -8,29 +8,29 @@ describe('#satisfied', () => {
 	let satisfied1;
 	let satisfied2;
 	beforeEach(() => {
-		const filterCondition = FilterConditionFactory.createFilterCondition({
+		const condition = ConditionFactory.createCondition({
 			path: 'dummy',
 			operator: '=',
 			value: 'yesyes'
 		});
-		failed1 = filterCondition.check('nono');
-		failed2 = filterCondition.check('nono');
-		satisfied1 = filterCondition.check('yesyes');
-		satisfied2 = filterCondition.check('yesyes');
+		failed1 = condition.check('nono');
+		failed2 = condition.check('nono');
+		satisfied1 = condition.check('yesyes');
+		satisfied2 = condition.check('yesyes');
 	});
 
 	test('passes on empty input', () => {
-		const result = new FilterRuleResult();
+		const result = new RuleResult();
 		expect(result.satisfied).toBe(true);
 	});
 
 	test('passes if all conditions are satisfied', () => {
-		const result = new FilterRuleResult([satisfied1, satisfied2]);
+		const result = new RuleResult([satisfied1, satisfied2]);
 		expect(result.satisfied).toBe(true);
 	});
 
 	test('fails if any condition failed', () => {
-		const result = new FilterRuleResult([failed1, failed2, satisfied1, satisfied2]);
+		const result = new RuleResult([failed1, failed2, satisfied1, satisfied2]);
 		expect(result.satisfied).toBe(false);
 	});
 });
@@ -39,13 +39,13 @@ describe('one failed on satisfied', () => {
 	let results;
 	beforeEach(() => {
 		const conditions = [
-			FilterConditionFactory.createFilterCondition({
+			ConditionFactory.createCondition({
 				path: 'video.framerate',
 				operator: '>=',
 				value: 25
 			}),
 
-			FilterConditionFactory.createFilterCondition({
+			ConditionFactory.createCondition({
 				path: 'audio.channels',
 				operator: '>=',
 				value: 2
@@ -67,8 +67,8 @@ describe('one failed on satisfied', () => {
 	});
 
 	test('#getResultsAsStrings', () => {
-		const filterResult = new FilterRuleResult(results);
-		const resultAsStrings = filterResult.getResultsAsStrings();
+		const ruleResult = new RuleResult(results);
+		const resultAsStrings = ruleResult.getResultsAsStrings();
 
 		// Test
 		expect(resultAsStrings).toHaveLength(2);
@@ -77,8 +77,8 @@ describe('one failed on satisfied', () => {
 	});
 
 	test('#getWeightedScore', () => {
-		const filterResult = new FilterRuleResult(results);
-		const score = filterResult.getWeightedScore();
+		const ruleResult = new RuleResult(results);
+		const score = ruleResult.getWeightedScore();
 		expect(score).toBe(4);
 	});
 });

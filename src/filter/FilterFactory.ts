@@ -3,29 +3,29 @@ import util from 'util';
 
 import JSON5 from 'json5';
 
-import { FilterConditionFactory } from './filter-rule/filter-condition/FilterConditionFactory';
-import { FilterRule, FilterRuleData } from './filter-rule/FilterRule';
-import { FilterRuleFactory } from './filter-rule/FilterRuleFactory';
+import { ConditionFactory } from './filter-rule/condition/ConditionFactory';
+import { Rule, RuleData } from './filter-rule/Rule';
+import { RuleFactory } from './filter-rule/RuleFactory';
 
 const readFileAsync = util.promisify(fs.readFile);
 
 export class FilterFactory {
-	static getFromSerialized(data): FilterRule[] {
-		const filterRuleDatas = FilterFactory._parse(data);
-		const filterRules = [];
-		for (const filterRuleData of filterRuleDatas) {
-			const filterRule = FilterRuleFactory.getFromSerialized(filterRuleData);
-			if (filterRule) {
-				filterRules.push(filterRule);
+	static getFromSerialized(data): Rule[] {
+		const ruleDatas = FilterFactory._parse(data);
+		const rules = [];
+		for (const ruleData of ruleDatas) {
+			const rule = RuleFactory.getFromSerialized(ruleData);
+			if (rule) {
+				rules.push(rule);
 			}
 		}
 
-		return filterRules;
+		return rules;
 	}
 
-	static _parse(data): FilterRuleData[] {
+	static _parse(data): RuleData[] {
 		try {
-			const parsed = JSON5.parse(data) as FilterRuleData[];
+			const parsed = JSON5.parse(data) as RuleData[];
 			return parsed;
 		}
 		catch (e) {
@@ -50,7 +50,7 @@ export class FilterFactory {
 	static async getFromFile(filterPath) {
 		const filterByType = await FilterFactory._readFromFile(filterPath);
 
-		// Transform loaded filter into FilterConditions
+		// Transform loaded filter into Conditions
 		// For each type
 		for (const type in filterByType) {
 			// Transform all the filters
@@ -60,11 +60,11 @@ export class FilterFactory {
 				const transformedConditions = [];
 				for (const condition of filter) {
 					try {
-						transformedConditions.push(FilterConditionFactory.getFilterCondition(condition));
+						transformedConditions.push(ConditionFactory.getCondition(condition));
 					}
 					catch (e) {
 						const filterNumber = transformedConditions.length + 1;
-						throw new Error(`Could not construct FilterCondition for '[${type}]#${filterNumber}': ${e.message}`);
+						throw new Error(`Could not construct Condition for '[${type}]#${filterNumber}': ${e.message}`);
 					}
 				}
 
