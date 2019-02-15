@@ -1,9 +1,10 @@
 import { FsTree, FsNode, File, MediaFile } from './fs-tree';
 import { FilterMatchPurge } from './purge/FilterMatchPurge';
 import { RuleResult } from './filter/rule/RuleResult';
+import { Purge } from './purge/Purge';
 
 export class FilterMatcher {
-	static async getPurges(node: FsNode, filterRules) {
+	static async getPurges(node: FsNode, filterRules): Promise<Purge[]> {
 		// Build list of purges
 		const purges = [];
 		await FsTree.traverse(node, node => {

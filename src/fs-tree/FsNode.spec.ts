@@ -4,7 +4,7 @@ import { FsNode } from './FsNode';
 
 class FsNodeImpl extends FsNode {
 	// @ts-ignore TODO Handle better
-	serialize() {}
+	serialize(): void {}
 }
 
 describe('FsNode', () => {

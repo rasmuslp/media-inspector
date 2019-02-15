@@ -1,7 +1,7 @@
 import { Metadata } from './Metadata';
 
 export class MediainfoMetadata extends Metadata {
-	_getTrack(trackType) {
+	_getTrack(trackType): object {
 		for (const track of this._metadata.media.track) {
 			if (trackType.toLocaleLowerCase() === track._type.toLocaleLowerCase()) {
 				return track;
@@ -11,7 +11,7 @@ export class MediainfoMetadata extends Metadata {
 		throw new Error(`Track type '${trackType}' not found`);
 	}
 
-	static _getOrDie(track, property, errorMessage) {
+	static _getOrDie(track, property, errorMessage): string {
 		// See if the property is there
 		if (property in track) {
 			return track[property];
@@ -21,7 +21,7 @@ export class MediainfoMetadata extends Metadata {
 		throw new Error(errorMessage);
 	}
 
-	get(path) {
+	get(path): string {
 		const [trackType, property] = path.split('.');
 		const track = this._getTrack(trackType);
 
@@ -30,6 +30,7 @@ export class MediainfoMetadata extends Metadata {
 			case 'general': {
 				switch (property) {
 					case 'bitrate':
+						// @ts-ignore
 						return track.overallbitrate;
 
 					default:

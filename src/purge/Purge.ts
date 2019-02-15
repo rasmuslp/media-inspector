@@ -9,11 +9,11 @@ export abstract class Purge {
 		this._fsNode = fsNode;
 	}
 
-	get fsNode() {
+	get fsNode(): FsNode {
 		return this._fsNode;
 	}
 
-	get score() {
+	get score(): number {
 		return 0;
 	}
 

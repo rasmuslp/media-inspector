@@ -15,11 +15,11 @@ export class File extends FsNode {
 		this._mimeType = mimeType;
 	}
 
-	get mimeType() {
+	get mimeType(): string {
 		return this._mimeType;
 	}
 
-	get type() {
+	get type(): string {
 		return File.getTypeFrom(this._mimeType);
 	}
 

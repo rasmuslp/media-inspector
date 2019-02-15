@@ -42,7 +42,7 @@ const argv = yargs
 	})
 	.argv;
 
-async function run() {
+async function run(): Promise<void> {
 	try {
 		await lib.run({
 			readPath: argv.readPath as string,

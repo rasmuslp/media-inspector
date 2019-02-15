@@ -17,7 +17,7 @@ export class RuleResult {
 		return true;
 	}
 
-	getResultsAsStrings() {
+	getResultsAsStrings(): string[] {
 		let messages = [];
 		for (const result of this._conditionResults) {
 			messages.push(result.toString());
@@ -27,7 +27,7 @@ export class RuleResult {
 	}
 
 	// Ratio of: # satisfied / # conditions
-	getScore() {
+	getScore(): number {
 		const satisfiedConditions = this._conditionResults.filter(result => result.satisfied);
 		const score = satisfiedConditions.length / this._conditionResults.length;
 
@@ -35,7 +35,7 @@ export class RuleResult {
 	}
 
 	// Weighted ratio of passes/results
-	getWeightedScore() {
+	getWeightedScore(): number {
 		let score = 0;
 		for (let i = 0; i < this._conditionResults.length; i++) {
 			const result = this._conditionResults[i];

@@ -30,8 +30,8 @@ export class DirectoryFactory {
 		}
 
 		if (stats.isDirectory()) {
-			const directory = await DirectoryFactory.createDirectoryFromFileSystem(nodePath, stats);
-			return directory;
+			const directory: unknown = await DirectoryFactory.createDirectoryFromFileSystem(nodePath, stats);
+			return directory as FsNode;
 		}
 
 		throw new Error(`DirectoryFactory cannot determine what this is: ${nodePath}`);
@@ -54,7 +54,8 @@ export class DirectoryFactory {
 	static _getFsNodeFromSerialized(data: Serialized): FsNode {
 		switch (data.instance) {
 			case 'Directory': {
-				return DirectoryFactory.createFromSerialized(data);
+				const directory: unknown = DirectoryFactory.createFromSerialized(data);
+				return directory as FsNode;
 			}
 
 			case 'File':

@@ -18,7 +18,6 @@
 		"no-return-await": "off", // So... Its nice to know if the function is async or not
 		"consistent-return": "off", // TODO: While refactoring factories
 		"default-case": "off", // TODO: While refactoring factories
-		"@typescript-eslint/explicit-function-return-type": "off", // TODO: For now
 		"@typescript-eslint/explicit-member-accessibility": "off", // TODO: For now
 		"@typescript-eslint/indent": ["error", "tab"]
 	}

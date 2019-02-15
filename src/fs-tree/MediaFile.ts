@@ -14,7 +14,7 @@ export abstract class MediaFile extends File {
 		this._metadata = metadata;
 	}
 
-	get metadata() {
+	get metadata(): Metadata {
 		return this._metadata;
 	}
 

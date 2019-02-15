@@ -1,6 +1,7 @@
 import { Condition } from './Condition';
 import { ConditionSatisfied } from './condition-result/ConditionSatisfied';
 import { ConditionFailed } from './condition-result/ConditionFailed';
+import { ConditionResult } from './condition-result/ConditionResult';
 
 export class ConditionBetween extends Condition {
 	constructor(path: string, value) {
@@ -11,7 +12,7 @@ export class ConditionBetween extends Condition {
 		}
 	}
 
-	check(inputValue) {
+	check(inputValue): ConditionResult {
 		// Convert the input
 		const value = ConditionBetween.convertValue(inputValue);
 
@@ -23,11 +24,11 @@ export class ConditionBetween extends Condition {
 		return new ConditionFailed(this, value);
 	}
 
-	toString() {
+	toString(): string {
 		return `${this.expectedValue[0]} <= X <= ${this.expectedValue[1]}`;
 	}
 
-	toStringForValue(inputValue) {
+	toStringForValue(inputValue): string {
 		return `${this.expectedValue[0]} <= ${inputValue} <= ${this.expectedValue[1]}`;
 	}
 }

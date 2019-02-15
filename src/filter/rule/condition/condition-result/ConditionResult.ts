@@ -11,7 +11,7 @@ export abstract class ConditionResult {
 
 	abstract get satisfied(): boolean;
 
-	toString() {
+	toString(): string {
 		const message = `${this._condition.path} ${this.satisfied ? 'satisfied' : 'failed'}: ${this._condition.toStringForValue(this._value)}`;
 
 		return message;

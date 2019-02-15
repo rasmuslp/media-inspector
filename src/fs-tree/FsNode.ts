@@ -25,23 +25,23 @@ export abstract class FsNode extends Serializable {
 		};
 	}
 
-	get path() {
+	get path(): string {
 		return this._path;
 	}
 
-	get children() {
+	get children(): FsNode[] {
 		return [];
 	}
 
-	get size() {
+	get size(): number {
 		return this._stats.size;
 	}
 
-	isDirectory() {
+	isDirectory(): boolean {
 		return this._fsNodeType === FsNodeType.DIRECTORY;
 	}
 
-	isFile() {
+	isFile(): boolean {
 		return this._fsNodeType === FsNodeType.FILE;
 	}
 

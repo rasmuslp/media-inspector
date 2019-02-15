@@ -13,11 +13,11 @@ export class FilterMatchPurge extends Purge {
 		this._filterResults = filterResults;
 	}
 
-	get score() {
+	get score(): number {
 		return 1;
 	}
 
-	getResultsAsString({ colorized = false } = {}) {
+	getResultsAsStrings({ colorized = false } = {}): string[] {
 		// Filter to remove any 'passed' entries, as they are stored as null
 		const filterMessages = [];
 		const sorted = [...this._filterResults].sort((a, b) => a.getWeightedScore() - b.getWeightedScore()).reverse();
@@ -35,7 +35,7 @@ export class FilterMatchPurge extends Purge {
 		return filterMessages;
 	}
 
-	getPurgeReason({ colorized = false } = {}) {
-		return `[Filter Matched]:\n${this.getResultsAsString({ colorized }).map(message => '\t\t' + message).join('\n')}`;
+	getPurgeReason({ colorized = false } = {}): string {
+		return `[Filter Matched]:\n${this.getResultsAsStrings({ colorized }).map(message => '\t\t' + message).join('\n')}`;
 	}
 }

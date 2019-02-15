@@ -13,6 +13,7 @@ import { FilterMatchPurge } from './purge/FilterMatchPurge';
 import { RecommendedPurge } from './purge/RecommendedPurge';
 
 import { FilterMatcher } from './FilterMatcher';
+import { Purge } from './purge/Purge';
 
 const readFile = promisify(fs.readFile);
 
@@ -24,7 +25,7 @@ export interface LibOptions {
 	verbose?: boolean;
 }
 
-export async function run(options: LibOptions) {
+export async function run(options: LibOptions): Promise<void> {
 	if (FsTree.isSerializePath(options.readPath) && options.writePath) {
 		throw new Error(`Why would you read json just to write it again?! (」ﾟﾛﾟ)｣`);
 	}
@@ -140,7 +141,7 @@ export async function run(options: LibOptions) {
 	}
 }
 
-async function filter(node: FsNode, filterPath: string, verbose: boolean = false) {
+async function filter(node: FsNode, filterPath: string, verbose: boolean = false): Promise<Purge[]> {
 	const absoluteFilterPath = path.resolve(process.cwd(), filterPath);
 
 	if (verbose) {
@@ -166,7 +167,7 @@ async function filter(node: FsNode, filterPath: string, verbose: boolean = false
 	return purges;
 }
 
-function getLogMessageOfPurge(purge, { colorized = false } = {}) {
+function getLogMessageOfPurge(purge, { colorized = false } = {}): string {
 	let message = `${colorized ? chalk.yellow(purge.fsNode.path) : purge.fsNode.path}\n\t`;
 
 	if (purge.fsNode.isDirectory()) {

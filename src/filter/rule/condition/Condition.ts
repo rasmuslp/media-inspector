@@ -1,5 +1,7 @@
 import { ConditionResult } from './condition-result/ConditionResult';
 
+export type ConditionValueType = number|string|number[]|string[];
+
 export abstract class Condition {
 	_path: string;
 	_value;
@@ -9,27 +11,27 @@ export abstract class Condition {
 		this._value = value;
 	}
 
-	get expectedValue() {
+	get expectedValue(): ConditionValueType {
 		return Condition.convertValue(this._value);
 	}
 
-	get path() {
+	get path(): string {
 		return this._path;
 	}
 
-	get pathParts() {
+	get pathParts(): string[] {
 		return this.path.split('.');
 	}
 
 	abstract toString()
 
-	toStringForValue(inputValue) {
+	toStringForValue(inputValue): string {
 		return `${inputValue} ${this.toString()}`;
 	}
 
 	abstract check(inputValue): ConditionResult;
 
-	static convertValue(value: any) {
+	static convertValue(value): ConditionValueType {
 		if (Array.isArray(value)) {
 			// @ts-ignore
 			const numbers = value.filter(v => !isNaN(Number(v.toString())));

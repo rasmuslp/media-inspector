@@ -2,6 +2,7 @@ import crypto from 'crypto';
 
 import { ConditionOperator } from './ConditionOperator';
 
+import { Condition } from './Condition';
 import { ConditionBetween } from './ConditionBetween';
 import { ConditionEqual } from './ConditionEqual';
 import { ConditionGreaterThanOrEqual } from './ConditionGreaterThanOrEqual';
@@ -18,7 +19,7 @@ export interface ConditionData {
 export class ConditionFactory {
 	static _conditions = new Map();
 
-	static createCondition(inputCondition: ConditionData) {
+	static createCondition(inputCondition: ConditionData): Condition {
 		const condition = Object.assign({}, inputCondition);
 
 		// Create and return
@@ -46,7 +47,7 @@ export class ConditionFactory {
 		}
 	}
 
-	static getCondition(conditionData: ConditionData) {
+	static getCondition(conditionData: ConditionData): Condition {
 		// Calculate hash of input
 		const hash = crypto.createHash('md5').update(JSON.stringify(conditionData)).digest('hex');
 

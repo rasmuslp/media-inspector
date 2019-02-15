@@ -30,7 +30,7 @@ export class FsTree {
 		return node;
 	}
 
-	static async write(node: FsNode, writePath: string) {
+	static async write(node: FsNode, writePath: string): Promise<void> {
 		const serialized = {
 			metadata: {
 				createdAt: Date.now()
@@ -42,15 +42,15 @@ export class FsTree {
 		return await writeFile(writePath, json, 'utf8');
 	}
 
-	static isSerializePath(serializePath: string) {
+	static isSerializePath(serializePath: string): boolean {
 		return serializePath.endsWith('.json');
 	}
 
-	static async traverse(node: FsNode, nodeFn: Function) {
+	static async traverse(node: FsNode, nodeFn: Function): Promise<void> {
 		await FsTree.traverseBfs(node, nodeFn);
 	}
 
-	static async traverseBfs(node: FsNode, nodeFn: Function) {
+	static async traverseBfs(node: FsNode, nodeFn: Function): Promise<void> {
 		const queue: [FsNode] = [node];
 		while (queue.length) {
 			// Get node
@@ -66,7 +66,7 @@ export class FsTree {
 		}
 	}
 
-	static async find(node: FsNode, matchFn: Function) {
+	static async find(node: FsNode, matchFn: Function): Promise<FsNode[]> {
 		const matches = [];
 
 		await FsTree.traverse(node, async node => {
@@ -80,7 +80,7 @@ export class FsTree {
 		return matches;
 	}
 
-	static async getSize(node: FsNode) {
+	static async getSize(node: FsNode): Promise<number> {
 		let sizes = [];
 
 		await FsTree.traverse(node, node => sizes.push(node.size));

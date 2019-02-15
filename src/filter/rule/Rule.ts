@@ -24,7 +24,7 @@ export class Rule {
 		this._conditions = conditions;
 	}
 
-	get mimeType() {
+	get mimeType(): string {
 		return this._mimeType;
 	}
 

@@ -12,7 +12,7 @@ export class RuleFactory {
 		}
 		*/
 
-		const castData = data as RuleData; // TODO BETTER
+		const castData = data;
 
 		let conditions = [];
 		if (castData.conditions) {

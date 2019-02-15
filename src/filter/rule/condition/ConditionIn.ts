@@ -1,6 +1,7 @@
 import { Condition } from './Condition';
 import { ConditionSatisfied } from './condition-result/ConditionSatisfied';
 import { ConditionFailed } from './condition-result/ConditionFailed';
+import { ConditionResult } from './condition-result/ConditionResult';
 
 export class ConditionIn extends Condition {
 	constructor(path: string, value) {
@@ -11,7 +12,11 @@ export class ConditionIn extends Condition {
 		}
 	}
 
-	check(inputValue) {
+	get expectedValue(): [] {
+		return super.expectedValue as [];
+	}
+
+	check(inputValue): ConditionResult {
 		// Convert the input
 		const value = ConditionIn.convertValue(inputValue);
 
@@ -24,7 +29,7 @@ export class ConditionIn extends Condition {
 		return new ConditionFailed(this, value);
 	}
 
-	toString() {
+	toString(): string {
 		return `in [${this.expectedValue.join(', ')}]`;
 	}
 }

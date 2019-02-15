@@ -1,9 +1,10 @@
 import { Condition } from './Condition';
 import { ConditionSatisfied } from './condition-result/ConditionSatisfied';
 import { ConditionFailed } from './condition-result/ConditionFailed';
+import { ConditionResult } from './condition-result/ConditionResult';
 
 export class ConditionEqual extends Condition {
-	check(inputValue) {
+	check(inputValue): ConditionResult {
 		// Convert the input
 		const value = ConditionEqual.convertValue(inputValue);
 
@@ -15,7 +16,7 @@ export class ConditionEqual extends Condition {
 		return new ConditionFailed(this, value);
 	}
 
-	toString() {
+	toString(): string {
 		return `= ${this.expectedValue}`;
 	}
 }

@@ -15,7 +15,7 @@ export class Directory extends FsNode {
 	}
 
 	// Children before parents
-	static getSortFnByPathDirFile(a, b) {
+	static getSortFnByPathDirFile(a, b): number {
 		if (a.path.startsWith(b.path)) {
 			return -1;
 		}
@@ -26,21 +26,21 @@ export class Directory extends FsNode {
 		return a.path.localeCompare(b.path);
 	}
 
-	get children() {
+	get children(): FsNode[] {
 		return this._children;
 	}
 
-	get childrenSorted() {
+	get childrenSorted(): FsNode[] {
 		const sorted = this._children.sort(Directory.getSortFnByPathDirFile);
 
 		return sorted;
 	}
 
-	get directories() {
+	get directories(): FsNode[] {
 		return this._children.filter(i => i.isDirectory());
 	}
 
-	get files() {
+	get files(): FsNode[] {
 		return this._children.filter(i => i.isFile());
 	}
 
