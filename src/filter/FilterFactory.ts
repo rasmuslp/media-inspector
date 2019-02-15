@@ -3,8 +3,8 @@ import util from 'util';
 
 import JSON5 from 'json5';
 
-import { Rule, RuleData } from './filter-rule/Rule';
-import { RuleFactory } from './filter-rule/RuleFactory';
+import { Rule, RuleData } from './rule/Rule';
+import { RuleFactory } from './rule/RuleFactory';
 
 const readFileAsync = util.promisify(fs.readFile);
 

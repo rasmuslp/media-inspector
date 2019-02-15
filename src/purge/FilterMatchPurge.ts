@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 
 import { Purge } from './Purge';
-import { RuleResult } from '../filter/filter-rule/RuleResult';
+import { RuleResult } from '../filter/rule/RuleResult';
 import { FsNode } from '../fs-tree';
 
 export class FilterMatchPurge extends Purge {

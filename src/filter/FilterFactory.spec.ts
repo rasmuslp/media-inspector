@@ -1,9 +1,9 @@
 import fs from 'fs';
 import util from 'util';
 
-import { Condition } from './filter-rule/condition/Condition';
+import { Condition } from './rule/condition/Condition';
 import { FilterFactory } from './FilterFactory';
-import { Rule } from './filter-rule/Rule';
+import { Rule } from './rule/Rule';
 
 const readFileAsync = util.promisify(fs.readFile);
 

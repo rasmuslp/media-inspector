@@ -1,6 +1,6 @@
 import { FsTree, FsNode, File, MediaFile } from './fs-tree';
 import { FilterMatchPurge } from './purge/FilterMatchPurge';
-import { RuleResult } from './filter/filter-rule/RuleResult';
+import { RuleResult } from './filter/rule/RuleResult';
 
 export class FilterMatcher {
 	static async getPurges(node: FsNode, filterRules) {
