@@ -2,13 +2,13 @@ import { Condition } from './Condition';
 import { ConditionSatisfied } from './condition-result/ConditionSatisfied';
 import { ConditionFailed } from './condition-result/ConditionFailed';
 
-export class ConditionGe extends Condition {
+export class ConditionEqual extends Condition {
 	check(inputValue) {
 		// Convert the input
-		const value = ConditionGe.convertValue(inputValue);
+		const value = ConditionEqual.convertValue(inputValue);
 
 		// Check condition
-		if (value >= this.expectedValue) {
+		if (value === this.expectedValue) {
 			return new ConditionSatisfied(this, value);
 		}
 
@@ -16,6 +16,6 @@ export class ConditionGe extends Condition {
 	}
 
 	toString() {
-		return `>= ${this.expectedValue}`;
+		return `= ${this.expectedValue}`;
 	}
 }

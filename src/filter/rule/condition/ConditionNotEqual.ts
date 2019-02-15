@@ -2,10 +2,10 @@ import { Condition } from './Condition';
 import { ConditionSatisfied } from './condition-result/ConditionSatisfied';
 import { ConditionFailed } from './condition-result/ConditionFailed';
 
-export class ConditionNe extends Condition {
+export class ConditionNotEqual extends Condition {
 	check(inputValue) {
 		// Convert the input
-		const value = ConditionNe.convertValue(inputValue);
+		const value = ConditionNotEqual.convertValue(inputValue);
 
 		// Check condition
 		if (value !== this.expectedValue) {

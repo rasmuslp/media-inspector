@@ -1,15 +1,17 @@
 import crypto from 'crypto';
 
+import { ConditionOperator } from './ConditionOperator';
+
 import { ConditionBetween } from './ConditionBetween';
-import { ConditionEq } from './ConditionEq';
-import { ConditionGe } from './ConditionGe';
+import { ConditionEqual } from './ConditionEqual';
+import { ConditionGreaterThanOrEqual } from './ConditionGreaterThanOrEqual';
 import { ConditionIn } from './ConditionIn';
-import { ConditionLt } from './ConditionLt';
-import { ConditionNe } from './ConditionNe';
+import { ConditionLessThan } from './ConditionLessThan';
+import { ConditionNotEqual } from './ConditionNotEqual';
 
 export interface ConditionData {
 	path: string;
-	operator: string; // TODO: enum
+	operator: ConditionOperator;
 	value;
 }
 
@@ -21,23 +23,23 @@ export class ConditionFactory {
 
 		// Create and return
 		switch (condition.operator) {
-			case 'between':
+			case ConditionOperator.BETWEEN:
 				return new ConditionBetween(condition.path, condition.value);
 
-			case 'in':
+			case ConditionOperator.IN:
 				return new ConditionIn(condition.path, condition.value);
 
-			case '=':
-				return new ConditionEq(condition.path, condition.value);
+			case ConditionOperator.EQUAL:
+				return new ConditionEqual(condition.path, condition.value);
 
-			case '!=':
-				return new ConditionNe(condition.path, condition.value);
+			case ConditionOperator.NOT_EQUAL:
+				return new ConditionNotEqual(condition.path, condition.value);
 
-			case '<':
-				return new ConditionLt(condition.path, condition.value);
+			case ConditionOperator.LESS_THAN:
+				return new ConditionLessThan(condition.path, condition.value);
 
-			case '>=':
-				return new ConditionGe(condition.path, condition.value);
+			case ConditionOperator.GREATER_THAN_OR_EQUAL:
+				return new ConditionGreaterThanOrEqual(condition.path, condition.value);
 
 			default:
 				throw new Error(`Unknown operator '${condition.operator}' in ${JSON.stringify(inputCondition)}`);
