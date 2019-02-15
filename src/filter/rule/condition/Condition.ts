@@ -29,15 +29,33 @@ export abstract class Condition {
 
 	abstract check(inputValue): ConditionResult;
 
-	static convertValue(inputValue) {
-		if (!isNaN(Number(inputValue.toString()))) {
-			return Number(inputValue.toString());
+	static convertValue(value: any) {
+		if (Array.isArray(value)) {
+			// @ts-ignore
+			const numbers = value.filter(v => !isNaN(Number(v.toString())));
+			if (value.length === numbers.length) {
+				// @ts-ignore
+				return value.map(v => Number(v.toString()));
+			}
+
+			// @ts-ignore
+			const strings = value.filter(v => typeof v === 'string');
+			if (value.length === strings.length) {
+				// @ts-ignore
+				return value.map(v => v.toLocaleLowerCase());
+			}
+
+			return value.map(v => v.toString());
 		}
 
-		if (typeof inputValue === 'string') {
-			return inputValue.toLocaleLowerCase();
+		if (!isNaN(Number(value.toString()))) {
+			return Number(value.toString());
 		}
 
-		return inputValue;
+		if (typeof value === 'string') {
+			return value.toLocaleLowerCase();
+		}
+
+		return value.toString();
 	}
 }
