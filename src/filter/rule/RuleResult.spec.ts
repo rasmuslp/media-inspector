@@ -1,6 +1,7 @@
 import { ConditionFactory } from './condition/ConditionFactory';
 
 import { RuleResult } from './RuleResult';
+import { ConditionOperator } from './condition/ConditionOperator';
 
 describe('#satisfied', () => {
 	let failed1;
@@ -10,7 +11,7 @@ describe('#satisfied', () => {
 	beforeEach(() => {
 		const condition = ConditionFactory.createCondition({
 			path: 'dummy',
-			operator: '=',
+			operator: ConditionOperator.EQUAL,
 			value: 'yesyes'
 		});
 		failed1 = condition.check('nono');
@@ -41,13 +42,13 @@ describe('one failed on satisfied', () => {
 		const conditions = [
 			ConditionFactory.createCondition({
 				path: 'video.framerate',
-				operator: '>=',
+				operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
 				value: 25
 			}),
 
 			ConditionFactory.createCondition({
 				path: 'audio.channels',
-				operator: '>=',
+				operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
 				value: 2
 			})
 		];
