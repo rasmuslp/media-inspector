@@ -1,12 +1,12 @@
-import { FsTree, FsNode, File, MediaFile } from './fs-tree';
-import { FilterMatchPurge } from './purge/FilterMatchPurge';
-import { RuleResult } from './filter/rule/RuleResult';
-import { Purge } from './purge/Purge';
+import { FsTree, FsNode, File, MediaFile } from '../fs-tree';
+import { FilterMatch } from './FilterMatch';
+import { RuleResult } from '../filter/rule/RuleResult';
+import { Match } from './Match';
 
 export class FilterMatcher {
-	static async getPurges(node: FsNode, filterRules): Promise<Purge[]> {
-		// Build list of purges
-		const purges = [];
+	static async getMatches(node: FsNode, filterRules): Promise<Match[]> {
+		// Build list of matches
+		const matches = [];
 		await FsTree.traverse(node, node => {
 			// Check all rules
 			const ruleResults: RuleResult[] = [];
@@ -22,10 +22,11 @@ export class FilterMatcher {
 			// See if any matched all it's conditions
 			const anyMatch = ruleResults.find(result => result.satisfied);
 			if (anyMatch) {
-				purges.push(new FilterMatchPurge(`Filters matched with::`, node, ruleResults));
+				matches.push(new FilterMatch(`Filters matched with::`, node, ruleResults));
 			}
 		});
 
-		return purges;
+		// TODO: Check, do we need to sort here? (We did before)
+		return matches;
 	}
 }

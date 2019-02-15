@@ -1,6 +1,6 @@
 import { FsNode } from '../fs-tree/FsNode';
 
-export abstract class Purge {
+export abstract class Match {
 	_message: string;
 	_fsNode: FsNode;
 
@@ -17,5 +17,5 @@ export abstract class Purge {
 		return 0;
 	}
 
-	abstract getPurgeReason(): string
+	abstract getMatchReason(): string
 }

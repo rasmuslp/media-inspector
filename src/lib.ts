@@ -9,11 +9,11 @@ import chalk from 'chalk';
 import { FilterFactory } from './filter';
 import { FsTree, Directory, MediaFile, FsNode } from './fs-tree';
 
-import { FilterMatchPurge } from './purge/FilterMatchPurge';
-import { RecommendedPurge } from './purge/RecommendedPurge';
+import { FilterMatch } from './matcher/FilterMatch';
+import { RecommendedMatch } from './matcher/RecommendedMatch';
 
-import { FilterMatcher } from './FilterMatcher';
-import { Purge } from './purge/Purge';
+import { FilterMatcher } from './matcher/FilterMatcher';
+import { Match } from './matcher/Match';
 
 const readFile = promisify(fs.readFile);
 
@@ -59,38 +59,38 @@ export async function run(options: LibOptions): Promise<void> {
 		return;
 	}
 
-	const purges = [];
+	const matches = [];
 
 	if (options.filterPath) {
-		const filterMatchPurges = await filter(node, options.filterPath, options.verbose);
-		purges.push(...filterMatchPurges);
+		const filterMatches = await filter(node, options.filterPath, options.verbose);
+		matches.push(...filterMatches);
 	}
 
 	if (options.includeRecommended) {
-		// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for purge
+		// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for matcher
 		await FsTree.traverse(node, async node => {
 			if (node.isDirectory()) {
 				if (!node.children || node.children.length === 0) {
-					purges.push(new RecommendedPurge(`Directory empty`, node));
+					matches.push(new RecommendedMatch(`Directory empty`, node));
 				}
 				else {
 					const childPaths = node.children.map(fsNode => fsNode.path);
-					const purgedChildren = purges.filter(purge => childPaths.includes(purge.fsNode.path));
+					const matchedChildren = matches.filter(match => childPaths.includes(match.fsNode.path));
 
-					// Get sizes of purged children
-					const sizeOfPurgedChildren = purgedChildren
-						.map(purge => purge.fsNode.size)
+					// Get sizes of matched children
+					const sizeOfMatchedChildren = matchedChildren
+						.map(match => match.fsNode.size)
 						.reduce((acc, cur) => (acc += cur), 0);
 
 					const sizeOfTree = await FsTree.getSize(node);
 
 					// Take parent and all children when this was the majority
-					if (sizeOfPurgedChildren >= 0.9 * sizeOfTree) {
+					if (sizeOfMatchedChildren >= 0.9 * sizeOfTree) {
 						// Mark tree from directory as Purgable
 						const treeAsList = await FsTree.getAsSortedList(node);
-						const recommendedPurges = treeAsList.map(childNode => new RecommendedPurge(`Auxiliary file or folder to ${node.path}`, childNode));
+						const recommendedMatches = treeAsList.map(childNode => new RecommendedMatch(`Auxiliary file or folder to ${node.path}`, childNode));
 
-						purges.push(...recommendedPurges);
+						matches.push(...recommendedMatches);
 					}
 				}
 			}
@@ -99,36 +99,36 @@ export async function run(options: LibOptions): Promise<void> {
 
 	// Dedupe list
 	const dedupedMap = new Map();
-	for (const purge of purges) {
-		const existing = dedupedMap.get(purge.fsNode);
+	for (const match of matches) {
+		const existing = dedupedMap.get(match.fsNode);
 		if (existing) {
 			// Update if current has better score
-			if (existing.score < purge.score) {
-				dedupedMap.set(purge.fsNode, purge);
+			if (existing.score < match.score) {
+				dedupedMap.set(match.fsNode, match);
 			}
 		}
 		else {
 			// Store as unique otherwise
-			dedupedMap.set(purge.fsNode, purge);
+			dedupedMap.set(match.fsNode, match);
 		}
 	}
 
 	// Sort deduped
 	const dedupedPurgres = Array.from(dedupedMap.values()).sort((a, b) => Directory.getSortFnByPathDirFile(a.fsNode, b.fsNode));
 
-	for (const purge of dedupedPurgres) {
+	for (const match of dedupedPurgres) {
 		if (options.verbose) {
-			const message = getLogMessageOfPurge(purge, { colorized: true });
+			const message = getLogMessageOfMatch(match, { colorized: true });
 			console.log(message);
 		}
 		else {
-			console.log(purge.fsNode.path);
+			console.log(match.fsNode.path);
 		}
 	}
 
 	if (options.verbose) {
 		const spaceFreeable = dedupedPurgres
-			.map(purge => purge.fsNode.size)
+			.map(match => match.fsNode.size)
 			.reduce((acc, cur) => (acc += cur), 0);
 
 		console.log('Space freeable: ', spaceFreeable);
@@ -141,7 +141,7 @@ export async function run(options: LibOptions): Promise<void> {
 	}
 }
 
-async function filter(node: FsNode, filterPath: string, verbose: boolean = false): Promise<Purge[]> {
+async function filter(node: FsNode, filterPath: string, verbose: boolean = false): Promise<Match[]> {
 	const absoluteFilterPath = path.resolve(process.cwd(), filterPath);
 
 	if (verbose) {
@@ -159,21 +159,21 @@ async function filter(node: FsNode, filterPath: string, verbose: boolean = false
 	if (verbose) {
 		console.log(`Filtering...`);
 	}
-	const purges = await FilterMatcher.getPurges(node, filterRules);
+	const matches = await FilterMatcher.getMatches(node, filterRules);
 	if (verbose) {
-		console.log(`Filtering completed. Found ${purges.length} item${purges.length === 1 ? 's' : ''} for purging`);
+		console.log(`Filtering completed. Found ${matches.length} item${matches.length === 1 ? 's' : ''} for purging`);
 	}
 
-	return purges;
+	return matches;
 }
 
-function getLogMessageOfPurge(purge, { colorized = false } = {}): string {
-	let message = `${colorized ? chalk.yellow(purge.fsNode.path) : purge.fsNode.path}\n\t`;
+function getLogMessageOfMatch(match, { colorized = false } = {}): string {
+	let message = `${colorized ? chalk.yellow(match.fsNode.path) : match.fsNode.path}\n\t`;
 
-	if (purge.fsNode.isDirectory()) {
+	if (match.fsNode.isDirectory()) {
 		message += `[Directory]`;
 	}
-	else if (purge.fsNode instanceof MediaFile) {
+	else if (match.fsNode instanceof MediaFile) {
 		message += `[Media file]`;
 	}
 	else {
@@ -182,15 +182,15 @@ function getLogMessageOfPurge(purge, { colorized = false } = {}): string {
 
 	message += ' ';
 
-	switch (purge.constructor) {
-		case FilterMatchPurge:
-		case RecommendedPurge: {
-			message += purge.getPurgeReason({ colorized });
+	switch (match.constructor) {
+		case FilterMatch:
+		case RecommendedMatch: {
+			message += match.getMatchReason({ colorized });
 			break;
 		}
 
 		default:
-			message += `${purge.message ? purge.message : 'Error'}: ${JSON.stringify(purge)}`;
+			message += `${match.message ? match.message : 'Error'}: ${JSON.stringify(match)}`;
 	}
 
 	return message + '\n';
