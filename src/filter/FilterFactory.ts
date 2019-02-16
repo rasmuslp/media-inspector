@@ -9,9 +9,7 @@ export class FilterFactory {
 		const rules = [];
 		for (const ruleData of ruleDatas) {
 			const rule = RuleFactory.getFromSerialized(ruleData);
-			if (rule) {
-				rules.push(rule);
-			}
+			rules.push(rule);
 		}
 
 		return rules;
