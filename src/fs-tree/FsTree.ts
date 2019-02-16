@@ -57,8 +57,9 @@ export class FsTree {
 			const node = queue.shift();
 
 			// Queue any children
-			if (node.children.length > 0) {
-				queue.push(...node.children);
+			if (node.isDirectory()) {
+				const directory = node as Directory;
+				queue.push(...directory.children);
 			}
 
 			// Apply fn

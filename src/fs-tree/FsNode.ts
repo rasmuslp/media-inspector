@@ -29,10 +29,6 @@ export abstract class FsNode extends Serializable {
 		return this._path;
 	}
 
-	get children(): FsNode[] {
-		return [];
-	}
-
 	get size(): number {
 		return this._stats.size;
 	}
