@@ -28,8 +28,8 @@ const argv = yargs
 		requiresArg: true,
 		type: 'string'
 	})
-	.options('include-recommended', {
-		alias: ['i', 'includeRecommended'],
+	.options('include-auxiliary', {
+		alias: ['i', 'includeAuxiliary'],
 		default: false,
 		describe: `Will also include empty directories and 'container' directories`,
 		type: 'boolean'
@@ -48,7 +48,7 @@ async function run(): Promise<void> {
 			readPath: argv.readPath as string,
 			writePath: argv.writePath as string,
 			filterPath: argv.filterPath as string,
-			includeRecommended: argv.includeRecommended as boolean,
+			includeAuxiliary: argv.includeAuxiliary as boolean,
 			verbose: argv.verbose as boolean
 		});
 	}

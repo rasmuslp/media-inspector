@@ -10,7 +10,7 @@ import { FilterFactory } from './filter';
 import { FsTree, Directory, MediaFile, FsNode } from './fs-tree';
 
 import { FilterMatch } from './matcher/FilterMatch';
-import { RecommendedMatch } from './matcher/RecommendedMatch';
+import { AuxiliaryMatch } from './matcher/AuxiliaryMatch';
 
 import { FilterMatcher } from './matcher/FilterMatcher';
 import { Match } from './matcher/Match';
@@ -21,7 +21,7 @@ export interface LibOptions {
 	readPath: string;
 	writePath?: string;
 	filterPath?: string;
-	includeRecommended?: boolean;
+	includeAuxiliary?: boolean;
 	verbose?: boolean;
 }
 
@@ -66,12 +66,12 @@ export async function run(options: LibOptions): Promise<void> {
 		matches.push(...filterMatches);
 	}
 
-	if (options.includeRecommended) {
+	if (options.includeAuxiliary) {
 		// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for matcher
 		await FsTree.traverse(node, async node => {
 			if (node.isDirectory()) {
 				if (!node.children || node.children.length === 0) {
-					matches.push(new RecommendedMatch(`Directory empty`, node));
+					matches.push(new AuxiliaryMatch(`Directory empty`, node));
 				}
 				else {
 					const childPaths = node.children.map(fsNode => fsNode.path);
@@ -88,9 +88,9 @@ export async function run(options: LibOptions): Promise<void> {
 					if (sizeOfMatchedChildren >= 0.9 * sizeOfTree) {
 						// Mark tree from directory as Purgable
 						const treeAsList = await FsTree.getAsSortedList(node);
-						const recommendedMatches = treeAsList.map(childNode => new RecommendedMatch(`Auxiliary file or folder to ${node.path}`, childNode));
+						const auxiliaryMatches = treeAsList.map(childNode => new AuxiliaryMatch(`Auxiliary file or folder to ${node.path}`, childNode));
 
-						matches.push(...recommendedMatches);
+						matches.push(...auxiliaryMatches);
 					}
 				}
 			}
@@ -184,7 +184,7 @@ function getLogMessageOfMatch(match, { colorized = false } = {}): string {
 
 	switch (match.constructor) {
 		case FilterMatch:
-		case RecommendedMatch: {
+		case AuxiliaryMatch: {
 			message += match.getMatchReason({ colorized });
 			break;
 		}
