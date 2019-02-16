@@ -1,7 +1,5 @@
 import { Condition } from './Condition';
-import { ConditionSatisfied } from './condition-result/ConditionSatisfied';
-import { ConditionFailed } from './condition-result/ConditionFailed';
-import { ConditionResult } from './condition-result/ConditionResult';
+import { ConditionResult, ConditionSatisfied } from './ConditionResult';
 
 export class ConditionIn extends Condition {
 	constructor(path: string, value) {
@@ -23,10 +21,10 @@ export class ConditionIn extends Condition {
 		// Supports both string and number comparison
 		const match = this.expectedValue.find(expected => ConditionIn.convertValue(expected) === value);
 		if (match) {
-			return new ConditionSatisfied(this, value);
+			return new ConditionResult(this, value, ConditionSatisfied.YES);
 		}
 
-		return new ConditionFailed(this, value);
+		return new ConditionResult(this, value, ConditionSatisfied.NO);
 	}
 
 	toString(): string {

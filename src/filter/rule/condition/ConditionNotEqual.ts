@@ -1,7 +1,5 @@
 import { Condition } from './Condition';
-import { ConditionSatisfied } from './condition-result/ConditionSatisfied';
-import { ConditionFailed } from './condition-result/ConditionFailed';
-import { ConditionResult } from './condition-result/ConditionResult';
+import { ConditionResult, ConditionSatisfied } from './ConditionResult';
 
 export class ConditionNotEqual extends Condition {
 	check(inputValue): ConditionResult {
@@ -10,10 +8,10 @@ export class ConditionNotEqual extends Condition {
 
 		// Check condition
 		if (value !== this.expectedValue) {
-			return new ConditionSatisfied(this, value);
+			return new ConditionResult(this, value, ConditionSatisfied.YES);
 		}
 
-		return new ConditionFailed(this, value);
+		return new ConditionResult(this, value, ConditionSatisfied.NO);
 	}
 
 	toString(): string {

@@ -1,7 +1,5 @@
 import { Condition } from './Condition';
-import { ConditionSatisfied } from './condition-result/ConditionSatisfied';
-import { ConditionFailed } from './condition-result/ConditionFailed';
-import { ConditionResult } from './condition-result/ConditionResult';
+import { ConditionResult, ConditionSatisfied } from './ConditionResult';
 
 export class ConditionBetween extends Condition {
 	constructor(path: string, value) {
@@ -18,10 +16,10 @@ export class ConditionBetween extends Condition {
 
 		// Check condition
 		if (this.expectedValue[0] <= value && value <= this.expectedValue[1]) {
-			return new ConditionSatisfied(this, value);
+			return new ConditionResult(this, value, ConditionSatisfied.YES);
 		}
 
-		return new ConditionFailed(this, value);
+		return new ConditionResult(this, value, ConditionSatisfied.NO);
 	}
 
 	toString(): string {

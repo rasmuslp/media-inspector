@@ -1,4 +1,4 @@
-import { ConditionResult } from './condition-result/ConditionResult';
+import { ConditionResult } from './ConditionResult';
 
 export type ConditionValueType = number|string|number[]|string[];
 

@@ -1,4 +1,4 @@
-import { ConditionResult } from './condition/condition-result/ConditionResult';
+import { ConditionResult } from './condition/ConditionResult';
 
 export class RuleResult {
 	_conditionResults: ConditionResult[];
