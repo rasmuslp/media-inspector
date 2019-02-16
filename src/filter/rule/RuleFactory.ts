@@ -1,26 +1,23 @@
 import { ConditionFactory } from './condition/ConditionFactory';
 
 import { Rule, RuleData } from './Rule';
+import { RuleType } from './RuleType';
 
 export class RuleFactory {
 	static getFromSerialized(data: RuleData): Rule {
-		/*
-		switch (data.type) {
-			case RuleType.SEASON_SIZE_DISCREPANCY: {
-
-			}
-		}
-		*/
-
-		const castData = data;
-
 		let conditions = [];
-		if (castData.conditions) {
-			conditions = castData.conditions
+		if (data.conditions) {
+			conditions = data.conditions
 				.map(condition => ConditionFactory.getSharedInstanceFromSerialized(condition))
 				.filter(condition => condition);
 		}
 
-		return new Rule(data.mimeType, conditions);
+		switch (data.type) {
+			case RuleType.DEFAULT:
+			case RuleType.METADATA:
+			default: {
+				return new Rule(data.mimeType, conditions);
+			}
+		}
 	}
 }

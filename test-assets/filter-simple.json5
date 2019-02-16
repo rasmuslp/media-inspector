@@ -1,6 +1,7 @@
 [
 	{
 		mimeType: 'video',
+		type: 'metadata',
 		conditions: [
 			{
 				"path": "video.format",

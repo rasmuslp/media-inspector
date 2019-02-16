@@ -1,13 +1,20 @@
+import * as t from 'io-ts';
 import JSON5 from 'json5';
 
-import { Rule, RuleData } from './rule/Rule';
+import { Rule, RuleDataValidator } from './rule/Rule';
 import { RuleFactory } from './rule/RuleFactory';
+import { decodeTo } from '../lib/io-ts';
+
+export const FilterDataValidator = t.array(RuleDataValidator);
+
+export type FilterData = t.TypeOf<typeof FilterDataValidator>;
 
 export class FilterFactory {
 	static getFromSerialized(data): Rule[] {
-		const ruleDatas = FilterFactory._parse(data);
+		const parsed = FilterFactory._parse(data);
+		const validatedRuleDatas = decodeTo(FilterDataValidator, parsed);
 		const rules = [];
-		for (const ruleData of ruleDatas) {
+		for (const ruleData of validatedRuleDatas) {
 			const rule = RuleFactory.getFromSerialized(ruleData);
 			rules.push(rule);
 		}
@@ -15,9 +22,9 @@ export class FilterFactory {
 		return rules;
 	}
 
-	static _parse(data): RuleData[] {
+	static _parse(data): unknown {
 		try {
-			const parsed = JSON5.parse(data) as RuleData[];
+			const parsed = JSON5.parse(data);
 			return parsed;
 		}
 		catch (e) {

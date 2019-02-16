@@ -1,19 +1,19 @@
+import * as t from 'io-ts';
+
 import { RuleResult } from './RuleResult';
-import { ConditionData } from './condition/ConditionFactory';
+import { ConditionDataValidator } from './condition/ConditionFactory';
 import { Condition } from './condition/Condition';
+import { RuleTypeValidator } from './RuleType';
 
 const debug = require('debug')('Rule');
 
-export interface RuleData {
-	mimeType: string;
-	type: RuleType;
-	conditions: ConditionData[];
-}
+export const RuleDataValidator = t.type({
+	mimeType: t.string,
+	type: RuleTypeValidator,
+	conditions: t.array(ConditionDataValidator)
+});
 
-export enum RuleType {
-	DEFAULT = 'default',
-	SEASON_SIZE_DISCREPANCY = 'season-size-discrepancy'
-}
+export type RuleData = t.TypeOf<typeof RuleDataValidator>;
 
 export class Rule {
 	_mimeType: string;
