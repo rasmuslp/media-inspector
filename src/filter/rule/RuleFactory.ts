@@ -17,7 +17,7 @@ export class RuleFactory {
 		let conditions = [];
 		if (castData.conditions) {
 			conditions = castData.conditions
-				.map(condition => ConditionFactory.getCondition(condition))
+				.map(condition => ConditionFactory.getSharedInstanceFromSerialized(condition))
 				.filter(condition => condition);
 		}
 

@@ -15,7 +15,7 @@ export class DirectoryFactory {
 		return await DirectoryFactory._getFsNodeFromFileSystem(nodePath);
 	}
 
-	static async createDirectoryFromFileSystem(nodePath: string, stats): Promise<Directory> {
+	static async getFromFileSystem(nodePath: string, stats): Promise<Directory> {
 		const children = await DirectoryFactory._getChildrenFromFileSystem(nodePath);
 
 		return new Directory(nodePath, stats, children);
@@ -25,12 +25,12 @@ export class DirectoryFactory {
 		const stats = await statAsync(nodePath);
 
 		if (stats.isFile()) {
-			const file = await FileFactory.createFileFrom(nodePath, stats);
+			const file = await FileFactory.getFromFileSystem(nodePath, stats);
 			return file;
 		}
 
 		if (stats.isDirectory()) {
-			const directory: unknown = await DirectoryFactory.createDirectoryFromFileSystem(nodePath, stats);
+			const directory: unknown = await DirectoryFactory.getFromFileSystem(nodePath, stats);
 			return directory as FsNode;
 		}
 
@@ -54,18 +54,18 @@ export class DirectoryFactory {
 	static _getFsNodeFromSerialized(data: Serialized): FsNode {
 		switch (data.instance) {
 			case 'Directory': {
-				const directory: unknown = DirectoryFactory.createFromSerialized(data);
+				const directory: unknown = DirectoryFactory.getFromSerialized(data);
 				return directory as FsNode;
 			}
 
 			case 'File':
 			case 'VideoFile': {
-				return FileFactory.createFromSerialized(data);
+				return FileFactory.getFromSerialized(data);
 			}
 		}
 	}
 
-	static createFromSerialized(serialized: Serialized): Directory {
+	static getFromSerialized(serialized: Serialized): Directory {
 		const data = serialized.data as SerializedDirectoryData;
 
 		const children = DirectoryFactory._getChildrenFromSerialized(data.children);

@@ -31,7 +31,7 @@ export class MediainfoMetadataFactory {
 		return mediainfoMetadata;
 	}
 
-	static createFromSerialized(serialized): MediainfoMetadata {
+	static getFromSerialized(serialized): MediainfoMetadata {
 		const data = serialized.data as MetadataData;
 		const mediainfoMetadata = new MediainfoMetadata(data.metadata);
 

@@ -3,7 +3,7 @@ import { ConditionGreaterThanOrEqual } from './ConditionGreaterThanOrEqual';
 import { ConditionFactory } from './ConditionFactory';
 import { ConditionOperator } from './ConditionOperator';
 
-describe('#getCondition', () => {
+describe('#getSharedInstanceFromSerialized', () => {
 	test('identical conditions share the same Condition', () => {
 		// Conditions
 		const conditionData1 = {
@@ -18,8 +18,8 @@ describe('#getCondition', () => {
 		};
 
 		// Get Conditions
-		const condition1 = ConditionFactory.getCondition(conditionData1);
-		const condition2 = ConditionFactory.getCondition(conditionData2);
+		const condition1 = ConditionFactory.getSharedInstanceFromSerialized(conditionData1);
+		const condition2 = ConditionFactory.getSharedInstanceFromSerialized(conditionData2);
 
 		expect(condition1).toBeInstanceOf(ConditionGreaterThanOrEqual);
 		expect(condition2).toBeInstanceOf(ConditionGreaterThanOrEqual);

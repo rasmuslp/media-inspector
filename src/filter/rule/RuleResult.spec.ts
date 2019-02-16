@@ -9,7 +9,7 @@ describe('#satisfied', () => {
 	let satisfied1;
 	let satisfied2;
 	beforeEach(() => {
-		const condition = ConditionFactory.createCondition({
+		const condition = ConditionFactory.getFromSerialized({
 			path: 'dummy',
 			operator: ConditionOperator.EQUAL,
 			value: 'yesyes'
@@ -40,13 +40,13 @@ describe('one failed on satisfied', () => {
 	let results;
 	beforeEach(() => {
 		const conditions = [
-			ConditionFactory.createCondition({
+			ConditionFactory.getFromSerialized({
 				path: 'video.framerate',
 				operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
 				value: 25
 			}),
 
-			ConditionFactory.createCondition({
+			ConditionFactory.getFromSerialized({
 				path: 'audio.channels',
 				operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
 				value: 2

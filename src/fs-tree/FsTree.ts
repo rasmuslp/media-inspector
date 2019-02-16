@@ -11,7 +11,7 @@ const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
 export class FsTree {
-	static async readFromFileSystem(nodePath: string): Promise<FsNode> {
+	static async getFromFileSystem(nodePath: string): Promise<FsNode> {
 		const node = await DirectoryFactory.getTreeFromFileSystem(nodePath);
 
 		await FsTree.traverse(node, async node => {
@@ -23,7 +23,7 @@ export class FsTree {
 		return node;
 	}
 
-	static async readFromSerialized(serializePath: string): Promise<FsNode> {
+	static async getFromSerialized(serializePath: string): Promise<FsNode> {
 		const fileContent = await readFile(serializePath, 'utf8');
 		const parsed = JSON.parse(fileContent);
 		const node = await DirectoryFactory.getTreeFromSerialized(parsed.data);

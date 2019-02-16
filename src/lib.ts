@@ -37,13 +37,13 @@ export async function run(options: LibOptions): Promise<void> {
 		if (options.verbose) {
 			console.log(`Reading from json ${absoluteReadPath}`);
 		}
-		node = await FsTree.readFromSerialized(absoluteReadPath);
+		node = await FsTree.getFromSerialized(absoluteReadPath);
 	}
 	else {
 		if (options.verbose) {
 			console.log(`Reading from file system ${absoluteReadPath}`);
 		}
-		node = await FsTree.readFromFileSystem(absoluteReadPath);
+		node = await FsTree.getFromFileSystem(absoluteReadPath);
 	}
 
 	if (options.writePath) {
