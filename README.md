@@ -5,12 +5,18 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b17230f59081472092c5578031885b37)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rasmuslp/media-inspector&amp;utm_campaign=Badge_Grade)
 
 Requirements:
+  * Node 8 or newer
   * [mediainfo](https://mediaarea.net/en/MediaInfo) executable in `$PATH`
 
 Example
 ```bash
 $ npm run start -- -f filter-example.json <folder/with/video/files>
 ```
+
+## How filters work
+A `filter` is a list of `rules`. A `rule` is a prioritised list of `conditions`.
+A `rule` is considered satisfied when all its `conditions` are satisfied.
+When a media file satisfies all the `conditions` of *any* `rule`, that media-file is considered a match.
 
 ## Notes
 

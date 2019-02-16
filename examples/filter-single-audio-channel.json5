@@ -1,0 +1,18 @@
+[
+	{
+		mimeType: 'video',
+		type: 'metadata',
+		conditions: [
+			[
+				{
+					path: 'audio.channels',
+					operator: '<',
+					value: 2
+				}
+			]
+		]
+	}
+]
+
+
+

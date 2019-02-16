@@ -88,7 +88,7 @@ export async function run(options: LibOptions): Promise<void> {
 					if (sizeOfMatchedChildren >= 0.9 * sizeOfTree) {
 						// Mark tree from directory as Purgable
 						const treeAsList = await FsTree.getAsSortedList(node);
-						const auxiliaryMatches = treeAsList.map(childNode => new AuxiliaryMatch(`Auxiliary file or folder to ${node.path}`, childNode));
+						const auxiliaryMatches = treeAsList.map(childNode => new AuxiliaryMatch(`Auxiliary to ${node.path}`, childNode));
 
 						matches.push(...auxiliaryMatches);
 					}

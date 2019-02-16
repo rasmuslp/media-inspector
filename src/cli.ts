@@ -23,7 +23,7 @@ const argv = yargs
 	})
 	.options('filter', {
 		alias: ['f', 'filterPath'],
-		describe: 'Filter configuration file in JSON or JavaScript',
+		describe: 'Filter configuration file in JSON or JSON5',
 		implies: ['read'],
 		requiresArg: true,
 		type: 'string'
