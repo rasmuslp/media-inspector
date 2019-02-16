@@ -1,48 +1,73 @@
-version: 2
-jobs:
-  build:
-    docker:
-      - image: node:10.15.0
+version: 2.1
 
+commands:
+  run-all:
     steps:
-    - checkout
+      - checkout
 
-    - run:
-        command: npm ci
+      - run:
+          command: npm version
 
-    - run:
-        command: npm run lint
+      - run:
+          command: npm ci
 
-    - run:
-        command: npm run type-check
+      - run:
+          command: npm run lint
 
-    - run:
-        name: Install mediainfo
-        command: |
-          apt-get update
-          wget https://mediaarea.net/download/binary/libzen0/0.4.37/libzen0_0.4.37-1_amd64.Debian_8.0.deb
-          dpkg -i libzen0_0.4.37-1_amd64.Debian_8.0.deb
-          wget https://mediaarea.net/download/binary/libmediainfo0/18.08.1/libmediainfo0_18.08.1-1_amd64.Debian_8.0.deb
-          apt install libmms0
-          dpkg -i libmediainfo0_18.08.1-1_amd64.Debian_8.0.deb
-          wget https://mediaarea.net/download/binary/mediainfo/18.08.1/mediainfo_18.08.1-1_amd64.Debian_8.0.deb
-          dpkg -i mediainfo_18.08.1-1_amd64.Debian_8.0.deb
+      - run:
+          command: npm run type-check
 
-    - run:
-        command: npm run test -- --ci --coverage --runInBand --reporters=default --reporters=jest-junit
-        environment:
-          JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+      - run:
+          name: Install mediainfo
+          command: |
+            apt-get update
+            wget https://mediaarea.net/download/binary/libzen0/0.4.37/libzen0_0.4.37-1_amd64.Debian_8.0.deb
+            dpkg -i libzen0_0.4.37-1_amd64.Debian_8.0.deb
+            wget https://mediaarea.net/download/binary/libmediainfo0/18.08.1/libmediainfo0_18.08.1-1_amd64.Debian_8.0.deb
+            apt install libmms0
+            dpkg -i libmediainfo0_18.08.1-1_amd64.Debian_8.0.deb
+            wget https://mediaarea.net/download/binary/mediainfo/18.08.1/mediainfo_18.08.1-1_amd64.Debian_8.0.deb
+            dpkg -i mediainfo_18.08.1-1_amd64.Debian_8.0.deb
 
-    - run:
-        name: Upload coverage to Codacy
-        command: cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage
+      - run:
+          command: npm run test -- --ci --coverage --runInBand --reporters=default --reporters=jest-junit
+          environment:
+            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
 
-    - run:
-        name: Upload coverage to Codecov
-        command: bash <(curl -s https://codecov.io/bash)
+      - run:
+          name: Upload coverage to Codacy
+          command: cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage
 
-    - store_test_results:
-        path: reports/junit
+      - run:
+          name: Upload coverage to Codecov
+          command: bash <(curl -s https://codecov.io/bash)
 
-    - store_artifacts:
-        path: reports/junit
+      - store_test_results:
+          path: reports/junit
+
+      - store_artifacts:
+          path: reports/junit
+
+jobs:
+  node-v8:
+    docker:
+      - image: node:8
+    steps:
+      - run-all
+  node-v10:
+    docker:
+      - image: node:10
+    steps:
+      - run-all
+  node-v11:
+    docker:
+      - image: node:11
+    steps:
+      - run-all
+
+workflows:
+  node-multi-build:
+    jobs:
+      - node-v8
+      - node-v10
+      - node-v11
