@@ -1,24 +1,14 @@
 import crypto from 'crypto';
 
-import * as t from 'io-ts';
+import { ConditionOperator } from './ConditionOperator';
 
-import { ConditionOperator, ConditionOperatorValidator } from './ConditionOperator';
-
-import { Condition } from './Condition';
+import { Condition, ConditionData } from './Condition';
 import { ConditionBetween } from './ConditionBetween';
 import { ConditionEqual } from './ConditionEqual';
 import { ConditionGreaterThanOrEqual } from './ConditionGreaterThanOrEqual';
 import { ConditionIn } from './ConditionIn';
 import { ConditionLessThan } from './ConditionLessThan';
 import { ConditionNotEqual } from './ConditionNotEqual';
-
-export const ConditionDataValidator = t.type({
-	path: t.string,
-	operator: ConditionOperatorValidator,
-	value: t.unknown
-});
-
-export type ConditionData = t.TypeOf<typeof ConditionDataValidator>;
 
 export class ConditionFactory {
 	static _conditions = new Map();

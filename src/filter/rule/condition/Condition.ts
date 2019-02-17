@@ -1,4 +1,15 @@
+import * as t from 'io-ts';
+
 import { ConditionResult } from './ConditionResult';
+import { ConditionOperatorValidator } from './ConditionOperator';
+
+export const ConditionDataValidator = t.type({
+	path: t.string,
+	operator: ConditionOperatorValidator,
+	value: t.unknown
+});
+
+export type ConditionData = t.TypeOf<typeof ConditionDataValidator>;
 
 export type ConditionValueType = number|string|number[]|string[];
 

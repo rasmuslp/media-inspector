@@ -1,8 +1,7 @@
 import * as t from 'io-ts';
 
 import { RuleResult } from './RuleResult';
-import { ConditionDataValidator } from './condition/ConditionFactory';
-import { Condition } from './condition/Condition';
+import { Condition, ConditionDataValidator } from './condition/Condition';
 import { RuleTypeValidator } from './RuleType';
 
 const debug = require('debug')('Rule');
