@@ -21,7 +21,7 @@
     "name": "Rasmus Ljungmann Pedersen",
     "email": "rasmuslp@gmail.com"
   },
-  "license": "",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/rasmuslp/media-inspector/issues"
   },
