@@ -1,10 +1,15 @@
-import { File, SerializedFileData } from './File';
-import { Metadata } from './Metadata';
-import { Serialized } from './Serialized';
+import * as t from 'io-ts';
 
-export interface SerializedMediaFileData extends SerializedFileData {
-	metadata: object;
-}
+import { File, FileDataValidator } from './File';
+import { Metadata } from './Metadata';
+
+const MediaFileDataPartial = t.type({
+	metadata: t.unknown
+});
+
+export const MediaFileDataValidator = t.intersection([FileDataValidator, MediaFileDataPartial]);
+
+export type MediaFileData = t.TypeOf<typeof MediaFileDataValidator>;
 
 export abstract class MediaFile extends File {
 	_metadata: Metadata;
@@ -24,16 +29,11 @@ export abstract class MediaFile extends File {
 
 	abstract async readMetadataFromFileSystem();
 
-	serialize(): Serialized<SerializedMediaFileData> {
-		return {
-			instance: this.constructor.name,
-			data: this.serializeData()
-		};
-	}
-
-	serializeData(): SerializedMediaFileData {
-		return Object.assign({}, super.serializeData(), {
+	serializeData(): object {
+		const data = Object.assign(super.serializeData(), {
 			metadata: this._metadata.serialize()
 		});
+
+		return data;
 	}
 }

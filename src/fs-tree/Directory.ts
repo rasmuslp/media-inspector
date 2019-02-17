@@ -1,9 +1,15 @@
-import { FsNode, FsNodeType, SerializedFsNodeData } from './FsNode';
-import { Serialized } from './Serialized';
+import * as t from 'io-ts';
 
-export interface SerializedDirectoryData extends SerializedFsNodeData {
-	children: Serialized<SerializedFsNodeData>[];
-}
+import { FsNode, FsNodeDataValidator } from './FsNode';
+import { FsNodeType } from './FsNodeType';
+
+const DirectoryDataPartial = t.type({
+	children: t.array(FsNodeDataValidator)
+});
+
+export const DirectoryDataValidator = t.intersection([FsNodeDataValidator, DirectoryDataPartial]);
+
+export type DirectoryData = t.TypeOf<typeof DirectoryDataValidator>;
 
 export class Directory extends FsNode {
 	_children: FsNode[];
@@ -44,18 +50,11 @@ export class Directory extends FsNode {
 		return this._children.filter(i => i.isFile());
 	}
 
-	serialize(): Serialized<SerializedDirectoryData> {
-		return {
-			instance: this.constructor.name,
-			data: this.serializeData()
-		};
-	}
-
-	serializeData(): SerializedDirectoryData {
-		const superData = super.serializeData();
-		const serializedChildren = this._children.map(node => node.serialize());
-		return Object.assign(superData, {
-			children: serializedChildren as Serialized<SerializedFsNodeData>[]
+	serializeData(): object {
+		const data = Object.assign(super.serializeData(), {
+			children: this._children.map(node => node.serialize())
 		});
+
+		return data;
 	}
 }

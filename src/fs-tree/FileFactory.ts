@@ -1,10 +1,10 @@
 import mime from 'mime-types';
 
-import { Serialized } from './Serialized';
-import { SerializedFileData, File } from './File';
+import { File, FileData } from './File';
 import { VideoFile } from './VideoFile';
 import { MediainfoMetadataFactory } from './MediainfoMetadataFactory';
-import { SerializedMediaFileData } from './MediaFile';
+import { MediaFileData } from './MediaFile';
+import { SerializableData } from './Serializable';
 
 export class FileFactory {
 	static getFromFileSystem(nodePath: string, stats): File {
@@ -19,15 +19,15 @@ export class FileFactory {
 		return new File(nodePath, stats, mimeType);
 	}
 
-	static getFromSerialized(serialized: Serialized): File {
-		switch (serialized.instance) {
+	static getFromSerialized(serialized: SerializableData): File {
+		switch (serialized.type) {
 			case 'File': {
-				const data = serialized.data as SerializedFileData;
+				const data = serialized as FileData;
 				return new File(data.path, data.stats, data.mimeType);
 			}
 
 			case 'VideoFile': {
-				const data = serialized.data as SerializedMediaFileData;
+				const data = serialized as MediaFileData;
 				const metadata = MediainfoMetadataFactory.getFromSerialized(data.metadata);
 				return new VideoFile(data.path, data.stats, data.mimeType, metadata);
 			}

@@ -1,27 +1,24 @@
+import * as t from 'io-ts';
+
 import { Serializable } from './Serializable';
-import { Serialized } from './Serialized';
 
-export interface MetadataData {
-	metadata;
-}
+export const MetadataDataValidator = t.type({
+	metadata: t.unknown
+});
 
-export abstract class Metadata implements Serializable {
+export type MetadataData = t.TypeOf<typeof MetadataDataValidator>;
+
+export abstract class Metadata extends Serializable {
 	_metadata;
 
 	constructor(metadata) {
+		super();
 		this._metadata = metadata;
 	}
 
 	abstract get(path: string);
 
-	serialize(): Serialized<MetadataData> {
-		return {
-			instance: this.constructor.name,
-			data: this.serializeData()
-		};
-	}
-
-	serializeData(): MetadataData {
+	serializeData(): object {
 		return {
 			metadata: this._metadata
 		};

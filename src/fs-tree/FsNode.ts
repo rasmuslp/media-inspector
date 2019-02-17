@@ -1,15 +1,16 @@
-import { Serializable } from './Serializable';
+import * as t from 'io-ts';
 
-export interface SerializedFsNodeData {
-	path: string;
-	stats;
-}
+import { Serializable, SerializableDataValidator } from './Serializable';
+import { FsNodeType } from './FsNodeType';
 
-export enum FsNodeType {
-	UNKNOWN,
-	DIRECTORY,
-	FILE
-}
+export const FsNodeDataPartial = t.partial({
+	path: t.string,
+	stats: t.unknown // TODO: Better
+});
+
+export const FsNodeDataValidator = t.intersection([SerializableDataValidator, FsNodeDataPartial]);
+
+export type FsNodeData = t.TypeOf<typeof FsNodeDataValidator>;
 
 export abstract class FsNode extends Serializable {
 	_fsNodeType: FsNodeType;
@@ -41,7 +42,7 @@ export abstract class FsNode extends Serializable {
 		return this._fsNodeType === FsNodeType.FILE;
 	}
 
-	serializeData(): SerializedFsNodeData {
+	serializeData(): object {
 		return {
 			path: this._path,
 			stats: this._stats

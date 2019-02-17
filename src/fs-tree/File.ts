@@ -1,9 +1,15 @@
-import { SerializedFsNodeData, FsNode, FsNodeType } from './FsNode';
-import { Serialized } from './Serialized';
+import * as t from 'io-ts';
 
-export interface SerializedFileData extends SerializedFsNodeData {
-	mimeType: string;
-}
+import { FsNode, FsNodeDataValidator } from './FsNode';
+import { FsNodeType } from './FsNodeType';
+
+const FileDataPartial = t.partial({
+	mimeType: t.string
+});
+
+export const FileDataValidator = t.intersection([FsNodeDataValidator, FileDataPartial]);
+
+export type FileData = t.TypeOf<typeof FileDataValidator>;
 
 export class File extends FsNode {
 	static _typeExtractor = /^([^/]+)/;
@@ -32,16 +38,11 @@ export class File extends FsNode {
 		}
 	}
 
-	serialize(): Serialized<SerializedFileData> {
-		return {
-			instance: this.constructor.name,
-			data: this.serializeData()
-		};
-	}
-
-	serializeData(): SerializedFileData {
-		return Object.assign({}, super.serializeData(), {
+	serializeData(): object {
+		const data = Object.assign(super.serializeData(), {
 			mimeType: this._mimeType
 		});
+
+		return data;
 	}
 }
