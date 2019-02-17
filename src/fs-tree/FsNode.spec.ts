@@ -2,10 +2,7 @@ import path from 'path';
 
 import { FsNode } from './FsNode';
 
-class FsNodeImpl extends FsNode {
-	// @ts-ignore TODO Handle better
-	serialize(): void {}
-}
+class FsNodeImpl extends FsNode {}
 
 describe('FsNode', () => {
 	const pathTofsNode = path.join(__dirname, 'FsNode.js');
