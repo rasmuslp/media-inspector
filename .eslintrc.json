@@ -8,7 +8,7 @@
 		"@typescript-eslint"
 	],
 	"extends": [
-		"rasmuslp",
+		"@rasmuslp/eslint-config-rasmuslp",
 		"plugin:jest/recommended", // It would be nice to have this in an "overrides"-section...
 		"plugin:@typescript-eslint/recommended"
 	],
