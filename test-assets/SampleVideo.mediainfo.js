@@ -3,11 +3,6 @@ module.exports = {
 	'_xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
 	'_xsi:schemaLocation': 'https://mediaarea.net/mediainfo https://mediaarea.net/mediainfo/mediainfo_2_0.xsd',
 	_version: '2.0',
-	creatinglibrary: {
-		_: 'MediaInfoLib',
-		_version: '18.12',
-		_url: 'https://mediaarea.net/MediaInfo'
-	},
 	media: {
 		_ref: 'test-assets/SampleVideo.mov',
 		track: [
@@ -32,8 +27,6 @@ module.exports = {
 				isstreamable: 'No',
 				encodedDate: 'UTC 2019-02-21 11:40:36',
 				taggedDate: 'UTC 2019-02-21 11:40:36',
-				fileModifiedDate: 'UTC 2019-02-21 11:40:36',
-				fileModifiedDateLocal: '2019-02-21 12:40:36',
 				encodedLibrary: 'Apple QuickTime',
 				encodedLibraryName: 'Apple QuickTime',
 				extra: {
@@ -76,15 +69,10 @@ module.exports = {
 				encodedDate: 'UTC 2019-02-21 11:40:36',
 				taggedDate: 'UTC 2019-02-21 11:40:36',
 				colourDescriptionPresent: 'Yes',
-				colourDescriptionPresentSource: 'Container / Stream',
 				colourRange: 'Limited',
-				colourRangeSource: 'Stream',
 				colourPrimaries: 'BT.709',
-				colourPrimariesSource: 'Container / Stream',
 				transferCharacteristics: 'BT.709',
-				transferCharacteristicsSource: 'Container / Stream',
 				matrixCoefficients: 'BT.709',
-				matrixCoefficientsSource: 'Container / Stream',
 				extra: {
 					codecConfigurationBox: 'avcC'
 				}
