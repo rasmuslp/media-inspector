@@ -2,8 +2,11 @@
   "name": "media-inspector",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/cli.js",
+  "files": ["dist/**/*"],
   "scripts": {
+    "prebuild": "rm -rf dist/",
+    "build": "tsc --noEmit false --outDir dist/",
     "predo-deps": "rm -rf node_modules/ package-lock.json",
     "do-deps": "npm install",
     "lint": "eslint --ext .js,.ts .",
