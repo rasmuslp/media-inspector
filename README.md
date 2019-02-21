@@ -4,15 +4,26 @@
 [![codecov](https://codecov.io/gh/rasmuslp/media-inspector/branch/master/graph/badge.svg?token=W1WmybGFxx)](https://codecov.io/gh/rasmuslp/media-inspector)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b17230f59081472092c5578031885b37)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rasmuslp/media-inspector&amp;utm_campaign=Badge_Grade)
 
-Requirements:
+> Find media files by searching in metadata
+
+## Requirements
   * Node 8 or newer
   * [mediainfo](https://mediaarea.net/en/MediaInfo) executable in `$PATH`
 
-Example
+## Installation
 ```bash
-$ npm run start -- -f filter-example.json <folder/with/video/files>
+$ npm install -g media-inspector
 ```
 
+## Use
+```bash
+$ media-inspector --read <path/to/directory> --filter <path/to/filter>
+```
+
+## Example
+```bash
+$ media-inspector --read <path/to/directory> --filter examples/filter-default.json --include-auxiliary --verbose
+```
 ## How filters work
 A `filter` is a list of `rules`. A `rule` is a prioritised list of `conditions`.
 A `rule` is considered satisfied when all its `conditions` are satisfied.
