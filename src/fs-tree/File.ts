@@ -36,6 +36,8 @@ export class File extends FsNode {
 
 			return type;
 		}
+
+		return 'unknown';
 	}
 
 	serializeData(): object {

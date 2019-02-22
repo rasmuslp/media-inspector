@@ -52,17 +52,12 @@ export class DirectoryFactory {
 	}
 
 	static _getFsNodeFromSerialized(data: SerializableData): FsNode {
-		switch (data.type) {
-			case 'Directory': {
-				const directory: unknown = DirectoryFactory.getFromSerialized(data);
-				return directory as FsNode;
-			}
-
-			case 'File':
-			case 'VideoFile': {
-				return FileFactory.getFromSerialized(data);
-			}
+		if (data.type === 'Directory') {
+			const directory: unknown = DirectoryFactory.getFromSerialized(data);
+			return directory as FsNode;
 		}
+
+		return FileFactory.getFromSerialized(data);
 	}
 
 	static getFromSerialized(serialized: SerializableData): Directory {

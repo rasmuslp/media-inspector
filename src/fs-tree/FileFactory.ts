@@ -14,22 +14,24 @@ export class FileFactory {
 		switch (type) {
 			case 'video':
 				return new VideoFile(nodePath, stats, mimeType);
-		}
 
-		return new File(nodePath, stats, mimeType);
+			default:
+				return new File(nodePath, stats, mimeType);
+		}
 	}
 
 	static getFromSerialized(serialized: SerializableData): File {
 		switch (serialized.type) {
-			case 'File': {
-				const data = serialized as FileData;
-				return new File(data.path, data.stats, data.mimeType);
-			}
-
 			case 'VideoFile': {
 				const data = serialized as MediaFileData;
 				const metadata = MediainfoMetadataFactory.getFromSerialized(data.metadata);
 				return new VideoFile(data.path, data.stats, data.mimeType, metadata);
+			}
+
+			case 'File':
+			default: {
+				const data = serialized as FileData;
+				return new File(data.path, data.stats, data.mimeType);
 			}
 		}
 	}
