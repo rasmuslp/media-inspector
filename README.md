@@ -4,11 +4,17 @@
 [![codecov](https://codecov.io/gh/rasmuslp/media-inspector/branch/master/graph/badge.svg?token=W1WmybGFxx)](https://codecov.io/gh/rasmuslp/media-inspector)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b17230f59081472092c5578031885b37)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rasmuslp/media-inspector&amp;utm_campaign=Badge_Grade)
 
-> Find media files by searching in metadata
+> Find media files by searching in the metadata
 
 ## Requirements
   * Node 8 or newer
   * [mediainfo](https://mediaarea.net/en/MediaInfo) executable in `$PATH`
+
+## Supported media mime-types
+The current list of supported mime-types is
+* `video/`
+
+However, as Mediainfo is utilised for reading the metadata, it should be fairly simple to expand that to include both `audio` and `image/`.
 
 ## Installation
 ```bash
@@ -21,6 +27,7 @@ $ media-inspector --read <path/to/directory> --filter <path/to/filter>
 ```
 
 ## Example
+See the `examples` folder for examples of filters.
 ```bash
 $ media-inspector --read <path/to/directory> --filter examples/filter-default.json --include-auxiliary --verbose
 ```
