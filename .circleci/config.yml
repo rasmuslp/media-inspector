@@ -49,25 +49,59 @@ commands:
           path: reports/junit
 
 jobs:
-  node-v8:
+  test-v8:
     docker:
       - image: node:8
     steps:
       - run-all
-  node-v10:
+
+  test-v10:
     docker:
       - image: node:10
     steps:
       - run-all
-  node-v11:
+
+  test-v11:
     docker:
       - image: node:11
     steps:
       - run-all
 
+  publish-v8:
+    docker:
+      - image: node:8
+    steps:
+      - run-all
+      - run:
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+      - run:
+          command: npm publish
+
 workflows:
-  node-multi-build:
+  test-deploy:
     jobs:
-      - node-v8
-      - node-v10
-      - node-v11
+      - test-v8:
+          filters:
+            tags:
+              only: /^v.*/
+
+      - test-v10:
+          filters:
+            tags:
+              only: /^v.*/
+
+      - test-v11:
+          filters:
+            tags:
+              only: /^v.*/
+
+      - publish-v8:
+          requires:
+            - test-v8
+            - test-v10
+            - test-v11
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
