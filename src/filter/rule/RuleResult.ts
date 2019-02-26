@@ -3,7 +3,10 @@ import { ConditionResult } from './condition/ConditionResult';
 export class RuleResult {
 	_conditionResults: ConditionResult[];
 
-	constructor(conditionResults = []) {
+	constructor(conditionResults: ConditionResult[]) {
+		if (conditionResults.length === 0) {
+			throw new Error('ConditionResults are required, none were provided.');
+		}
 		this._conditionResults = conditionResults;
 	}
 

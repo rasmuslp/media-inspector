@@ -14,7 +14,9 @@ export class FilterMatcher {
 				if (node instanceof File && node.mimeType.startsWith(rule.mimeType)) {
 					if (node instanceof MediaFile) {
 						const ruleResult = rule.checkRuleWithPathGetter(node.metadata.get.bind(node.metadata));
-						ruleResults.push(ruleResult);
+						if (ruleResult) {
+							ruleResults.push(ruleResult);
+						}
 					}
 				}
 			}

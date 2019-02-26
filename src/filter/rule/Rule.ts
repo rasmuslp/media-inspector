@@ -27,9 +27,9 @@ export class Rule {
 		return this._mimeType;
 	}
 
-	checkRuleWithPathGetter(pathGetterFn: Function): RuleResult {
+	checkRuleWithPathGetter(pathGetterFn: Function): RuleResult|null {
 		// All conditions must be met
-		const results = [];
+		const conditionResults = [];
 		for (const condition of this._conditions) {
 			// Try to read value
 			let value;
@@ -37,7 +37,6 @@ export class Rule {
 				value = pathGetterFn(condition.path);
 			}
 			catch (e) {
-				// Swallow: Could not get property? Ee count that as a pass
 				// TODO: Log better with verbose, perhaps have a strict mode of some kind?
 				// I assume, that currently 'audio.channels < 2' wont fail, if there is no 'channels' (although it probably will fail if there isn't an audio track)
 				debug(`Could not read ${condition.path} from ${condition.path}`, e.message || e);
@@ -46,9 +45,13 @@ export class Rule {
 
 			// Check and store
 			const conditionResult = condition.check(value);
-			results.push(conditionResult);
+			conditionResults.push(conditionResult);
 		}
 
-		return new RuleResult(results);
+		if (conditionResults.length) {
+			return new RuleResult(conditionResults);
+		}
+
+		return null;
 	}
 }

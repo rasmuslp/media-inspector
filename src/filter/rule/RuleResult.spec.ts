@@ -20,9 +20,11 @@ describe('#satisfied', () => {
 		satisfied2 = condition.check('yesyes');
 	});
 
-	test('passes on empty input', () => {
-		const result = new RuleResult();
-		expect(result.satisfied).toBe(true);
+	test('throws on empty input', () => {
+		expect(() => {
+			// eslint-disable-next-line no-new
+			new RuleResult([]);
+		}).toThrow();
 	});
 
 	test('passes if all conditions are satisfied', () => {
