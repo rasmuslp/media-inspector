@@ -1,5 +1,6 @@
 # media-inspector
 
+[![NPM package](https://img.shields.io/npm/v/media-inspector.svg)](https://www.npmjs.com/package/media-inspector)
 [![CircleCI](https://circleci.com/gh/rasmuslp/media-inspector.svg?style=shield&circle-token=21fe02e13458f4ce20cd844453b47dbb540f32d8)](https://circleci.com/gh/rasmuslp/media-inspector)
 [![codecov](https://codecov.io/gh/rasmuslp/media-inspector/branch/master/graph/badge.svg?token=W1WmybGFxx)](https://codecov.io/gh/rasmuslp/media-inspector)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b17230f59081472092c5578031885b37)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rasmuslp/media-inspector&amp;utm_campaign=Badge_Grade)
