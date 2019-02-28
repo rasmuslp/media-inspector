@@ -1,0 +1,37 @@
+[
+	{
+		mimeType: 'video',
+		type: 'metadata',
+		conditions: [
+			{
+				path: 'video.framerate',
+				operator: '<',
+				value: 23
+			}
+		]
+	},
+
+	{
+		mimeType: 'video',
+		type: 'metadata',
+		conditions: [
+			{
+				path: 'video.scantype',
+				operator: '=',
+				value: 'interlaced'
+			}
+		]
+	},
+
+	{
+		mimeType: 'video',
+		type: 'metadata',
+		conditions: [
+			{
+				path: 'audio.channels',
+				operator: '<',
+				value: 2
+			}
+		]
+	}
+]
