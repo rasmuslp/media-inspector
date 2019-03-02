@@ -50,7 +50,7 @@
     "yargs": "^11.1.0"
   },
   "devDependencies": {
-    "@rasmuslp/eslint-config-rasmuslp": "1.1.0",
+    "@rasmuslp/eslint-config": "1.2.0",
     "@types/debug": "4.1.1",
     "@types/jest": "24.0.5",
     "@types/mime-types": "2.1.0",
