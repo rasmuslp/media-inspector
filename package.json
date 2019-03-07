@@ -12,7 +12,7 @@
   "bin": "./dist/cli.js",
   "main": "dist/lib.js",
   "files": [
-    "dist/**/*"
+    "dist/"
   ],
   "scripts": {
     "prebuild": "rm -rf dist/",
@@ -24,6 +24,7 @@
     "test:coverage": "jest --coverage",
     "type-check": "tsc",
     "full-test": "npm run type-check && npm run lint && npm run test",
+    "prepublish": "npm run build",
     "start": "node -r ts-node/register $NODE_DEBUG_OPTION src/cli.ts"
   },
   "repository": {
