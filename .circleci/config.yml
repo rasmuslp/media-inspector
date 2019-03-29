@@ -1,7 +1,7 @@
 version: 2.1
 
 commands:
-  run-all:
+  build:
     steps:
       - checkout
 
@@ -32,8 +32,16 @@ commands:
       - run:
           command: npm run test -- --ci --coverage --runInBand --reporters=default --reporters=jest-junit
           environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+            JEST_JUNIT_OUTPUT: "reports/junit/results.xml"
 
+      - store_test_results:
+          path: reports/junit
+
+      - store_artifacts:
+          path: reports/junit
+
+  upload-coverage:
+    steps:
       - run:
           name: Upload coverage to Codacy
           command: cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage
@@ -42,40 +50,40 @@ commands:
           name: Upload coverage to Codecov
           command: bash <(curl -s https://codecov.io/bash)
 
-      - store_test_results:
-          path: reports/junit
+  publish:
+    steps:
+      - run:
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+      - run:
+          command: npm publish
 
-      - store_artifacts:
-          path: reports/junit
 
 jobs:
   test-v8:
     docker:
       - image: node:8
     steps:
-      - run-all
+      - build
 
   test-v10:
     docker:
       - image: node:10
     steps:
-      - run-all
+      - build
+      - upload-coverage
 
   test-v11:
     docker:
       - image: node:11
     steps:
-      - run-all
+      - build
 
   publish-v8:
     docker:
       - image: node:8
     steps:
-      - run-all
-      - run:
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
-      - run:
-          command: npm publish
+      - build
+      - publish
 
 workflows:
   test-deploy:
