@@ -1,6 +1,6 @@
 {
   "name": "media-inspector",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Find media files by searching in the metadata",
   "keywords": [
     "filter",
