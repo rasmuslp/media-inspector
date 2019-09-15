@@ -27,7 +27,7 @@ export interface LibOptions {
 
 export async function run(options: LibOptions): Promise<void> {
 	if (FsTree.isSerializePath(options.readPath) && options.writePath) {
-		throw new Error(`Why would you read json just to write it again?! (」ﾟﾛﾟ)｣`);
+		throw new Error('Why would you read json just to write it again?! (」ﾟﾛﾟ)｣');
 	}
 
 	const absoluteReadPath = path.resolve(process.cwd(), options.readPath);
@@ -48,7 +48,7 @@ export async function run(options: LibOptions): Promise<void> {
 
 	if (options.writePath) {
 		if (!FsTree.isSerializePath(options.writePath)) {
-			throw new Error(`Write path should end with .json`);
+			throw new Error('Write path should end with .json');
 		}
 		const absoluteWritePath = path.resolve(process.cwd(), options.writePath);
 		if (options.verbose) {
@@ -71,7 +71,7 @@ export async function run(options: LibOptions): Promise<void> {
 		await FsTree.traverse(node, async node => {
 			if (node.isDirectory()) {
 				if (!node.children || node.children.length === 0) {
-					matches.push(new AuxiliaryMatch(`Directory empty`, node));
+					matches.push(new AuxiliaryMatch('Directory empty', node));
 				}
 				else {
 					const childPaths = node.children.map(fsNode => fsNode.path);
@@ -141,7 +141,7 @@ export async function run(options: LibOptions): Promise<void> {
 	}
 }
 
-async function filter(node: FsNode, filterPath: string, verbose: boolean = false): Promise<Match[]> {
+async function filter(node: FsNode, filterPath: string, verbose = false): Promise<Match[]> {
 	const absoluteFilterPath = path.resolve(process.cwd(), filterPath);
 
 	if (verbose) {
@@ -157,7 +157,7 @@ async function filter(node: FsNode, filterPath: string, verbose: boolean = false
 	const filterRules = FilterFactory.getFromSerialized(fileContent);
 
 	if (verbose) {
-		console.log(`Filtering...`);
+		console.log('Filtering...');
 	}
 	const matches = await FilterMatcher.getMatches(node, filterRules);
 	if (verbose) {
@@ -171,13 +171,13 @@ function getLogMessageOfMatch(match, { colorized = false } = {}): string {
 	let message = `${colorized ? chalk.yellow(match.fsNode.path) : match.fsNode.path}\n\t`;
 
 	if (match.fsNode.isDirectory()) {
-		message += `[Directory]`;
+		message += '[Directory]';
 	}
 	else if (match.fsNode instanceof MediaFile) {
-		message += `[Media file]`;
+		message += '[Media file]';
 	}
 	else {
-		message += `[File]`;
+		message += '[File]';
 	}
 
 	message += ' ';

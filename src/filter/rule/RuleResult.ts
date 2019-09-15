@@ -21,7 +21,7 @@ export class RuleResult {
 	}
 
 	getResultsAsStrings(): string[] {
-		let messages = [];
+		const messages = [];
 		for (const result of this._conditionResults) {
 			messages.push(result.toString());
 		}

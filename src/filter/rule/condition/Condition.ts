@@ -44,17 +44,13 @@ export abstract class Condition {
 
 	static convertValue(value): ConditionValueType {
 		if (Array.isArray(value)) {
-			// @ts-ignore
 			const numbers = value.filter(v => !isNaN(Number(v.toString())));
 			if (value.length === numbers.length) {
-				// @ts-ignore
 				return value.map(v => Number(v.toString()));
 			}
 
-			// @ts-ignore
 			const strings = value.filter(v => typeof v === 'string');
 			if (value.length === strings.length) {
-				// @ts-ignore
 				return value.map(v => v.toLocaleLowerCase());
 			}
 

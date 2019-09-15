@@ -12,7 +12,7 @@ export const FileDataValidator = t.intersection([FsNodeDataValidator, FileDataPa
 export type FileData = t.TypeOf<typeof FileDataValidator>;
 
 export class File extends FsNode {
-	static _typeExtractor = /^([^/]+)/;
+	static _typeExtractor = RegExp(/^([^/]+)/);
 	_mimeType: string;
 
 	constructor(nodePath, stats, mimeType: string) {
@@ -30,7 +30,7 @@ export class File extends FsNode {
 	}
 
 	static getTypeFrom(mimeType: string): string {
-		const match = mimeType.match(File._typeExtractor);
+		const match = File._typeExtractor.exec(mimeType);
 		if (match) {
 			const type = match[1];
 

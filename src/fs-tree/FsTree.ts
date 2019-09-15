@@ -26,7 +26,7 @@ export class FsTree {
 	static async getFromSerialized(serializePath: string): Promise<FsNode> {
 		const fileContent = await readFile(serializePath, 'utf8');
 		const parsed = JSON.parse(fileContent);
-		const node = await DirectoryFactory.getTreeFromSerialized(parsed.data);
+		const node = DirectoryFactory.getTreeFromSerialized(parsed.data);
 		return node;
 	}
 
@@ -82,7 +82,7 @@ export class FsTree {
 	}
 
 	static async getSize(node: FsNode): Promise<number> {
-		let sizes = [];
+		const sizes = [];
 
 		await FsTree.traverse(node, node => sizes.push(node.size));
 
@@ -101,8 +101,8 @@ export class FsTree {
 
 	static async getAsSortedList(node: FsNode): Promise<FsNode[]> {
 		const tree = await FsTree.getAsList(node);
-		let sorted = [...tree];
-		sorted.sort(Directory.getSortFnByPathDirFile);
+		const sorted = [...tree];
+		sorted.sort(Directory.getSortFnByPathDirFile.bind(Directory));
 
 		return sorted;
 	}

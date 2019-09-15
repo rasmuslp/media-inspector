@@ -1,10 +1,11 @@
+import debug from 'debug';
 import * as t from 'io-ts';
 
 import { RuleResult } from './RuleResult';
 import { Condition, ConditionDataValidator } from './condition/Condition';
 import { RuleTypeValidator } from './RuleType';
 
-const debug = require('debug')('Rule');
+const debugLog = debug('Rule');
 
 export const RuleDataValidator = t.type({
 	mimeType: t.string,
@@ -39,7 +40,7 @@ export class Rule {
 			catch (e) {
 				// TODO: Log better with verbose, perhaps have a strict mode of some kind?
 				// I assume, that currently 'audio.channels < 2' wont fail, if there is no 'channels' (although it probably will fail if there isn't an audio track)
-				debug(`Could not read ${condition.path} from ${condition.path}`, e.message || e);
+				debugLog(`Could not read ${condition.path} from ${condition.path}`, e.message || e);
 				continue;
 			}
 

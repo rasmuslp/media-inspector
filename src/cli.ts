@@ -31,13 +31,13 @@ const argv = yargs
 	.options('include-auxiliary', {
 		alias: ['i', 'includeAuxiliary'],
 		default: false,
-		describe: `Will also include empty directories and 'container' directories`,
+		describe: 'Will also include empty directories and \'container\' directories',
 		type: 'boolean'
 	})
 	.option('verbose', {
 		alias: ['v'],
 		default: false,
-		describe: `Get more details of the operation and state`,
+		describe: 'Get more details of the operation and state',
 		type: 'boolean'
 	})
 	.argv;
@@ -49,11 +49,11 @@ async function run(): Promise<void> {
 			writePath: argv.writePath as string,
 			filterPath: argv.filterPath as string,
 			includeAuxiliary: argv.includeAuxiliary as boolean,
-			verbose: argv.verbose as boolean
+			verbose: argv.verbose
 		});
 	}
 	catch (e) {
-		console.log(`Error occured!`, e);
+		console.log('Error occured!', e);
 	}
 }
 

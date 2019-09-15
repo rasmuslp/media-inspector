@@ -30,8 +30,7 @@ export class MediainfoMetadata extends Metadata {
 			case 'general': {
 				switch (property) {
 					case 'bitrate':
-						// @ts-ignore
-						return track.overallbitrate;
+						return (track as {overallbitrate: string}).overallbitrate;
 
 					default:
 						return MediainfoMetadata._getOrDie(track, property, `[get] could not find '${property}' in '${trackType}'`);

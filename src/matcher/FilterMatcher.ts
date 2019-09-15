@@ -24,7 +24,7 @@ export class FilterMatcher {
 			// See if any matched all it's conditions
 			const anyMatch = ruleResults.find(result => result.satisfied);
 			if (anyMatch) {
-				matches.push(new FilterMatch(`Filters matched with::`, node, ruleResults));
+				matches.push(new FilterMatch('Filters matched with::', node, ruleResults));
 			}
 		});
 

@@ -13,7 +13,7 @@ describe('FilterFactory', () => {
 	test(`can getFromSerialized '${filterPath}'`, async () => {
 		const data = await readFileAsync(filterPath, 'utf8');
 
-		const rules = await FilterFactory.getFromSerialized(data);
+		const rules = FilterFactory.getFromSerialized(data);
 
 		// Test content of loaded rules
 		expect(Array.isArray(rules)).toBe(true);

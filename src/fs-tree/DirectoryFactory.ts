@@ -25,7 +25,7 @@ export class DirectoryFactory {
 		const stats = await statAsync(nodePath);
 
 		if (stats.isFile()) {
-			const file = await FileFactory.getFromFileSystem(nodePath, stats);
+			const file = FileFactory.getFromFileSystem(nodePath, stats);
 			return file;
 		}
 

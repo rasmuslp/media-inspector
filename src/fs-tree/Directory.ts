@@ -37,7 +37,7 @@ export class Directory extends FsNode {
 	}
 
 	get childrenSorted(): FsNode[] {
-		const sorted = this._children.sort(Directory.getSortFnByPathDirFile);
+		const sorted = this._children.sort(Directory.getSortFnByPathDirFile.bind(Directory));
 
 		return sorted;
 	}
