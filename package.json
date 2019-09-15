@@ -51,11 +51,11 @@
   },
   "devDependencies": {
     "@rasmuslp/eslint-config": "1.2.0",
-    "@types/debug": "4.1.1",
-    "@types/jest": "24.0.5",
+    "@types/debug": "4.1.5",
+    "@types/jest": "24.0.18",
     "@types/mime-types": "2.1.0",
-    "@types/node": "11.9.4",
-    "@types/yargs": "12.0.9",
+    "@types/node": "12.7.5",
+    "@types/yargs": "13.0.2",
     "@typescript-eslint/eslint-plugin": "1.3.0",
     "@typescript-eslint/parser": "1.3.0",
     "codacy-coverage": "3.4.0",
@@ -67,12 +67,12 @@
     "eslint-plugin-promise": "4.0.1",
     "eslint-plugin-standard": "4.0.0",
     "husky": "1.3.1",
-    "jest": "24.1.0",
-    "jest-junit": "6.3.0",
+    "jest": "24.9.0",
+    "jest-junit": "8.0.0",
     "np": "4.0.2",
-    "ts-jest": "23.10.5",
-    "ts-node": "8.0.2",
-    "typescript": "3.3.3"
+    "ts-jest": "24.1.0",
+    "ts-node": "8.3.0",
+    "typescript": "3.6.3"
   },
   "husky": {
     "hooks": {
