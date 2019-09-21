@@ -40,26 +40,6 @@ commands:
       - store_artifacts:
           path: reports/junit
 
-  upload-coverage:
-    steps:
-      - run:
-          name: Upload coverage to Codacy
-          command: cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage
-
-      - run:
-          name: Upload coverage to Codecov
-          command: bash <(curl -s https://codecov.io/bash)
-
-  publish:
-    steps:
-      - run:
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
-      - run:
-          command: npm run build
-      - run:
-          command: npm publish
-
-
 jobs:
   test-v8:
     docker:
@@ -72,11 +52,10 @@ jobs:
       - image: node:10
     steps:
       - build
-      - upload-coverage
 
-  test-v11:
+  test-v12:
     docker:
-      - image: node:11
+      - image: node:12
     steps:
       - build
 
@@ -90,28 +69,6 @@ jobs:
 workflows:
   test-deploy:
     jobs:
-      - test-v8:
-          filters:
-            tags:
-              only: /^v.*/
-
-      - test-v10:
-          filters:
-            tags:
-              only: /^v.*/
-
-      - test-v11:
-          filters:
-            tags:
-              only: /^v.*/
-
-      - publish-v8:
-          requires:
-            - test-v8
-            - test-v10
-            - test-v11
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
+      - test-v8
+      - test-v10
+      - test-v12

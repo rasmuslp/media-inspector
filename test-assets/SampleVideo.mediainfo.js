@@ -13,8 +13,6 @@ module.exports = {
 				format: 'MPEG-4',
 				formatProfile: 'QuickTime',
 				codecid: 'qt  ',
-				codecidVersion: '0000.00',
-				codecidCompatible: 'qt  ',
 				filesize: '14000',
 				duration: '3.367',
 				overallbitrate: '33264',
@@ -72,10 +70,7 @@ module.exports = {
 				colourRange: 'Limited',
 				colourPrimaries: 'BT.709',
 				transferCharacteristics: 'BT.709',
-				matrixCoefficients: 'BT.709',
-				extra: {
-					codecConfigurationBox: 'avcC'
-				}
+				matrixCoefficients: 'BT.709'
 			}
 		]
 	}
