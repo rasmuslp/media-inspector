@@ -47,7 +47,7 @@
     "json5": "^2.1.0",
     "mediainfo-parser": "^1.1.5",
     "mime-types": "^2.1.20",
-    "yargs": "^11.1.0"
+    "yargs": "^13.1.0"
   },
   "devDependencies": {
     "@rasmuslp/eslint-config": "1.2.1",
