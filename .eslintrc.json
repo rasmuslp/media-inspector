@@ -1,25 +1,15 @@
 {
 	"root": true,
-	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
 		"project": "./tsconfig.eslint.json"
 	},
-	"plugins": [
-		"@typescript-eslint"
-	],
 	"extends": [
 		"@rasmuslp",
-		"plugin:jest/recommended", // It would be nice to have this in an "overrides"-section...
-		"eslint:recommended",
-		"plugin:@typescript-eslint/eslint-recommended",
-		"plugin:@typescript-eslint/recommended",
-		"plugin:@typescript-eslint/recommended-requiring-type-checking"
+		"plugin:jest/recommended"
 	],
 	"rules": {
 		"no-console": "off",
 		"no-multiple-empty-lines": "warn", // Having uncomitted blocks is common when developing, and then this rule gets tricky
-		"no-return-await": "off", // So... Its nice to know if the function is async or not
-		"@typescript-eslint/array-type": "error",
-		"@typescript-eslint/indent": ["error", "tab"]
+		"no-return-await": "off" // So... Its nice to know if the function is async or not
 	}
 }
