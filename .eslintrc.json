@@ -8,8 +8,17 @@
 		"plugin:jest/recommended"
 	],
 	"rules": {
+		"@typescript-eslint/no-unsafe-member-access": "off", // 52
+		"@typescript-eslint/no-unsafe-call": "off", // 23
+		"@typescript-eslint/restrict-template-expressions": "off", // 26
+		"@typescript-eslint/no-unsafe-return": "off", // 26
+		"@typescript-eslint/explicit-module-boundary-types": "off", // 39
+		"@typescript-eslint/no-unsafe-assignment": "off", // 18
+		"@typescript-eslint/ban-types": "off", // 12
+		"node/shebang": "off",
 		"no-console": "off",
 		"no-multiple-empty-lines": "warn", // Having uncomitted blocks is common when developing, and then this rule gets tricky
-		"no-return-await": "off" // So... Its nice to know if the function is async or not
+		"no-return-await": "off", // So... Its nice to know if the function is async or not
+		"no-void": "off"
 	}
 }
