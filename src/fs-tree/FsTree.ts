@@ -86,7 +86,7 @@ export class FsTree {
 
 		await FsTree.traverse(node, node => sizes.push(node.size));
 
-		return sizes.reduce((sum, cur) => sum + cur, 0);
+		return sizes.reduce((sum: number, cur: number) => sum + cur, 0);
 	}
 
 	// Returns list of tree, this included
