@@ -41,11 +41,6 @@ commands:
           path: reports/junit
 
 jobs:
-  test-v8:
-    docker:
-      - image: node:8
-    steps:
-      - build
 
   test-v10:
     docker:
@@ -59,9 +54,9 @@ jobs:
     steps:
       - build
 
-  publish-v8:
+  publish-v10:
     docker:
-      - image: node:8
+      - image: node:10
     steps:
       - build
       - publish
@@ -69,6 +64,5 @@ jobs:
 workflows:
   test-deploy:
     jobs:
-      - test-v8
       - test-v10
       - test-v12

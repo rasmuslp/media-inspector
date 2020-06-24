@@ -8,7 +8,7 @@
 > Find media files by searching in the metadata
 
 ## Requirements
-  * Node 8 or newer
+  * Node 10 or newer
   * [mediainfo](https://mediaarea.net/en/MediaInfo) executable in `$PATH`
 
 ## Supported media mime-types
