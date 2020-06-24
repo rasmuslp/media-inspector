@@ -13,7 +13,7 @@ export class FilterFactory {
 	static getFromSerialized(data): Rule[] {
 		const parsed = FilterFactory._parse(data);
 		const validatedRuleDatas = decodeTo(FilterDataValidator, parsed);
-		const rules = [];
+		const rules: Rule[] = [];
 		for (const ruleData of validatedRuleDatas) {
 			const rule = RuleFactory.getFromSerialized(ruleData);
 			rules.push(rule);
@@ -22,13 +22,13 @@ export class FilterFactory {
 		return rules;
 	}
 
-	static _parse(data): unknown {
+	static _parse(data): FilterData {
 		try {
-			const parsed = JSON5.parse(data);
+			const parsed = JSON5.parse(data) as FilterData;
 			return parsed;
 		}
 		catch (e) {
-			throw new Error(`Could not parse filter: ${e.message}`);
+			throw new Error(`Could not parse filter: ${(e as Error).message}`);
 		}
 	}
 }
