@@ -42,7 +42,7 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "debug": "^4.1.0",
-    "io-ts": "^1.8.2",
+    "io-ts": "^1.10.4",
     "io-ts-reporters": "^0.0.21",
     "json5": "^2.1.0",
     "mediainfo-parser": "^1.1.5",
