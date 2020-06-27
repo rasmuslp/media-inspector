@@ -9,8 +9,21 @@
     "mediainfo",
     "video"
   ],
-  "bin": "./dist/cli.js",
+  "homepage": "https://github.com/rasmuslp/media-inspector#readme",
+  "bugs": {
+    "url": "https://github.com/rasmuslp/media-inspector/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rasmuslp/media-inspector.git"
+  },
+  "license": "ISC",
+  "author": {
+    "name": "Rasmus Ljungmann Pedersen",
+    "email": "rasmuslp@gmail.com"
+  },
   "main": "dist/lib.js",
+  "bin": "./dist/cli.js",
   "files": [
     "dist/"
   ],
@@ -19,26 +32,19 @@
     "build": "tsc --noEmit false --outDir dist/",
     "predo-deps": "rm -rf node_modules/ package-lock.json",
     "do-deps": "npm install",
+    "full-test": "npm run type-check && npm run lint && npm run test",
     "lint": "eslint --ext .js,.ts .",
+    "start": "node -r ts-node/register $NODE_DEBUG_OPTION src/cli.ts",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "type-check": "tsc",
-    "full-test": "npm run type-check && npm run lint && npm run test",
-    "start": "node -r ts-node/register $NODE_DEBUG_OPTION src/cli.ts"
+    "type-check": "tsc"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rasmuslp/media-inspector.git"
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm run lint && npm test"
+    }
   },
-  "author": {
-    "name": "Rasmus Ljungmann Pedersen",
-    "email": "rasmuslp@gmail.com"
-  },
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/rasmuslp/media-inspector/issues"
-  },
-  "homepage": "https://github.com/rasmuslp/media-inspector#readme",
   "dependencies": {
     "chalk": "^2.4.1",
     "debug": "^4.1.0",
@@ -71,12 +77,6 @@
     "ts-jest": "26.1.1",
     "ts-node": "8.10.2",
     "typescript": "3.9.5"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm test",
-      "pre-push": "npm run lint && npm test"
-    }
   },
   "engines": {
     "node": ">=10.13.0"
