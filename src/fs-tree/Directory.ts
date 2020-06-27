@@ -1,7 +1,6 @@
 import * as t from 'io-ts';
 
 import { FsNode, FsNodeDataValidator } from './FsNode';
-import { FsNodeType } from './FsNodeType';
 
 const DirectoryDataPartial = t.type({
 	children: t.array(FsNodeDataValidator)
@@ -17,7 +16,6 @@ export class Directory extends FsNode<DirectoryData> {
 	constructor(nodePath: string, stats, children: FsNode[] = []) {
 		super(nodePath, stats);
 		this._children = children;
-		this._fsNodeType = FsNodeType.DIRECTORY;
 	}
 
 	// Children before parents
@@ -48,6 +46,14 @@ export class Directory extends FsNode<DirectoryData> {
 
 	get files(): FsNode[] {
 		return this._children.filter(i => i.isFile());
+	}
+
+	isDirectory(): boolean {
+		return true;
+	}
+
+	isFile(): boolean {
+		return false;
 	}
 
 	getDataForSerialization(): DirectoryData {

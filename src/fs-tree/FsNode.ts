@@ -1,13 +1,12 @@
 import * as t from 'io-ts';
 
 import { Serializable, SerializableDataValidator } from './Serializable';
-import { FsNodeType } from './FsNodeType';
 
-export const FsNodeStatsPartial = t.partial({
+export const FsNodeStatsPartial = t.type({
 	size: t.number
 });
 
-export const FsNodeDataPartial = t.partial({
+export const FsNodeDataPartial = t.type({
 	path: t.string,
 	stats: FsNodeStatsPartial
 });
@@ -18,14 +17,12 @@ export type FsNodeStats = t.TypeOf<typeof FsNodeStatsPartial>;
 export type FsNodeData = t.TypeOf<typeof FsNodeDataValidator>;
 
 export abstract class FsNode<T extends FsNodeData = FsNodeData> extends Serializable<T> {
-	_fsNodeType: FsNodeType;
 	constructor(nodePath: string, stats: FsNodeStats) {
 		super();
 		this.data.path = nodePath;
 		this.data.stats = {
 			size: stats?.size ?? 0
 		};
-		this._fsNodeType = FsNodeType.UNKNOWN;
 	}
 
 	get path(): string {
@@ -36,12 +33,7 @@ export abstract class FsNode<T extends FsNodeData = FsNodeData> extends Serializ
 		return this.data.stats.size;
 	}
 
-	isDirectory(): boolean {
-		return this._fsNodeType === FsNodeType.DIRECTORY;
-	}
+	abstract isDirectory(): boolean;
 
-	isFile(): boolean {
-		return this._fsNodeType === FsNodeType.FILE;
-	}
-
+	abstract isFile(): boolean;
 }

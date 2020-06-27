@@ -2,7 +2,15 @@ import path from 'path';
 
 import { FsNode } from './FsNode';
 
-class FsNodeImpl extends FsNode {}
+class FsNodeImpl extends FsNode {
+	isDirectory(): boolean {
+		throw new Error('Method not implemented.');
+	}
+
+	isFile(): boolean {
+		throw new Error('Method not implemented.');
+	}
+}
 
 describe('FsNode', () => {
 	const pathTofsNode = path.join(__dirname, 'FsNode.js');

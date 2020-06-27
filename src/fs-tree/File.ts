@@ -1,7 +1,6 @@
 import * as t from 'io-ts';
 
 import { FsNode, FsNodeDataValidator } from './FsNode';
-import { FsNodeType } from './FsNodeType';
 
 const FileDataPartial = t.partial({
 	mimeType: t.string
@@ -17,7 +16,6 @@ export class File<T extends FileData = FileData> extends FsNode<T> {
 
 	constructor(nodePath: string, stats, mimeType: string) {
 		super(nodePath, stats);
-		this._fsNodeType = FsNodeType.FILE;
 		this.data.mimeType = mimeType;
 	}
 
@@ -27,6 +25,14 @@ export class File<T extends FileData = FileData> extends FsNode<T> {
 
 	get type(): string {
 		return File.getTypeFrom(this.data.mimeType);
+	}
+
+	isDirectory(): boolean {
+		return false;
+	}
+
+	isFile(): boolean {
+		return true;
 	}
 
 	static getTypeFrom(mimeType: string): string {
