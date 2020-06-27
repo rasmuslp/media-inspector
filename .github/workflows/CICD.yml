@@ -1,6 +1,12 @@
-name: Node CI/CD
+---
+name: CI CD
 
-on: [push]
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+-?*'
 
 jobs:
 
@@ -14,10 +20,10 @@ jobs:
         node: [10, 12]
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.node-version }}
       - name: Node and NPM versions
         run: |
           node --version
@@ -28,7 +34,13 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends mediainfo
       - run: npm run test -- --ci --coverage --runInBand --reporters=default --reporters=jest-junit
         env:
-          JEST_JUNIT_OUTPUT: 'reports/junit/results.xml'
+          JEST_JUNIT_OUTPUT_NAME: 'reports/junit/results.xml'
+      - run: npm run build
+      - name: Archive test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-report
+          path: reports/junit/results.xml
       - name: Upload codecoverage to Codacy (Node 12 only)
         run: cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage
         if: matrix.node == 12
@@ -43,6 +55,8 @@ jobs:
   publish:
     name: Publish
 
+    if: startsWith(github.ref, 'refs/tags/v')
+
     needs: test
 
     runs-on: ubuntu-latest
@@ -52,21 +66,24 @@ jobs:
         node: [12]
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
       - name: Node and NPM versions
         run: |
           node --version
           npm --version
       - run: npm ci
-        if: startsWith(github.ref, 'refs/tags/v')
       - run: npm run build
-        if: startsWith(github.ref, 'refs/tags/v')
-      - name: Publish to NPM (Tags only)
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Publish to NPM
+        if: startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-')
         run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish beta to NPM
+        if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-')
+        run: npm publish --tag=beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

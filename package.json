@@ -1,6 +1,6 @@
 {
   "name": "media-inspector",
-  "version": "0.2.5",
+  "version": "0.4.0-0",
   "description": "Find media files by searching in the metadata",
   "keywords": [
     "filter",
@@ -9,8 +9,21 @@
     "mediainfo",
     "video"
   ],
-  "bin": "./dist/cli.js",
+  "homepage": "https://github.com/rasmuslp/media-inspector#readme",
+  "bugs": {
+    "url": "https://github.com/rasmuslp/media-inspector/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rasmuslp/media-inspector.git"
+  },
+  "license": "ISC",
+  "author": {
+    "name": "Rasmus Ljungmann Pedersen",
+    "email": "rasmuslp@gmail.com"
+  },
   "main": "dist/lib.js",
+  "bin": "./dist/cli.js",
   "files": [
     "dist/"
   ],
@@ -19,32 +32,27 @@
     "build": "tsc --noEmit false --outDir dist/",
     "predo-deps": "rm -rf node_modules/ package-lock.json",
     "do-deps": "npm install",
+    "full-test": "npm run type-check && npm run lint && npm run test",
     "lint": "eslint --ext .js,.ts .",
+    "start": "node -r ts-node/register $NODE_DEBUG_OPTION src/cli.ts",
+    "publish:beta": "np --no-publish --no-release-draft --any-branch",
+    "publish:release": "np --no-publish --no-release-draft",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "type-check": "tsc",
-    "full-test": "npm run type-check && npm run lint && npm run test",
-    "start": "node -r ts-node/register $NODE_DEBUG_OPTION src/cli.ts"
+    "type-check": "tsc"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rasmuslp/media-inspector.git"
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm run lint && npm test"
+    }
   },
-  "author": {
-    "name": "Rasmus Ljungmann Pedersen",
-    "email": "rasmuslp@gmail.com"
-  },
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/rasmuslp/media-inspector/issues"
-  },
-  "homepage": "https://github.com/rasmuslp/media-inspector#readme",
   "dependencies": {
     "chalk": "^2.4.1",
     "debug": "^4.1.0",
     "io-ts": "^1.10.4",
     "io-ts-reporters": "^0.0.21",
-    "json5": "^2.1.0",
+    "json5": "^2.1.3",
     "mediainfo-parser": "^1.1.5",
     "mime-types": "^2.1.20",
     "yargs": "^11.1.0"
@@ -52,31 +60,25 @@
   "devDependencies": {
     "@rasmuslp/eslint-config": "2.0.0-7",
     "@types/debug": "4.1.5",
-    "@types/jest": "24.0.23",
+    "@types/jest": "26.0.3",
     "@types/mime-types": "2.1.0",
-    "@types/node": "12.12.11",
+    "@types/node": "14.0.14",
     "@types/yargs": "13.0.3",
     "@typescript-eslint/eslint-plugin": "3.4.0",
     "codacy-coverage": "3.4.0",
-    "eslint": "7.3.0",
+    "eslint": "7.3.1",
     "eslint-plugin-import": "2.21.2",
-    "eslint-plugin-jest": "23.16.0",
+    "eslint-plugin-jest": "23.17.1",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "4.2.1",
     "eslint-plugin-standard": "4.0.1",
-    "husky": "3.1.0",
-    "jest": "24.9.0",
-    "jest-junit": "9.0.0",
-    "np": "5.1.3",
-    "ts-jest": "24.2.0",
-    "ts-node": "8.5.2",
-    "typescript": "3.7.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm test",
-      "pre-push": "npm run lint && npm test"
-    }
+    "husky": "4.2.5",
+    "jest": "26.1.0",
+    "jest-junit": "11.0.1",
+    "np": "6.2.5",
+    "ts-jest": "26.1.1",
+    "ts-node": "8.10.2",
+    "typescript": "3.9.5"
   },
   "engines": {
     "node": ">=10.13.0"
