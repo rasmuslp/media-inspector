@@ -11,7 +11,7 @@ export const MediaFileDataValidator = t.intersection([FileDataValidator, MediaFi
 
 export type MediaFileData = t.TypeOf<typeof MediaFileDataValidator>;
 
-export abstract class MediaFile extends File {
+export abstract class MediaFile extends File<MediaFileData> {
 	_metadata: Metadata;
 
 	constructor(nodePath, stats, mimeType, metadata?: Metadata) {

@@ -1,18 +1,21 @@
 import * as t from 'io-ts';
 
-export const SerializableDataValidator = t.type({
+/**
+ * NB: While declared optional, Serializable ensures that it will always be added on serialization
+ */
+export const SerializableDataValidator = t.partial({
 	type: t.string
 });
 
 export type SerializableData = t.TypeOf<typeof SerializableDataValidator>;
 
-export abstract class Serializable {
-	serialize(): object {
+export abstract class Serializable<T extends SerializableData> {
+	serialize(): T {
 		return {
 			type: this.constructor.name,
-			...this.serializeData()
+			...this.getDataForSerialization()
 		};
 	}
 
-	abstract serializeData();
+	abstract getDataForSerialization(): T;
 }

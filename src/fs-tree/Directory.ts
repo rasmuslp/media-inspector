@@ -11,17 +11,17 @@ export const DirectoryDataValidator = t.intersection([FsNodeDataValidator, Direc
 
 export type DirectoryData = t.TypeOf<typeof DirectoryDataValidator>;
 
-export class Directory extends FsNode {
+export class Directory extends FsNode<DirectoryData> {
 	_children: FsNode[];
 
-	constructor(nodePath, stats, children = []) {
+	constructor(nodePath: string, stats, children: FsNode[] = []) {
 		super(nodePath, stats);
 		this._children = children;
 		this._fsNodeType = FsNodeType.DIRECTORY;
 	}
 
 	// Children before parents
-	static getSortFnByPathDirFile(a, b): number {
+	static getSortFnByPathDirFile(a: FsNode, b: FsNode): number {
 		if (a.path.startsWith(b.path)) {
 			return -1;
 		}
@@ -50,8 +50,8 @@ export class Directory extends FsNode {
 		return this._children.filter(i => i.isFile());
 	}
 
-	serializeData(): object {
-		const data = Object.assign(super.serializeData(), {
+	getDataForSerialization(): DirectoryData {
+		const data = Object.assign(super.getDataForSerialization(), {
 			children: this._children.map(node => node.serialize())
 		});
 

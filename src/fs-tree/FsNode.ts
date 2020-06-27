@@ -12,7 +12,7 @@ export const FsNodeDataValidator = t.intersection([SerializableDataValidator, Fs
 
 export type FsNodeData = t.TypeOf<typeof FsNodeDataValidator>;
 
-export abstract class FsNode extends Serializable {
+export abstract class FsNode<T extends FsNodeData = FsNodeData> extends Serializable<T> {
 	_fsNodeType: FsNodeType;
 	_path: string;
 	_stats;
@@ -42,7 +42,7 @@ export abstract class FsNode extends Serializable {
 		return this._fsNodeType === FsNodeType.FILE;
 	}
 
-	serializeData(): object {
+	getDataForSerialization(): T {
 		return {
 			path: this._path,
 			stats: this._stats

@@ -11,11 +11,11 @@ export const FileDataValidator = t.intersection([FsNodeDataValidator, FileDataPa
 
 export type FileData = t.TypeOf<typeof FileDataValidator>;
 
-export class File extends FsNode {
+export class File<T extends FileData = FileData> extends FsNode<T> {
 	static _typeExtractor = RegExp(/^([^/]+)/);
 	_mimeType: string;
 
-	constructor(nodePath, stats, mimeType: string) {
+	constructor(nodePath: string, stats, mimeType: string) {
 		super(nodePath, stats);
 		this._fsNodeType = FsNodeType.FILE;
 		this._mimeType = mimeType;
@@ -40,8 +40,8 @@ export class File extends FsNode {
 		return 'unknown';
 	}
 
-	serializeData(): object {
-		const data = Object.assign(super.serializeData(), {
+	getDataForSerialization(): T {
+		const data = Object.assign(super.getDataForSerialization(), {
 			mimeType: this._mimeType
 		});
 

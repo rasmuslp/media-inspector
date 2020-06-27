@@ -1,14 +1,16 @@
 import * as t from 'io-ts';
 
-import { Serializable } from './Serializable';
+import { Serializable, SerializableDataValidator } from './Serializable';
 
-export const MetadataDataValidator = t.type({
+export const MetadataDataPartial = t.type({
 	metadata: t.unknown
 });
 
+export const MetadataDataValidator = t.intersection([SerializableDataValidator, MetadataDataPartial]);
+
 export type MetadataData = t.TypeOf<typeof MetadataDataValidator>;
 
-export abstract class Metadata extends Serializable {
+export abstract class Metadata extends Serializable<MetadataData> {
 	_metadata;
 
 	constructor(metadata) {
@@ -18,7 +20,7 @@ export abstract class Metadata extends Serializable {
 
 	abstract get(path: string);
 
-	serializeData(): object {
+	getDataForSerialization(): MetadataData {
 		return {
 			metadata: this._metadata
 		};
