@@ -18,15 +18,15 @@ export class File<T extends FileData = FileData> extends FsNode<T> {
 	constructor(nodePath: string, stats, mimeType: string) {
 		super(nodePath, stats);
 		this._fsNodeType = FsNodeType.FILE;
-		this._mimeType = mimeType;
+		this.data.mimeType = mimeType;
 	}
 
 	get mimeType(): string {
-		return this._mimeType;
+		return this.data.mimeType;
 	}
 
 	get type(): string {
-		return File.getTypeFrom(this._mimeType);
+		return File.getTypeFrom(this.data.mimeType);
 	}
 
 	static getTypeFrom(mimeType: string): string {
@@ -38,13 +38,5 @@ export class File<T extends FileData = FileData> extends FsNode<T> {
 		}
 
 		return 'unknown';
-	}
-
-	getDataForSerialization(): T {
-		const data = Object.assign(super.getDataForSerialization(), {
-			mimeType: this._mimeType
-		});
-
-		return data;
 	}
 }

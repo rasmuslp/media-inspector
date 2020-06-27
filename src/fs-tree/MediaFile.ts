@@ -29,11 +29,9 @@ export abstract class MediaFile extends File<MediaFileData> {
 
 	abstract async readMetadataFromFileSystem();
 
-	serializeData(): object {
-		const data = Object.assign(super.serializeData(), {
+	getDataForSerialization(): MediaFileData {
+		return {
 			metadata: this._metadata.serialize()
-		});
-
-		return data;
+		} as MediaFileData;
 	}
 }

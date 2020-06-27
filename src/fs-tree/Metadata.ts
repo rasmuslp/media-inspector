@@ -11,18 +11,10 @@ export const MetadataDataValidator = t.intersection([SerializableDataValidator, 
 export type MetadataData = t.TypeOf<typeof MetadataDataValidator>;
 
 export abstract class Metadata extends Serializable<MetadataData> {
-	_metadata;
-
-	constructor(metadata) {
+	constructor(metadata: unknown) {
 		super();
-		this._metadata = metadata;
+		this.data.metadata = metadata;
 	}
 
 	abstract get(path: string);
-
-	getDataForSerialization(): MetadataData {
-		return {
-			metadata: this._metadata
-		};
-	}
 }

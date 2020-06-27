@@ -51,10 +51,8 @@ export class Directory extends FsNode<DirectoryData> {
 	}
 
 	getDataForSerialization(): DirectoryData {
-		const data = Object.assign(super.getDataForSerialization(), {
+		return {
 			children: this._children.map(node => node.serialize())
-		});
-
-		return data;
+		} as DirectoryData;
 	}
 }
