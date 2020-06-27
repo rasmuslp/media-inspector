@@ -54,15 +54,8 @@ jobs:
     steps:
       - build
 
-  publish-v10:
-    docker:
-      - image: node:10
-    steps:
-      - build
-      - publish
-
 workflows:
-  test-deploy:
+  test:
     jobs:
       - test-v10
       - test-v12

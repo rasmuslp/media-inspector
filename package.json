@@ -35,6 +35,8 @@
     "full-test": "npm run type-check && npm run lint && npm run test",
     "lint": "eslint --ext .js,.ts .",
     "start": "node -r ts-node/register $NODE_DEBUG_OPTION src/cli.ts",
+    "publish:beta": "np --no-publish --no-release-draft --any-branch",
+    "publish:release": "np --no-publish --no-release-draft",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "type-check": "tsc"
@@ -73,7 +75,7 @@
     "husky": "3.1.0",
     "jest": "26.1.0",
     "jest-junit": "11.0.1",
-    "np": "5.1.3",
+    "np": "6.2.4",
     "ts-jest": "26.1.1",
     "ts-node": "8.10.2",
     "typescript": "3.9.5"
