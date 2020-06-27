@@ -32,7 +32,7 @@ commands:
       - run:
           command: npm run test -- --ci --coverage --runInBand --reporters=default --reporters=jest-junit
           environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/results.xml"
+            JEST_JUNIT_OUTPUT_NAME: "reports/junit/results.xml"
 
       - store_test_results:
           path: reports/junit

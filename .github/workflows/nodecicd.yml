@@ -28,7 +28,7 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends mediainfo
       - run: npm run test -- --ci --coverage --runInBand --reporters=default --reporters=jest-junit
         env:
-          JEST_JUNIT_OUTPUT: 'reports/junit/results.xml'
+          JEST_JUNIT_OUTPUT_NAME: 'reports/junit/results.xml'
       - name: Upload codecoverage to Codacy (Node 12 only)
         run: cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage
         if: matrix.node == 12
