@@ -4,25 +4,27 @@ import util from 'util';
 import * as mediainfoParser from 'mediainfo-parser';
 
 import { MediainfoMetadata } from './MediainfoMetadata';
-import { MetadataData } from './Metadata';
+import { MetadataDataRaw, MetadataData } from './Metadata';
 
 const exec = util.promisify(childProcess.exec);
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 const parse = util.promisify(mediainfoParser.parse);
 
 const mediainfoPath = 'mediainfo';
 
 export class MediainfoMetadataFactory {
-	static async _readFromFileSystem(path): Promise<object> {
+	static async _readFromFileSystem(path: string): Promise<MetadataDataRaw> {
 		// execute
 		const output = await exec(`${mediainfoPath} --Full --Output=XML "${path.replace(/`/g, '\\`')}"`);
 
 		// Parse mediainfo output
-		const parsed = await parse(output.stdout);
+		const parsed: MetadataDataRaw = await parse(output.stdout) as MetadataDataRaw;
 
 		return parsed;
 	}
 
-	static async getFromFileSystem(path): Promise<MediainfoMetadata> {
+	static async getFromFileSystem(path: string): Promise<MediainfoMetadata> {
 		const metadata = await MediainfoMetadataFactory._readFromFileSystem(path);
 
 		// Lets wrap that up
@@ -31,9 +33,8 @@ export class MediainfoMetadataFactory {
 		return mediainfoMetadata;
 	}
 
-	static getFromSerialized(serialized): MediainfoMetadata {
-		const data = serialized as MetadataData;
-		const mediainfoMetadata = new MediainfoMetadata(data.metadata);
+	static getFromSerialized(serialized: MetadataData): MediainfoMetadata {
+		const mediainfoMetadata = new MediainfoMetadata(serialized.metadata);
 
 		return mediainfoMetadata;
 	}

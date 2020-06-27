@@ -1,20 +1,19 @@
 import * as t from 'io-ts';
 
-import { FsNode, FsNodeDataValidator } from './FsNode';
+import { FsNode, FsNodeStats, TFsNode } from './FsNode';
 
-const FileDataPartial = t.partial({
+const TFilePartial = t.type({
 	mimeType: t.string
 });
 
-export const FileDataValidator = t.intersection([FsNodeDataValidator, FileDataPartial]);
-
-export type FileData = t.TypeOf<typeof FileDataValidator>;
+export const TFile = t.intersection([TFsNode, TFilePartial]);
+export type FileData = t.TypeOf<typeof TFile>;
 
 export class File<T extends FileData = FileData> extends FsNode<T> {
 	static _typeExtractor = RegExp(/^([^/]+)/);
 	_mimeType: string;
 
-	constructor(nodePath: string, stats, mimeType: string) {
+	constructor(nodePath: string, stats: FsNodeStats, mimeType: string) {
 		super(nodePath, stats);
 		this.data.mimeType = mimeType;
 	}

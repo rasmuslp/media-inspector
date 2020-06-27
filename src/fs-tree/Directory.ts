@@ -1,19 +1,18 @@
 import * as t from 'io-ts';
 
-import { FsNode, FsNodeDataValidator } from './FsNode';
+import { FsNode, FsNodeStats, TFsNode } from './FsNode';
 
-const DirectoryDataPartial = t.type({
-	children: t.array(FsNodeDataValidator)
+const TDirectoryPartial = t.type({
+	children: t.array(TFsNode)
 });
 
-export const DirectoryDataValidator = t.intersection([FsNodeDataValidator, DirectoryDataPartial]);
-
-export type DirectoryData = t.TypeOf<typeof DirectoryDataValidator>;
+export const TDirectory = t.intersection([TFsNode, TDirectoryPartial]);
+export type DirectoryData = t.TypeOf<typeof TDirectory>;
 
 export class Directory extends FsNode<DirectoryData> {
 	_children: FsNode[];
 
-	constructor(nodePath: string, stats, children: FsNode[] = []) {
+	constructor(nodePath: string, stats: FsNodeStats, children: FsNode[] = []) {
 		super(nodePath, stats);
 		this._children = children;
 	}

@@ -3,11 +3,11 @@ import * as t from 'io-ts';
 /**
  * NB: While declared optional, Serializable ensures that it will always be added on serialization
  */
-export const SerializableDataValidator = t.type({
+export const TSerializable = t.type({
 	type: t.string
 });
 
-export type SerializableData = t.TypeOf<typeof SerializableDataValidator>;
+export type SerializableData = t.TypeOf<typeof TSerializable>;
 
 export abstract class Serializable<T extends SerializableData> {
 	data: Partial<T>;

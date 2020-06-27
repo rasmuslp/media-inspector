@@ -1,20 +1,19 @@
 import * as t from 'io-ts';
 
-import { Serializable, SerializableDataValidator } from './Serializable';
+import { Serializable, TSerializable } from './Serializable';
 
-export const FsNodeStatsPartial = t.type({
+export const TFsNodeStats = t.type({
 	size: t.number
 });
+export type FsNodeStats = t.TypeOf<typeof TFsNodeStats>;
 
-export const FsNodeDataPartial = t.type({
+export const TFsNodePartial = t.type({
 	path: t.string,
-	stats: FsNodeStatsPartial
+	stats: TFsNodeStats
 });
 
-export const FsNodeDataValidator = t.intersection([SerializableDataValidator, FsNodeDataPartial]);
-
-export type FsNodeStats = t.TypeOf<typeof FsNodeStatsPartial>;
-export type FsNodeData = t.TypeOf<typeof FsNodeDataValidator>;
+export const TFsNode = t.intersection([TSerializable, TFsNodePartial]);
+export type FsNodeData = t.TypeOf<typeof TFsNode>;
 
 export abstract class FsNode<T extends FsNodeData = FsNodeData> extends Serializable<T> {
 	constructor(nodePath: string, stats: FsNodeStats) {
