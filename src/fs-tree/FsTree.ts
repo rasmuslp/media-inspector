@@ -38,7 +38,7 @@ export class FsTree {
 			},
 			data: node.serialize()
 		};
-		const json = JSON.stringify(serialized, null, 4);
+		const json = JSON.stringify(serialized, undefined, 4);
 
 		return await writeFile(writePath, json, 'utf8');
 	}
@@ -87,7 +87,12 @@ export class FsTree {
 
 		await FsTree.traverse(node, node => void sizes.push(node.size));
 
-		return sizes.reduce((sum: number, cur: number) => sum + cur, 0);
+		let totalSize = 0;
+		for (const size of sizes) {
+			totalSize += size;
+		}
+
+		return totalSize;
 	}
 
 	// Returns list of tree, this included

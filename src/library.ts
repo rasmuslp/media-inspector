@@ -74,13 +74,14 @@ export async function run(options: LibOptions): Promise<void> {
 					matches.push(new AuxiliaryMatch('Directory empty', node));
 				}
 				else {
-					const childPaths = node.children.map(fsNode => fsNode.path);
-					const matchedChildren = matches.filter(match => childPaths.includes(match.fsNode.path));
+					const childPaths = new Set(node.children.map(fsNode => fsNode.path));
+					const matchedChildren = matches.filter(match => childPaths.has(match.fsNode.path));
 
 					// Get sizes of matched children
-					const sizeOfMatchedChildren = matchedChildren
-						.map(match => match.fsNode.size)
-						.reduce((acc, cur) => (acc += cur), 0);
+					let sizeOfMatchedChildren = 0;
+					for (const match of matchedChildren) {
+						sizeOfMatchedChildren += match.fsNode.size;
+					}
 
 					const sizeOfTree = await FsTree.getSize(node);
 
@@ -114,7 +115,7 @@ export async function run(options: LibOptions): Promise<void> {
 	}
 
 	// Sort deduped
-	const dedupedPurgres = Array.from(dedupedMap.values()).sort((a, b) => Directory.getSortFnByPathDirFile(a.fsNode, b.fsNode));
+	const dedupedPurgres = [...dedupedMap.values()].sort((a, b) => Directory.getSortFnByPathDirFile(a.fsNode, b.fsNode));
 
 	for (const match of dedupedPurgres) {
 		if (options.verbose) {
@@ -127,14 +128,15 @@ export async function run(options: LibOptions): Promise<void> {
 	}
 
 	if (options.verbose) {
-		const spaceFreeable = dedupedPurgres
-			.map(match => match.fsNode.size)
-			.reduce((acc, cur) => (acc += cur), 0);
+		let spaceFreeable = 0;
+		for (const match of dedupedPurgres) {
+			spaceFreeable += match.fsNode.size;
+		}
 
-		console.log('Space freeable: ', spaceFreeable);
+		console.log('Space freeable:\t', spaceFreeable);
 
 		const size = await FsTree.getSize(node);
-		console.log('Total Size: ', size);
+		console.log('Total Size:\t', size);
 
 		const reduction = spaceFreeable / size * 100;
 		console.log(`Reduction: ${reduction.toFixed(2)}%`);
@@ -151,8 +153,8 @@ async function filter(node: FsNode, filterPath: string, verbose = false): Promis
 	try {
 		fileContent = await readFile(absoluteFilterPath, 'utf8');
 	}
-	catch (e) {
-		throw new Error(`Could not read filter at '${absoluteFilterPath}': ${(e as Error).message}`);
+	catch (error) {
+		throw new Error(`Could not read filter at '${absoluteFilterPath}': ${(error as Error).message}`);
 	}
 	const filterRules = FilterFactory.getFromSerialized(fileContent);
 

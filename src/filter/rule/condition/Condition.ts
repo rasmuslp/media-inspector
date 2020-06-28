@@ -33,7 +33,7 @@ export abstract class Condition<T = any> {
 	abstract check(inputValue: string): ConditionResult;
 
 	static convertValue(value: unknown): ConditionConvertedValueType {
-		if (!isNaN(Number(value))) {
+		if (!Number.isNaN(Number(value))) {
 			return Number(value);
 		}
 

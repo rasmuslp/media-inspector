@@ -26,8 +26,8 @@ export class FilterFactory {
 			const parsed = JSON5.parse(data) as FilterData;
 			return parsed;
 		}
-		catch (e) {
-			throw new Error(`Could not parse filter: ${(e as Error).message}`);
+		catch (error) {
+			throw new Error(`Could not parse filter: ${(error as Error).message}`);
 		}
 	}
 }

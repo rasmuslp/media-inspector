@@ -10,7 +10,7 @@ export const TFile = t.intersection([TFsNode, TFilePartial]);
 export type FileData = t.TypeOf<typeof TFile>;
 
 export class File<T extends FileData = FileData> extends FsNode<T> {
-	static _typeExtractor = RegExp(/^([^/]+)/);
+	static _typeExtractor = new RegExp(/^([^/]+)/);
 
 	constructor(nodePath: string, stats: FsNodeStats, mimeType: string) {
 		super(nodePath, stats);

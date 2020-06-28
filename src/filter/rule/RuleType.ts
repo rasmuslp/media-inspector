@@ -7,7 +7,7 @@ export enum RuleType {
 }
 
 export const RuleTypeValidator = t.keyof({
-	[RuleType.DEFAULT]: null,
-	[RuleType.METADATA]: null,
-	[RuleType.SEASON_SIZE_DISCREPANCY]: null
+	[RuleType.DEFAULT]: undefined,
+	[RuleType.METADATA]: undefined,
+	[RuleType.SEASON_SIZE_DISCREPANCY]: undefined
 });
