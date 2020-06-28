@@ -18,7 +18,7 @@ export class ConditionBetween extends Condition<ConditionBetweenValueType> {
 		const value = ConditionBetween.convertValue(inputValue);
 
 		// Check condition
-		if (this.expectedValue[0] <= value && value <= this.expectedValue[1]) {
+		if (this.value[0] <= value && value <= this.value[1]) {
 			return new ConditionResult(this, value, ConditionSatisfied.YES);
 		}
 
@@ -26,10 +26,10 @@ export class ConditionBetween extends Condition<ConditionBetweenValueType> {
 	}
 
 	toString(): string {
-		return `${this.expectedValue[0]} <= X <= ${this.expectedValue[1]}`;
+		return `${this.value[0]} <= X <= ${this.value[1]}`;
 	}
 
 	toStringForValue(inputValue): string {
-		return `${this.expectedValue[0]} <= ${inputValue} <= ${this.expectedValue[1]}`;
+		return `${this.value[0]} <= ${inputValue} <= ${this.value[1]}`;
 	}
 }

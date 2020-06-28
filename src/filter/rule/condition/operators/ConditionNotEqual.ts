@@ -18,7 +18,7 @@ export class ConditionNotEqual extends Condition<ConditionNotEqualValueType> {
 		const value = ConditionNotEqual.convertValue(inputValue);
 
 		// Check condition
-		if (value !== this.expectedValue) {
+		if (value !== this.value) {
 			return new ConditionResult(this, value, ConditionSatisfied.YES);
 		}
 
@@ -26,6 +26,6 @@ export class ConditionNotEqual extends Condition<ConditionNotEqualValueType> {
 	}
 
 	toString(): string {
-		return `= ${this.expectedValue}`;
+		return `= ${this.value}`;
 	}
 }

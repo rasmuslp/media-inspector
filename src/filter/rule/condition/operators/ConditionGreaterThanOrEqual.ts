@@ -18,7 +18,7 @@ export class ConditionGreaterThanOrEqual extends Condition<ConditionGreaterThanO
 		const value = ConditionGreaterThanOrEqual.convertValue(inputValue);
 
 		// Check condition
-		if (value >= this.expectedValue) {
+		if (value >= this.value) {
 			return new ConditionResult(this, value, ConditionSatisfied.YES);
 		}
 
@@ -26,6 +26,6 @@ export class ConditionGreaterThanOrEqual extends Condition<ConditionGreaterThanO
 	}
 
 	toString(): string {
-		return `>= ${this.expectedValue}`;
+		return `>= ${this.value}`;
 	}
 }

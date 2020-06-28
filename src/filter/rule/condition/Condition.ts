@@ -12,20 +12,12 @@ export type ConditionData = t.TypeOf<typeof TCondition>;
 export type ConditionValueType = number|string|number[]|string[];
 
 export abstract class Condition<T = any> {
-	_path: string;
-	_value: T;
+	readonly path: string;
+	readonly value: T;
 
 	constructor(path: string, value: T) {
-		this._path = path;
-		this._value = value;
-	}
-
-	get expectedValue(): ConditionValueType {
-		return Condition.convertValue(this._value);
-	}
-
-	get path(): string {
-		return this._path;
+		this.path = path;
+		this.value = value;
 	}
 
 	get pathParts(): string[] {
