@@ -9,7 +9,7 @@ export const TFilter = t.array(TRule);
 export type FilterData = t.TypeOf<typeof TFilter>;
 
 export class FilterFactory {
-	static getFromSerialized(data): Rule[] {
+	static getFromSerialized(data: string): Rule[] {
 		const parsed = FilterFactory._parse(data);
 		const validatedRuleDatas = decodeTo(TFilter, parsed);
 		const rules: Rule[] = [];
@@ -21,7 +21,7 @@ export class FilterFactory {
 		return rules;
 	}
 
-	static _parse(data): FilterData {
+	static _parse(data: string): FilterData {
 		try {
 			const parsed = JSON5.parse(data) as FilterData;
 			return parsed;

@@ -43,7 +43,7 @@ export class Rule {
 		return this._mimeType;
 	}
 
-	checkRuleWithPathGetter(pathGetterFn: Function): RuleResult|null {
+	checkRuleWithPathGetter(pathGetterFn: (string) => string): RuleResult|null {
 		// All conditions must be met
 		const conditionResults = [];
 		for (const condition of this._conditions) {
