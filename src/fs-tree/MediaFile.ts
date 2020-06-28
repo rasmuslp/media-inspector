@@ -4,7 +4,11 @@ import { File, TFile } from './File';
 import { Metadata, TMetadata } from './Metadata';
 import { FsNodeStats } from './FsNode';
 
-export const TMediaFile = t.intersection([TFile, TMetadata]);
+const TMediaFilePartial = t.type({
+	metadata: TMetadata
+});
+
+export const TMediaFile = t.intersection([TFile, TMediaFilePartial]);
 export type MediaFileData = t.TypeOf<typeof TMediaFile>;
 
 export abstract class MediaFile extends File<MediaFileData> {

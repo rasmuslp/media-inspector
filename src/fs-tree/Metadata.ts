@@ -2,20 +2,28 @@ import * as t from 'io-ts';
 
 import { Serializable, TSerializable } from './Serializable';
 
-export const TMetadataDataRaw = t.type({
-	media: t.record(t.string, t.UnknownRecord)
-});
-export type MetadataDataRaw = t.TypeOf<typeof TMetadataDataRaw>;
-
-export const TMetadataPartial = t.type({
-	metadata: TMetadataDataRaw
+export const TMiTrack = t.type({
+	_type: t.string
 });
 
-export const TMetadata = t.intersection([TSerializable, TMetadataPartial]);
-export type MetadataData = t.TypeOf<typeof TMetadata>;
+export const TMiMetadataRaw = t.type({
+	media: t.record(t.string, t.array(TMiTrack))
+});
+export type MiMetadataRaw = t.TypeOf<typeof TMiMetadataRaw>;
+
+export const TMiMetadataPartial = t.type({
+	metadata: TMiMetadataRaw
+});
+
+export const TMiMetadata = t.intersection([TSerializable, TMiMetadataPartial]);
+export type MiMetadataData = t.TypeOf<typeof TMiMetadata>;
+
+// TODO: Make Metadata class extend different kind of metadata
+export const TMetadata = TMiMetadata;
+export type MetadataData = MiMetadataData;
 
 export abstract class Metadata extends Serializable<MetadataData> {
-	constructor(metadata: MetadataDataRaw) {
+	constructor(metadata: MiMetadataRaw) {
 		super();
 		this.data.metadata = metadata;
 	}
