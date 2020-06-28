@@ -11,34 +11,32 @@ export class MediainfoMetadata extends Metadata {
 		throw new Error(`Track type '${trackType}' not found`);
 	}
 
-	static _getOrDie(track, property: string, errorMessage: string): string {
-		// See if the property is there
-		if (property in track) {
-			return track[property];
-		}
+	get(path: string): string {
+		const [trackType, propertyName] = path.split('.');
+		const property = this._getProperty(trackType, propertyName);
 
-		// Or die
-		throw new Error(errorMessage);
+		return property;
 	}
 
-	get(path: string): string {
-		const [trackType, property] = path.split('.');
+	_getProperty(trackType: string, property: string): string {
 		const track = this._getTrack(trackType);
 
+		// eslint-disable-next-line default-case
 		switch (trackType) {
-			// container
 			case 'general': {
+				// eslint-disable-next-line default-case
 				switch (property) {
 					case 'bitrate':
 						return (track as {overallbitrate: string}).overallbitrate;
-
-					default:
-						return MediainfoMetadata._getOrDie(track, property, `[get] could not find '${property}' in '${trackType}'`);
 				}
 			}
-
-			default:
-				return MediainfoMetadata._getOrDie(track, property, `[get] could not find '${property}' in '${trackType}'`);
 		}
+
+		// See if the property is there
+		if (property in track) {
+			return track[property] as string;
+		}
+
+		throw new Error(`[get] could not find '${property}' in '${trackType}'`);
 	}
 }
