@@ -2,18 +2,18 @@ import debug from 'debug';
 import * as t from 'io-ts';
 
 import { RuleResult } from './RuleResult';
-import { Condition, ConditionDataValidator } from './condition/Condition';
+import { Condition, TCondition } from './condition/Condition';
 import { RuleTypeValidator } from './RuleType';
 
 const debugLog = debug('Rule');
 
-export const RuleDataValidator = t.type({
+export const TRule = t.type({
 	mimeType: t.string,
 	type: RuleTypeValidator,
-	conditions: t.array(ConditionDataValidator)
+	conditions: t.array(TCondition)
 });
 
-export type RuleData = t.TypeOf<typeof RuleDataValidator>;
+export type RuleData = t.TypeOf<typeof TRule>;
 
 export class Rule {
 	_mimeType: string;
