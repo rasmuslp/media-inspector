@@ -9,7 +9,7 @@ export const TCondition = t.type({
 });
 export type ConditionData = t.TypeOf<typeof TCondition>;
 
-export type ConditionValueType = number|string|number[]|string[];
+export type ConditionConvertedValueType = number|string;
 
 export abstract class Condition<T = any> {
 	readonly path: string;
@@ -32,23 +32,9 @@ export abstract class Condition<T = any> {
 
 	abstract check(inputValue: string): ConditionResult;
 
-	static convertValue(value): ConditionValueType {
-		if (Array.isArray(value)) {
-			const numbers = value.filter(v => !isNaN(Number(v.toString())));
-			if (value.length === numbers.length) {
-				return value.map(v => Number(v.toString()));
-			}
-
-			const strings = value.filter(v => typeof v === 'string');
-			if (value.length === strings.length) {
-				return value.map(v => v.toLocaleLowerCase());
-			}
-
-			return value.map(v => v.toString());
-		}
-
-		if (!isNaN(Number(value.toString()))) {
-			return Number(value.toString());
+	static convertValue(value: unknown): ConditionConvertedValueType {
+		if (!isNaN(Number(value))) {
+			return Number(value);
 		}
 
 		if (typeof value === 'string') {
