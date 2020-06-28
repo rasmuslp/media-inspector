@@ -1,12 +1,13 @@
 import { FsTree, FsNode, File, MediaFile } from '../fs-tree';
 import { FilterMatch } from './FilterMatch';
+import { Rule } from '../filter/rule/Rule';
 import { RuleResult } from '../filter/rule/RuleResult';
 import { Match } from './Match';
 
 export class FilterMatcher {
-	static async getMatches(node: FsNode, filterRules): Promise<Match[]> {
+	static async getMatches(node: FsNode, filterRules: Rule[]): Promise<Match[]> {
 		// Build list of matches
-		const matches = [];
+		const matches: Match[] = [];
 		await FsTree.traverse(node, node => {
 			// Check all rules
 			const ruleResults: RuleResult[] = [];

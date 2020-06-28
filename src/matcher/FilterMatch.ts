@@ -7,7 +7,7 @@ import { FsNode } from '../fs-tree';
 export class FilterMatch extends Match {
 	_ruleResults: RuleResult[];
 
-	constructor(message: string, fsNode: FsNode, ruleResults = []) {
+	constructor(message: string, fsNode: FsNode, ruleResults: RuleResult[] = []) {
 		super(message, fsNode);
 
 		this._ruleResults = ruleResults;
@@ -19,7 +19,7 @@ export class FilterMatch extends Match {
 
 	getResultsAsStrings({ colorized = false } = {}): string[] {
 		// Filter to remove any 'passed' entries, as they are stored as null
-		const ruleMessages = [];
+		const ruleMessages: string[] = [];
 		const ruleResultsSorted = [...this._ruleResults].sort((a, b) => a.getWeightedScore() - b.getWeightedScore()).reverse();
 		for (const ruleResult of ruleResultsSorted) {
 			let ruleMessage = `${ruleResult.satisfied ? 'MATCHED' : 'failed'}: ${ruleResult.getResultsAsStrings().join(', ')}`;

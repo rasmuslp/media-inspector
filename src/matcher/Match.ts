@@ -1,10 +1,10 @@
-import { FsNode } from '../fs-tree/FsNode';
+import { FsNode } from '../fs-tree';
 
 export abstract class Match {
 	_message: string;
 	_fsNode: FsNode;
 
-	constructor(message, fsNode) {
+	constructor(message: string, fsNode: FsNode) {
 		this._message = message;
 		this._fsNode = fsNode;
 	}
