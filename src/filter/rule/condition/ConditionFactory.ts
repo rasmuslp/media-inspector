@@ -3,12 +3,12 @@ import crypto from 'crypto';
 import { ConditionOperator } from './ConditionOperator';
 
 import { Condition, ConditionData } from './Condition';
-import { ConditionBetween } from './ConditionBetween';
-import { ConditionEqual } from './ConditionEqual';
-import { ConditionGreaterThanOrEqual } from './ConditionGreaterThanOrEqual';
-import { ConditionIn } from './ConditionIn';
-import { ConditionLessThan } from './ConditionLessThan';
-import { ConditionNotEqual } from './ConditionNotEqual';
+import { ConditionBetween } from './operators/ConditionBetween';
+import { ConditionEqual } from './operators/ConditionEqual';
+import { ConditionGreaterThanOrEqual } from './operators/ConditionGreaterThanOrEqual';
+import { ConditionIn } from './operators/ConditionIn';
+import { ConditionLessThan } from './operators/ConditionLessThan';
+import { ConditionNotEqual } from './operators/ConditionNotEqual';
 
 export class ConditionFactory {
 	static _conditions = new Map();

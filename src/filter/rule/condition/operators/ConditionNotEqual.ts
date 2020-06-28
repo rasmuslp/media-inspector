@@ -1,13 +1,13 @@
-import { Condition } from './Condition';
-import { ConditionResult, ConditionSatisfied } from './ConditionResult';
+import { Condition } from '../Condition';
+import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
 
-export class ConditionEqual extends Condition {
+export class ConditionNotEqual extends Condition {
 	check(inputValue): ConditionResult {
 		// Convert the input
-		const value = ConditionEqual.convertValue(inputValue);
+		const value = ConditionNotEqual.convertValue(inputValue);
 
 		// Check condition
-		if (value === this.expectedValue) {
+		if (value !== this.expectedValue) {
 			return new ConditionResult(this, value, ConditionSatisfied.YES);
 		}
 

@@ -1,5 +1,5 @@
-import { Condition } from './Condition';
-import { ConditionResult, ConditionSatisfied } from './ConditionResult';
+import { Condition } from '../Condition';
+import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
 
 export class ConditionIn extends Condition {
 	constructor(path: string, value) {
