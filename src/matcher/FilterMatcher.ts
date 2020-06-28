@@ -8,7 +8,7 @@ export class FilterMatcher {
 	static async getMatches(node: FsNode, filterRules: Rule[]): Promise<Match[]> {
 		// Build list of matches
 		const matches: Match[] = [];
-		await FsTree.traverse(node, node => {
+		await FsTree.traverse(node, async node => {
 			// Check all rules
 			const ruleResults: RuleResult[] = [];
 			for (const rule of filterRules) {

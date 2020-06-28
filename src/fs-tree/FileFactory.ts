@@ -5,9 +5,10 @@ import { VideoFile } from './VideoFile';
 import { MediainfoMetadataFactory } from './MediainfoMetadataFactory';
 import { MediaFileData } from './MediaFile';
 import { SerializableData } from './Serializable';
+import { FsNodeStats } from './FsNode';
 
 export class FileFactory {
-	static getFromFileSystem(nodePath: string, stats): File {
+	static getFromFileSystem(nodePath: string, stats: FsNodeStats): File {
 		const mimeType = mime.lookup(nodePath) || 'application/octet-stream';
 		const type = File.getTypeFrom(mimeType);
 

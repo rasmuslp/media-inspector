@@ -6,6 +6,7 @@ import { Directory } from './Directory';
 
 import { DirectoryFactory } from './DirectoryFactory';
 import { MediaFile } from './MediaFile';
+import { SerializableData } from './Serializable';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -25,7 +26,7 @@ export class FsTree {
 
 	static async getFromSerialized(serializePath: string): Promise<FsNode> {
 		const fileContent = await readFile(serializePath, 'utf8');
-		const parsed = JSON.parse(fileContent);
+		const parsed = JSON.parse(fileContent) as {data: SerializableData};
 		const node = DirectoryFactory.getTreeFromSerialized(parsed.data);
 		return node;
 	}
@@ -46,11 +47,11 @@ export class FsTree {
 		return serializePath.endsWith('.json');
 	}
 
-	static async traverse(node: FsNode, nodeFn: Function): Promise<void> {
+	static async traverse(node: FsNode, nodeFn: (node: FsNode) => Promise<void>): Promise<void> {
 		await FsTree.traverseBfs(node, nodeFn);
 	}
 
-	static async traverseBfs(node: FsNode, nodeFn: Function): Promise<void> {
+	static async traverseBfs(node: FsNode, nodeFn: (node: FsNode) => Promise<void>): Promise<void> {
 		const queue: [FsNode] = [node];
 		while (queue.length) {
 			// Get node
@@ -67,8 +68,8 @@ export class FsTree {
 		}
 	}
 
-	static async find(node: FsNode, matchFn: Function): Promise<FsNode[]> {
-		const matches = [];
+	static async find(node: FsNode, matchFn: (node: FsNode) => Promise<boolean>): Promise<FsNode[]> {
+		const matches: FsNode[] = [];
 
 		await FsTree.traverse(node, async node => {
 			// Check match
@@ -82,19 +83,18 @@ export class FsTree {
 	}
 
 	static async getSize(node: FsNode): Promise<number> {
-		const sizes = [];
+		const sizes: number[] = [];
 
-		await FsTree.traverse(node, node => sizes.push(node.size));
+		await FsTree.traverse(node, node => void sizes.push(node.size));
 
 		return sizes.reduce((sum: number, cur: number) => sum + cur, 0);
 	}
 
 	// Returns list of tree, this included
 	static async getAsList(node: FsNode): Promise<FsNode[]> {
-		const nodes = [];
-		await FsTree.traverse(node, node => {
-			nodes.push(node);
-		});
+		const nodes: FsNode[] = [];
+
+		await FsTree.traverse(node, node => void nodes.push(node));
 
 		return nodes;
 	}

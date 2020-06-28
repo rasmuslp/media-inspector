@@ -18,7 +18,7 @@ describe('FsNode', () => {
 		size: 0
 	};
 
-	let fsNode;
+	let fsNode: FsNode;
 	beforeEach(() => {
 		fsNode = new FsNodeImpl(pathTofsNode, stats);
 	});

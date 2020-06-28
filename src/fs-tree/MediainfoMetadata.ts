@@ -1,7 +1,7 @@
 import { Metadata } from './Metadata';
 
 export class MediainfoMetadata extends Metadata {
-	_getTrack(trackType: string): any {
+	_getTrack(trackType: string): unknown {
 		for (const track of this.data.metadata.media.track) {
 			if (trackType.toLocaleLowerCase() === track._type.toLocaleLowerCase()) {
 				return track;
@@ -33,7 +33,7 @@ export class MediainfoMetadata extends Metadata {
 		}
 
 		// See if the property is there
-		if (property in track) {
+		if (track[property]) {
 			return track[property] as string;
 		}
 

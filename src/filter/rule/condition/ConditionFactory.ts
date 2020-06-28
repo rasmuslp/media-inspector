@@ -65,7 +65,7 @@ export class ConditionFactory {
 			}
 
 			default:
-				throw new Error(`Unknown operator '${condition.operator}' in ${JSON.stringify(condition)}`);
+				throw new Error(`Unknown operator '${condition.operator as string}' in ${JSON.stringify(condition)}`);
 		}
 	}
 }
