@@ -59,7 +59,7 @@ export async function run(options: LibOptions): Promise<void> {
 		return;
 	}
 
-	const matches = [];
+	const matches: Match[] = [];
 
 	if (options.filterPath) {
 		const filterMatches = await filter(node, options.filterPath, options.verbose);
@@ -68,8 +68,8 @@ export async function run(options: LibOptions): Promise<void> {
 
 	if (options.includeAuxiliary) {
 		// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for matcher
-		await FsTree.traverse(node, async node => {
-			if (node.isDirectory()) {
+		await FsTree.traverse(node, async (node: FsNode) => {
+			if (node instanceof Directory) {
 				if (!node.children || node.children.length === 0) {
 					matches.push(new AuxiliaryMatch('Directory empty', node));
 				}
@@ -98,7 +98,7 @@ export async function run(options: LibOptions): Promise<void> {
 	}
 
 	// Dedupe list
-	const dedupedMap = new Map();
+	const dedupedMap = new Map<FsNode, Match>();
 	for (const match of matches) {
 		const existing = dedupedMap.get(match.fsNode);
 		if (existing) {
@@ -152,7 +152,7 @@ async function filter(node: FsNode, filterPath: string, verbose = false): Promis
 		fileContent = await readFile(absoluteFilterPath, 'utf8');
 	}
 	catch (e) {
-		throw new Error(`Could not read filter at '${absoluteFilterPath}': ${e.message}`);
+		throw new Error(`Could not read filter at '${absoluteFilterPath}': ${(e as Error).message}`);
 	}
 	const filterRules = FilterFactory.getFromSerialized(fileContent);
 
@@ -167,10 +167,10 @@ async function filter(node: FsNode, filterPath: string, verbose = false): Promis
 	return matches;
 }
 
-function getLogMessageOfMatch(match, { colorized = false } = {}): string {
+function getLogMessageOfMatch(match: Match, { colorized = false } = {}): string {
 	let message = `${colorized ? chalk.yellow(match.fsNode.path) : match.fsNode.path}\n\t`;
 
-	if (match.fsNode.isDirectory()) {
+	if (match.fsNode instanceof Directory) {
 		message += '[Directory]';
 	}
 	else if (match.fsNode instanceof MediaFile) {
