@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { Match } from './Match';
+import { Match, MatchReasonOptions } from './Match';
 import { RuleResult } from '../filter/rule/RuleResult';
 import { FsNode } from '../fs-tree';
 
@@ -35,7 +35,8 @@ export class FilterMatch extends Match {
 		return ruleMessages;
 	}
 
-	getMatchReason({ colorized = false } = {}): string {
+	getMatchReason(options: MatchReasonOptions): string {
+		const colorized = options.colorized ?? false;
 		return `[Filter Matched]:\n${this.getResultsAsStrings({ colorized }).map(message => '\t\t' + message).join('\n')}`;
 	}
 }
