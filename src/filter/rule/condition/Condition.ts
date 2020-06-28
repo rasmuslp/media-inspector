@@ -26,11 +26,11 @@ export abstract class Condition<T = any> {
 
 	abstract toString(): string
 
-	toStringForValue(inputValue): string {
+	toStringForValue(inputValue: string): string {
 		return `${inputValue} ${this.toString()}`;
 	}
 
-	abstract check(inputValue): ConditionResult;
+	abstract check(inputValue: string): ConditionResult;
 
 	static convertValue(value): ConditionValueType {
 		if (Array.isArray(value)) {

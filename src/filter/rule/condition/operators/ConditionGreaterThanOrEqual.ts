@@ -13,7 +13,7 @@ export const TConditionGreaterThanOrEqual = t.intersection([TConditionGreaterTha
 export type ConditionGreaterThanOrEqualData = t.TypeOf<typeof TConditionGreaterThanOrEqual>;
 
 export class ConditionGreaterThanOrEqual extends Condition<ConditionGreaterThanOrEqualValueType> {
-	check(inputValue): ConditionResult {
+	check(inputValue: string): ConditionResult {
 		// Convert the input
 		const value = ConditionGreaterThanOrEqual.convertValue(inputValue);
 

@@ -13,7 +13,7 @@ export const TConditionNotEqual = t.intersection([TConditionNotEqualPartial, TCo
 export type ConditionNotEqualData = t.TypeOf<typeof TConditionNotEqual>;
 
 export class ConditionNotEqual extends Condition<ConditionNotEqualValueType> {
-	check(inputValue): ConditionResult {
+	check(inputValue: string): ConditionResult {
 		// Convert the input
 		const value = ConditionNotEqual.convertValue(inputValue);
 

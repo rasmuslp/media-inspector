@@ -13,7 +13,7 @@ export const TConditionBetween = t.intersection([TConditionBetweenPartial, TCond
 export type ConditionBetweenData = t.TypeOf<typeof TConditionBetween>;
 
 export class ConditionBetween extends Condition<ConditionBetweenValueType> {
-	check(inputValue): ConditionResult {
+	check(inputValue: string): ConditionResult {
 		// Convert the input
 		const value = ConditionBetween.convertValue(inputValue);
 
@@ -29,7 +29,7 @@ export class ConditionBetween extends Condition<ConditionBetweenValueType> {
 		return `${this.value[0]} <= X <= ${this.value[1]}`;
 	}
 
-	toStringForValue(inputValue): string {
+	toStringForValue(inputValue: string): string {
 		return `${this.value[0]} <= ${inputValue} <= ${this.value[1]}`;
 	}
 }

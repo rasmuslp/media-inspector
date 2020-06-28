@@ -13,7 +13,7 @@ export const TConditionEqual = t.intersection([TConditionEqualPartial, TConditio
 export type ConditionEqualData = t.TypeOf<typeof TConditionEqual>;
 
 export class ConditionEqual extends Condition<ConditionEqualValueType> {
-	check(inputValue): ConditionResult {
+	check(inputValue: string): ConditionResult {
 		// Convert the input
 		const value = ConditionEqual.convertValue(inputValue);
 

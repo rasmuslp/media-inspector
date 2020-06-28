@@ -13,7 +13,7 @@ export const TConditionLessThan = t.intersection([TConditionLessThanPartial, TCo
 export type ConditionLessThanData = t.TypeOf<typeof TConditionLessThan>;
 
 export class ConditionLessThan extends Condition<ConditionLessThanValueType> {
-	check(inputValue): ConditionResult {
+	check(inputValue: string): ConditionResult {
 		// Convert the input
 		const value = ConditionLessThan.convertValue(inputValue);
 
