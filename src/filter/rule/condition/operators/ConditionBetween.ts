@@ -13,14 +13,6 @@ export const TConditionBetween = t.intersection([TConditionBetweenPartial, TCond
 export type ConditionBetweenData = t.TypeOf<typeof TConditionBetween>;
 
 export class ConditionBetween extends Condition<ConditionBetweenValueType> {
-	constructor(path: string, value: ConditionBetweenValueType) {
-		super(path, value);
-
-		if (!Array.isArray(this.expectedValue)) {
-			throw new Error(`The 'between' operator expects an array of 2 values, not '${this.expectedValue}'. Path: ${path} Value: ${value.toString()}`);
-		}
-	}
-
 	check(inputValue): ConditionResult {
 		// Convert the input
 		const value = ConditionBetween.convertValue(inputValue);

@@ -3,15 +3,17 @@ import crypto from 'crypto';
 import { ConditionOperator } from './ConditionOperator';
 
 import { Condition, ConditionData } from './Condition';
-import { ConditionBetween, ConditionBetweenData } from './operators/ConditionBetween';
-import { ConditionEqual, ConditionEqualData } from './operators/ConditionEqual';
-import { ConditionGreaterThanOrEqual, ConditionGreaterThanOrEqualData } from './operators/ConditionGreaterThanOrEqual';
-import { ConditionIn, ConditionInData } from './operators/ConditionIn';
-import { ConditionLessThan, ConditionLessThanData } from './operators/ConditionLessThan';
-import { ConditionNotEqual, ConditionNotEqualData } from './operators/ConditionNotEqual';
+import { ConditionBetween, TConditionBetween } from './operators/ConditionBetween';
+import { ConditionEqual, TConditionEqual } from './operators/ConditionEqual';
+import { ConditionGreaterThanOrEqual, TConditionGreaterThanOrEqual } from './operators/ConditionGreaterThanOrEqual';
+import { ConditionIn, TConditionIn } from './operators/ConditionIn';
+import { ConditionLessThan, TConditionLessThan } from './operators/ConditionLessThan';
+import { ConditionNotEqual, TConditionNotEqual } from './operators/ConditionNotEqual';
+
+import { decodeTo } from '../../../lib/io-ts';
 
 export class ConditionFactory {
-	static _conditions = new Map();
+	static _conditions = new Map<string, Condition>();
 
 	static getSharedInstanceFromSerialized(conditionData: ConditionData): Condition {
 		// Calculate hash of input
@@ -33,32 +35,32 @@ export class ConditionFactory {
 		// Create and return
 		switch (condition.operator) {
 			case ConditionOperator.BETWEEN: {
-				const data = Object.assign({}, condition) as ConditionBetweenData;
+				const data = decodeTo(TConditionBetween, condition);
 				return new ConditionBetween(data.path, data.value);
 			}
 
 			case ConditionOperator.EQUAL: {
-				const data = Object.assign({}, condition) as ConditionEqualData;
+				const data = decodeTo(TConditionEqual, condition);
 				return new ConditionEqual(data.path, data.value);
 			}
 
 			case ConditionOperator.GREATER_THAN_OR_EQUAL: {
-				const data = Object.assign({}, condition) as ConditionGreaterThanOrEqualData;
+				const data = decodeTo(TConditionGreaterThanOrEqual, condition);
 				return new ConditionGreaterThanOrEqual(data.path, data.value);
 			}
 
 			case ConditionOperator.IN: {
-				const data = Object.assign({}, condition) as ConditionInData;
+				const data = decodeTo(TConditionIn, condition);
 				return new ConditionIn(data.path, data.value);
 			}
 
 			case ConditionOperator.LESS_THAN: {
-				const data = Object.assign({}, condition) as ConditionLessThanData;
+				const data = decodeTo(TConditionLessThan, condition);
 				return new ConditionLessThan(data.path, data.value);
 			}
 
 			case ConditionOperator.NOT_EQUAL: {
-				const data = Object.assign({}, condition) as ConditionNotEqualData;
+				const data = decodeTo(TConditionNotEqual, condition);
 				return new ConditionNotEqual(data.path, data.value);
 			}
 

@@ -13,14 +13,6 @@ export const TConditionIn = t.intersection([TConditionInPartial, TCondition]);
 export type ConditionInData = t.TypeOf<typeof TConditionIn>;
 
 export class ConditionIn extends Condition<ConditionInValueType> {
-	constructor(path: string, value: ConditionInValueType) {
-		super(path, value);
-
-		if (!Array.isArray(this.expectedValue)) {
-			throw new Error(`The 'in' operator expects an array, not '${this.expectedValue}'. Path: ${path} Value: ${value}`);
-		}
-	}
-
 	get expectedValue(): [] {
 		return super.expectedValue as [];
 	}
