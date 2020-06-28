@@ -5,18 +5,17 @@ import { ConditionOperatorValidator } from './ConditionOperator';
 
 export const TCondition = t.type({
 	path: t.string,
-	operator: ConditionOperatorValidator,
-	value: t.unknown
+	operator: ConditionOperatorValidator
 });
 export type ConditionData = t.TypeOf<typeof TCondition>;
 
 export type ConditionValueType = number|string|number[]|string[];
 
-export abstract class Condition {
+export abstract class Condition<T = any> {
 	_path: string;
-	_value;
+	_value: T;
 
-	constructor(path: string, value) {
+	constructor(path: string, value: T) {
 		this._path = path;
 		this._value = value;
 	}
@@ -33,7 +32,7 @@ export abstract class Condition {
 		return this.path.split('.');
 	}
 
-	abstract toString()
+	abstract toString(): string
 
 	toStringForValue(inputValue): string {
 		return `${inputValue} ${this.toString()}`;

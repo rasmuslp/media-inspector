@@ -4,13 +4,28 @@ import * as t from 'io-ts';
 import { RuleResult } from './RuleResult';
 import { Condition, TCondition } from './condition/Condition';
 import { RuleTypeValidator } from './RuleType';
+import { TConditionBetween } from './condition/operators/ConditionBetween';
+import { TConditionEqual } from './condition/operators/ConditionEqual';
+import { TConditionGreaterThanOrEqual } from './condition/operators/ConditionGreaterThanOrEqual';
+import { TConditionIn } from './condition/operators/ConditionIn';
+import { TConditionLessThan } from './condition/operators/ConditionLessThan';
+import { TConditionNotEqual } from './condition/operators/ConditionNotEqual';
 
 const debugLog = debug('Rule');
+
+const TAllConditionOperators = t.union([
+	TConditionBetween,
+	TConditionEqual,
+	TConditionGreaterThanOrEqual,
+	TConditionIn,
+	TConditionLessThan,
+	TConditionNotEqual
+]);
 
 export const TRule = t.type({
 	mimeType: t.string,
 	type: RuleTypeValidator,
-	conditions: t.array(TCondition)
+	conditions: t.array(TAllConditionOperators)
 });
 
 export type RuleData = t.TypeOf<typeof TRule>;

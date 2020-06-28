@@ -3,12 +3,12 @@ import crypto from 'crypto';
 import { ConditionOperator } from './ConditionOperator';
 
 import { Condition, ConditionData } from './Condition';
-import { ConditionBetween } from './operators/ConditionBetween';
-import { ConditionEqual } from './operators/ConditionEqual';
-import { ConditionGreaterThanOrEqual } from './operators/ConditionGreaterThanOrEqual';
-import { ConditionIn } from './operators/ConditionIn';
-import { ConditionLessThan } from './operators/ConditionLessThan';
-import { ConditionNotEqual } from './operators/ConditionNotEqual';
+import { ConditionBetween, ConditionBetweenData } from './operators/ConditionBetween';
+import { ConditionEqual, ConditionEqualData } from './operators/ConditionEqual';
+import { ConditionGreaterThanOrEqual, ConditionGreaterThanOrEqualData } from './operators/ConditionGreaterThanOrEqual';
+import { ConditionIn, ConditionInData } from './operators/ConditionIn';
+import { ConditionLessThan, ConditionLessThanData } from './operators/ConditionLessThan';
+import { ConditionNotEqual, ConditionNotEqualData } from './operators/ConditionNotEqual';
 
 export class ConditionFactory {
 	static _conditions = new Map();
@@ -29,31 +29,41 @@ export class ConditionFactory {
 		return condition;
 	}
 
-	static getFromSerialized(inputCondition: ConditionData): Condition {
-		const condition = Object.assign({}, inputCondition);
-
+	static getFromSerialized(condition: ConditionData): Condition {
 		// Create and return
 		switch (condition.operator) {
-			case ConditionOperator.BETWEEN:
-				return new ConditionBetween(condition.path, condition.value);
+			case ConditionOperator.BETWEEN: {
+				const data = Object.assign({}, condition) as ConditionBetweenData;
+				return new ConditionBetween(data.path, data.value);
+			}
 
-			case ConditionOperator.IN:
-				return new ConditionIn(condition.path, condition.value);
+			case ConditionOperator.EQUAL: {
+				const data = Object.assign({}, condition) as ConditionEqualData;
+				return new ConditionEqual(data.path, data.value);
+			}
 
-			case ConditionOperator.EQUAL:
-				return new ConditionEqual(condition.path, condition.value);
+			case ConditionOperator.GREATER_THAN_OR_EQUAL: {
+				const data = Object.assign({}, condition) as ConditionGreaterThanOrEqualData;
+				return new ConditionGreaterThanOrEqual(data.path, data.value);
+			}
 
-			case ConditionOperator.NOT_EQUAL:
-				return new ConditionNotEqual(condition.path, condition.value);
+			case ConditionOperator.IN: {
+				const data = Object.assign({}, condition) as ConditionInData;
+				return new ConditionIn(data.path, data.value);
+			}
 
-			case ConditionOperator.LESS_THAN:
-				return new ConditionLessThan(condition.path, condition.value);
+			case ConditionOperator.LESS_THAN: {
+				const data = Object.assign({}, condition) as ConditionLessThanData;
+				return new ConditionLessThan(data.path, data.value);
+			}
 
-			case ConditionOperator.GREATER_THAN_OR_EQUAL:
-				return new ConditionGreaterThanOrEqual(condition.path, condition.value);
+			case ConditionOperator.NOT_EQUAL: {
+				const data = Object.assign({}, condition) as ConditionNotEqualData;
+				return new ConditionNotEqual(data.path, data.value);
+			}
 
 			default:
-				throw new Error(`Unknown operator '${condition.operator}' in ${JSON.stringify(inputCondition)}`);
+				throw new Error(`Unknown operator '${condition.operator}' in ${JSON.stringify(condition)}`);
 		}
 	}
 }

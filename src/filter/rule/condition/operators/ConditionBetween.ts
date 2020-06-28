@@ -1,12 +1,23 @@
-import { Condition } from '../Condition';
+import * as t from 'io-ts';
+
+import { Condition, TCondition } from '../Condition';
 import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
 
-export class ConditionBetween extends Condition {
-	constructor(path: string, value) {
+export const TConditionBetweenValueType = t.tuple([t.number, t.number]);
+export type ConditionBetweenValueType = t.TypeOf<typeof TConditionBetweenValueType>;
+
+const TConditionBetweenPartial = t.type({
+	value: TConditionBetweenValueType
+});
+export const TConditionBetween = t.intersection([TConditionBetweenPartial, TCondition]);
+export type ConditionBetweenData = t.TypeOf<typeof TConditionBetween>;
+
+export class ConditionBetween extends Condition<ConditionBetweenValueType> {
+	constructor(path: string, value: ConditionBetweenValueType) {
 		super(path, value);
 
 		if (!Array.isArray(this.expectedValue)) {
-			throw new Error(`The 'between' operator expects an array of 2 values, not '${this.expectedValue}'. Path: ${path} Value: ${value}`);
+			throw new Error(`The 'between' operator expects an array of 2 values, not '${this.expectedValue}'. Path: ${path} Value: ${value.toString()}`);
 		}
 	}
 

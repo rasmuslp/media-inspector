@@ -1,8 +1,19 @@
-import { Condition } from '../Condition';
+import * as t from 'io-ts';
+
+import { Condition, TCondition } from '../Condition';
 import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
 
-export class ConditionIn extends Condition {
-	constructor(path: string, value) {
+export const TConditionInValueType = t.array(t.union([t.number, t.string]));
+export type ConditionInValueType = t.TypeOf<typeof TConditionInValueType>;
+
+const TConditionInPartial = t.type({
+	value: TConditionInValueType
+});
+export const TConditionIn = t.intersection([TConditionInPartial, TCondition]);
+export type ConditionInData = t.TypeOf<typeof TConditionIn>;
+
+export class ConditionIn extends Condition<ConditionInValueType> {
+	constructor(path: string, value: ConditionInValueType) {
 		super(path, value);
 
 		if (!Array.isArray(this.expectedValue)) {
