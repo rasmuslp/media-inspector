@@ -2,6 +2,7 @@ import { ConditionFactory } from './condition/ConditionFactory';
 
 import { RuleResult } from './RuleResult';
 import { ConditionOperator } from './condition/ConditionOperator';
+import { ConditionData } from './condition/Condition';
 
 describe('#satisfied', () => {
 	let failed1;
@@ -13,7 +14,7 @@ describe('#satisfied', () => {
 			path: 'dummy',
 			operator: ConditionOperator.EQUAL,
 			value: 'yesyes'
-		});
+		} as ConditionData);
 		failed1 = condition.check('nono');
 		failed2 = condition.check('nono');
 		satisfied1 = condition.check('yesyes');
@@ -44,8 +45,8 @@ describe('#getResultsAsStrings', () => {
 			path: 'video.framerate',
 			operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
 			value: 25
-		});
-		const result = condition.check(25);
+		} as ConditionData);
+		const result = condition.check('25');
 
 		const ruleResult = new RuleResult([result]);
 		const resultAsStrings = ruleResult.getResultsAsStrings();
@@ -60,8 +61,8 @@ describe('#getResultsAsStrings', () => {
 			path: 'audio.channels',
 			operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
 			value: 2
-		});
-		const result = condition.check(1);
+		} as ConditionData);
+		const result = condition.check('1');
 
 		const ruleResult = new RuleResult([result]);
 		const resultAsStrings = ruleResult.getResultsAsStrings();
@@ -79,18 +80,18 @@ describe('#getWeightedScore', () => {
 				path: 'video.framerate',
 				operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
 				value: 25
-			}),
+			} as ConditionData),
 
 			ConditionFactory.getFromSerialized({
 				path: 'audio.channels',
 				operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
 				value: 2
-			})
+			} as ConditionData)
 		];
 
 		const results = [
-			conditions[0].check(23),
-			conditions[1].check(2)
+			conditions[0].check('23'),
+			conditions[1].check('2')
 		];
 
 		const ruleResult = new RuleResult(results);
@@ -104,18 +105,18 @@ describe('#getWeightedScore', () => {
 				path: 'video.framerate',
 				operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
 				value: 25
-			}),
+			} as ConditionData),
 
 			ConditionFactory.getFromSerialized({
 				path: 'audio.channels',
 				operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
 				value: 2
-			})
+			} as ConditionData)
 		];
 
 		const results = [
-			conditions[0].check(25),
-			conditions[1].check(1)
+			conditions[0].check('25'),
+			conditions[1].check('1')
 		];
 
 		const ruleResult = new RuleResult(results);
