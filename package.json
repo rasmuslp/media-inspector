@@ -48,7 +48,7 @@
     }
   },
   "dependencies": {
-    "chalk": "^2.4.1",
+    "chalk": "^4.1.0",
     "debug": "^4.1.1",
     "io-ts": "^1.10.4",
     "io-ts-reporters": "^0.0.21",
