@@ -4,7 +4,7 @@ import { promisify } from 'util';
 
 import { Directory, DirectoryData } from './Directory';
 import { FileFactory } from './FileFactory';
-import { FsNode } from './FsNode';
+import { FsNode, FsNodeStats } from './FsNode';
 import { SerializableData } from './Serializable';
 
 const statAsync = promisify(fs.stat);
@@ -15,7 +15,7 @@ export class DirectoryFactory {
 		return await DirectoryFactory._getFsNodeFromFileSystem(nodePath);
 	}
 
-	static async getFromFileSystem(nodePath: string, stats): Promise<Directory> {
+	static async getFromFileSystem(nodePath: string, stats: FsNodeStats): Promise<Directory> {
 		const children = await DirectoryFactory._getChildrenFromFileSystem(nodePath);
 
 		return new Directory(nodePath, stats, children);

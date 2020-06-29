@@ -59,7 +59,7 @@ export async function run(options: LibOptions): Promise<void> {
 		return;
 	}
 
-	const matches = [];
+	const matches: Match[] = [];
 
 	if (options.filterPath) {
 		const filterMatches = await filter(node, options.filterPath, options.verbose);
@@ -68,19 +68,20 @@ export async function run(options: LibOptions): Promise<void> {
 
 	if (options.includeAuxiliary) {
 		// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for matcher
-		await FsTree.traverse(node, async node => {
-			if (node.isDirectory()) {
+		await FsTree.traverse(node, async (node: FsNode) => {
+			if (node instanceof Directory) {
 				if (!node.children || node.children.length === 0) {
 					matches.push(new AuxiliaryMatch('Directory empty', node));
 				}
 				else {
-					const childPaths = node.children.map(fsNode => fsNode.path);
-					const matchedChildren = matches.filter(match => childPaths.includes(match.fsNode.path));
+					const childPaths = new Set(node.children.map(fsNode => fsNode.path));
+					const matchedChildren = matches.filter(match => childPaths.has(match.fsNode.path));
 
 					// Get sizes of matched children
-					const sizeOfMatchedChildren = matchedChildren
-						.map(match => match.fsNode.size)
-						.reduce((acc, cur) => (acc += cur), 0);
+					let sizeOfMatchedChildren = 0;
+					for (const match of matchedChildren) {
+						sizeOfMatchedChildren += match.fsNode.size;
+					}
 
 					const sizeOfTree = await FsTree.getSize(node);
 
@@ -98,7 +99,7 @@ export async function run(options: LibOptions): Promise<void> {
 	}
 
 	// Dedupe list
-	const dedupedMap = new Map();
+	const dedupedMap = new Map<FsNode, Match>();
 	for (const match of matches) {
 		const existing = dedupedMap.get(match.fsNode);
 		if (existing) {
@@ -114,7 +115,7 @@ export async function run(options: LibOptions): Promise<void> {
 	}
 
 	// Sort deduped
-	const dedupedPurgres = Array.from(dedupedMap.values()).sort((a, b) => Directory.getSortFnByPathDirFile(a.fsNode, b.fsNode));
+	const dedupedPurgres = [...dedupedMap.values()].sort((a, b) => Directory.getSortFnByPathDirFile(a.fsNode, b.fsNode));
 
 	for (const match of dedupedPurgres) {
 		if (options.verbose) {
@@ -127,14 +128,15 @@ export async function run(options: LibOptions): Promise<void> {
 	}
 
 	if (options.verbose) {
-		const spaceFreeable = dedupedPurgres
-			.map(match => match.fsNode.size)
-			.reduce((acc, cur) => (acc += cur), 0);
+		let spaceFreeable = 0;
+		for (const match of dedupedPurgres) {
+			spaceFreeable += match.fsNode.size;
+		}
 
-		console.log('Space freeable: ', spaceFreeable);
+		console.log('Space freeable:\t', spaceFreeable);
 
 		const size = await FsTree.getSize(node);
-		console.log('Total Size: ', size);
+		console.log('Total Size:\t', size);
 
 		const reduction = spaceFreeable / size * 100;
 		console.log(`Reduction: ${reduction.toFixed(2)}%`);
@@ -151,8 +153,8 @@ async function filter(node: FsNode, filterPath: string, verbose = false): Promis
 	try {
 		fileContent = await readFile(absoluteFilterPath, 'utf8');
 	}
-	catch (e) {
-		throw new Error(`Could not read filter at '${absoluteFilterPath}': ${e.message}`);
+	catch (error) {
+		throw new Error(`Could not read filter at '${absoluteFilterPath}': ${(error as Error).message}`);
 	}
 	const filterRules = FilterFactory.getFromSerialized(fileContent);
 
@@ -167,10 +169,10 @@ async function filter(node: FsNode, filterPath: string, verbose = false): Promis
 	return matches;
 }
 
-function getLogMessageOfMatch(match, { colorized = false } = {}): string {
+function getLogMessageOfMatch(match: Match, { colorized = false } = {}): string {
 	let message = `${colorized ? chalk.yellow(match.fsNode.path) : match.fsNode.path}\n\t`;
 
-	if (match.fsNode.isDirectory()) {
+	if (match.fsNode instanceof Directory) {
 		message += '[Directory]';
 	}
 	else if (match.fsNode instanceof MediaFile) {

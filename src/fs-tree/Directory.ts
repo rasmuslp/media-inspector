@@ -1,27 +1,24 @@
 import * as t from 'io-ts';
 
-import { FsNode, FsNodeDataValidator } from './FsNode';
-import { FsNodeType } from './FsNodeType';
+import { FsNode, FsNodeStats, TFsNode } from './FsNode';
 
-const DirectoryDataPartial = t.type({
-	children: t.array(FsNodeDataValidator)
+const TDirectoryPartial = t.type({
+	children: t.array(TFsNode)
 });
 
-export const DirectoryDataValidator = t.intersection([FsNodeDataValidator, DirectoryDataPartial]);
+export const TDirectory = t.intersection([TFsNode, TDirectoryPartial]);
+export type DirectoryData = t.TypeOf<typeof TDirectory>;
 
-export type DirectoryData = t.TypeOf<typeof DirectoryDataValidator>;
-
-export class Directory extends FsNode {
+export class Directory extends FsNode<DirectoryData> {
 	_children: FsNode[];
 
-	constructor(nodePath, stats, children = []) {
+	constructor(nodePath: string, stats: FsNodeStats, children: FsNode[] = []) {
 		super(nodePath, stats);
 		this._children = children;
-		this._fsNodeType = FsNodeType.DIRECTORY;
 	}
 
 	// Children before parents
-	static getSortFnByPathDirFile(a, b): number {
+	static getSortFnByPathDirFile(a: FsNode, b: FsNode): number {
 		if (a.path.startsWith(b.path)) {
 			return -1;
 		}
@@ -50,11 +47,17 @@ export class Directory extends FsNode {
 		return this._children.filter(i => i.isFile());
 	}
 
-	serializeData(): object {
-		const data = Object.assign(super.serializeData(), {
-			children: this._children.map(node => node.serialize())
-		});
+	isDirectory(): boolean {
+		return true;
+	}
 
-		return data;
+	isFile(): boolean {
+		return false;
+	}
+
+	getDataForSerialization(): DirectoryData {
+		return {
+			children: this._children.map(node => node.serialize())
+		} as DirectoryData;
 	}
 }

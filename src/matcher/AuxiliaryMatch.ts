@@ -1,9 +1,10 @@
 import chalk from 'chalk';
 
-import { Match } from './Match';
+import { Match, MatchReasonOptions } from './Match';
 
 export class AuxiliaryMatch extends Match {
-	getMatchReason({ colorized = false } = {}): string {
-		return `${colorized ? chalk.green('[Auxiliary]') : '[Auxiliary]'} ${this._message}`;
+	getMatchReason(options: MatchReasonOptions): string {
+		const colorized = options.colorized ?? false;
+		return `${colorized ? chalk.green('[Auxiliary]') : '[Auxiliary]'} ${this.message}`;
 	}
 }

@@ -1,20 +1,20 @@
 import * as t from 'io-ts';
 
-import { File, FileDataValidator } from './File';
-import { Metadata } from './Metadata';
+import { File, TFile } from './File';
+import { Metadata, TMetadata } from './Metadata';
+import { FsNodeStats } from './FsNode';
 
-const MediaFileDataPartial = t.type({
-	metadata: t.unknown
+const TMediaFilePartial = t.type({
+	metadata: TMetadata
 });
 
-export const MediaFileDataValidator = t.intersection([FileDataValidator, MediaFileDataPartial]);
+export const TMediaFile = t.intersection([TFile, TMediaFilePartial]);
+export type MediaFileData = t.TypeOf<typeof TMediaFile>;
 
-export type MediaFileData = t.TypeOf<typeof MediaFileDataValidator>;
-
-export abstract class MediaFile extends File {
+export abstract class MediaFile extends File<MediaFileData> {
 	_metadata: Metadata;
 
-	constructor(nodePath, stats, mimeType, metadata?: Metadata) {
+	constructor(nodePath: string, stats: FsNodeStats, mimeType: string, metadata?: Metadata) {
 		super(nodePath, stats, mimeType);
 		this._metadata = metadata;
 	}
@@ -27,13 +27,11 @@ export abstract class MediaFile extends File {
 		this._metadata = metadata;
 	}
 
-	abstract async readMetadataFromFileSystem();
+	abstract async readMetadataFromFileSystem(): Promise<void>;
 
-	serializeData(): object {
-		const data = Object.assign(super.serializeData(), {
+	getDataForSerialization(): MediaFileData {
+		return {
 			metadata: this._metadata.serialize()
-		});
-
-		return data;
+		} as unknown as MediaFileData;
 	}
 }

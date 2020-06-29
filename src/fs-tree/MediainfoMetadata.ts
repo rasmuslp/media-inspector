@@ -1,8 +1,8 @@
 import { Metadata } from './Metadata';
 
 export class MediainfoMetadata extends Metadata {
-	_getTrack(trackType): object {
-		for (const track of this._metadata.media.track) {
+	_getTrack(trackType: string): unknown {
+		for (const track of this.data.metadata.media.track) {
 			if (trackType.toLocaleLowerCase() === track._type.toLocaleLowerCase()) {
 				return track;
 			}
@@ -11,34 +11,32 @@ export class MediainfoMetadata extends Metadata {
 		throw new Error(`Track type '${trackType}' not found`);
 	}
 
-	static _getOrDie(track, property, errorMessage): string {
-		// See if the property is there
-		if (property in track) {
-			return track[property];
-		}
+	get(path: string): string {
+		const [trackType, propertyName] = path.split('.');
+		const property = this._getProperty(trackType, propertyName);
 
-		// Or die
-		throw new Error(errorMessage);
+		return property;
 	}
 
-	get(path): string {
-		const [trackType, property] = path.split('.');
+	_getProperty(trackType: string, property: string): string {
 		const track = this._getTrack(trackType);
 
+		// eslint-disable-next-line default-case
 		switch (trackType) {
-			// container
 			case 'general': {
+				// eslint-disable-next-line default-case
 				switch (property) {
 					case 'bitrate':
 						return (track as {overallbitrate: string}).overallbitrate;
-
-					default:
-						return MediainfoMetadata._getOrDie(track, property, `[get] could not find '${property}' in '${trackType}'`);
 				}
 			}
-
-			default:
-				return MediainfoMetadata._getOrDie(track, property, `[get] could not find '${property}' in '${trackType}'`);
 		}
+
+		// See if the property is there
+		if (track[property]) {
+			return track[property] as string;
+		}
+
+		throw new Error(`[get] could not find '${property}' in '${trackType}'`);
 	}
 }

@@ -1,51 +1,38 @@
 import * as t from 'io-ts';
 
-import { Serializable, SerializableDataValidator } from './Serializable';
-import { FsNodeType } from './FsNodeType';
+import { Serializable, TSerializable } from './Serializable';
 
-export const FsNodeDataPartial = t.partial({
+export const TFsNodeStats = t.type({
+	size: t.number
+});
+export type FsNodeStats = t.TypeOf<typeof TFsNodeStats>;
+
+export const TFsNodePartial = t.type({
 	path: t.string,
-	stats: t.unknown // TODO: Better
+	stats: TFsNodeStats
 });
 
-export const FsNodeDataValidator = t.intersection([SerializableDataValidator, FsNodeDataPartial]);
+export const TFsNode = t.intersection([TSerializable, TFsNodePartial]);
+export type FsNodeData = t.TypeOf<typeof TFsNode>;
 
-export type FsNodeData = t.TypeOf<typeof FsNodeDataValidator>;
-
-export abstract class FsNode extends Serializable {
-	_fsNodeType: FsNodeType;
-	_path: string;
-	_stats;
-
-	constructor(nodePath: string, stats) {
+export abstract class FsNode<T extends FsNodeData = FsNodeData> extends Serializable<T> {
+	constructor(nodePath: string, stats: FsNodeStats) {
 		super();
-		this._fsNodeType = FsNodeType.UNKNOWN;
-		this._path = nodePath;
-		this._stats = {
-			size: stats.size || 0
+		this.data.path = nodePath;
+		this.data.stats = {
+			size: stats?.size ?? 0
 		};
 	}
 
 	get path(): string {
-		return this._path;
+		return this.data.path;
 	}
 
 	get size(): number {
-		return this._stats.size;
+		return this.data.stats.size;
 	}
 
-	isDirectory(): boolean {
-		return this._fsNodeType === FsNodeType.DIRECTORY;
-	}
+	abstract isDirectory(): boolean;
 
-	isFile(): boolean {
-		return this._fsNodeType === FsNodeType.FILE;
-	}
-
-	serializeData(): object {
-		return {
-			path: this._path,
-			stats: this._stats
-		};
-	}
+	abstract isFile(): boolean;
 }

@@ -10,10 +10,10 @@ export enum ConditionOperator {
 }
 
 export const ConditionOperatorValidator = t.keyof({ // using "keyof" for better performance instead of "union"
-	[ConditionOperator.BETWEEN]: null,
-	[ConditionOperator.IN]: null,
-	[ConditionOperator.EQUAL]: null,
-	[ConditionOperator.NOT_EQUAL]: null,
-	[ConditionOperator.LESS_THAN]: null,
-	[ConditionOperator.GREATER_THAN_OR_EQUAL]: null
+	[ConditionOperator.BETWEEN]: undefined,
+	[ConditionOperator.IN]: undefined,
+	[ConditionOperator.EQUAL]: undefined,
+	[ConditionOperator.NOT_EQUAL]: undefined,
+	[ConditionOperator.LESS_THAN]: undefined,
+	[ConditionOperator.GREATER_THAN_OR_EQUAL]: undefined
 });

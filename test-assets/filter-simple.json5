@@ -11,7 +11,7 @@
 			{
 				"path": "video.framerate",
 				"operator": ">=",
-				"value": "25"
+				"value": 25
 			}
 		]
 	}

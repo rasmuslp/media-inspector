@@ -1,4 +1,4 @@
-import { ConditionGreaterThanOrEqual } from './ConditionGreaterThanOrEqual';
+import { ConditionGreaterThanOrEqual } from './operators/ConditionGreaterThanOrEqual';
 
 import { ConditionFactory } from './ConditionFactory';
 import { ConditionOperator } from './ConditionOperator';

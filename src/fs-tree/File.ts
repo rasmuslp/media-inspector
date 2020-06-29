@@ -1,32 +1,36 @@
 import * as t from 'io-ts';
 
-import { FsNode, FsNodeDataValidator } from './FsNode';
-import { FsNodeType } from './FsNodeType';
+import { FsNode, FsNodeStats, TFsNode } from './FsNode';
 
-const FileDataPartial = t.partial({
+const TFilePartial = t.type({
 	mimeType: t.string
 });
 
-export const FileDataValidator = t.intersection([FsNodeDataValidator, FileDataPartial]);
+export const TFile = t.intersection([TFsNode, TFilePartial]);
+export type FileData = t.TypeOf<typeof TFile>;
 
-export type FileData = t.TypeOf<typeof FileDataValidator>;
+export class File<T extends FileData = FileData> extends FsNode<T> {
+	static _typeExtractor = new RegExp(/^([^/]+)/);
 
-export class File extends FsNode {
-	static _typeExtractor = RegExp(/^([^/]+)/);
-	_mimeType: string;
-
-	constructor(nodePath, stats, mimeType: string) {
+	constructor(nodePath: string, stats: FsNodeStats, mimeType: string) {
 		super(nodePath, stats);
-		this._fsNodeType = FsNodeType.FILE;
-		this._mimeType = mimeType;
+		this.data.mimeType = mimeType;
 	}
 
 	get mimeType(): string {
-		return this._mimeType;
+		return this.data.mimeType;
 	}
 
 	get type(): string {
-		return File.getTypeFrom(this._mimeType);
+		return File.getTypeFrom(this.data.mimeType);
+	}
+
+	isDirectory(): boolean {
+		return false;
+	}
+
+	isFile(): boolean {
+		return true;
 	}
 
 	static getTypeFrom(mimeType: string): string {
@@ -38,13 +42,5 @@ export class File extends FsNode {
 		}
 
 		return 'unknown';
-	}
-
-	serializeData(): object {
-		const data = Object.assign(super.serializeData(), {
-			mimeType: this._mimeType
-		});
-
-		return data;
 	}
 }

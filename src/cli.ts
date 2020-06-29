@@ -2,7 +2,7 @@
 
 import yargs from 'yargs';
 
-import * as lib from './lib';
+import * as library from './library';
 
 const argv = yargs
 	.wrap(yargs.terminalWidth() || 0)
@@ -44,7 +44,7 @@ const argv = yargs
 
 async function run(): Promise<void> {
 	try {
-		await lib.run({
+		await library.run({
 			readPath: argv.readPath as string,
 			writePath: argv.writePath as string,
 			filterPath: argv.filterPath as string,
@@ -52,8 +52,8 @@ async function run(): Promise<void> {
 			verbose: argv.verbose
 		});
 	}
-	catch (e) {
-		console.log('Error occured!', e);
+	catch (error) {
+		console.log('Error occured!', error);
 	}
 }
 
