@@ -30,8 +30,6 @@
   "scripts": {
     "prebuild": "rm -rf dist/",
     "build": "tsc --noEmit false --outDir dist/",
-    "predo-deps": "rm -rf node_modules/ package-lock.json",
-    "do-deps": "npm install",
     "full-test": "npm run type-check && npm run lint && npm run test",
     "lint": "eslint --ext .js,.ts .",
     "start": "node -r ts-node/register $NODE_DEBUG_OPTION src/cli.ts",
