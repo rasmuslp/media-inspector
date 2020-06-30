@@ -32,9 +32,9 @@
     "build": "tsc --noEmit false --outDir dist/",
     "full-test": "npm run type-check && npm run lint && npm run test",
     "lint": "eslint --ext .js,.ts .",
-    "start": "node -r ts-node/register $NODE_DEBUG_OPTION src/cli.ts",
     "publish:beta": "np --no-publish --no-release-draft --any-branch",
     "publish:release": "np --no-publish --no-release-draft",
+    "start": "./bin/run-dev",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "type-check": "tsc"
@@ -46,7 +46,9 @@
     }
   },
   "dependencies": {
+    "@oclif/command": "^1.6.1",
     "chalk": "^4.1.0",
+    "cli-ux": "^5.4.6",
     "debug": "^4.1.1",
     "io-ts": "^1.10.4",
     "io-ts-reporters": "^0.0.21",
@@ -81,5 +83,12 @@
   },
   "engines": {
     "node": ">=10.13.0"
+  },
+  "oclif": {
+    "bin": "media-inspector",
+    "commands": "./src/cli/commands",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
   }
 }
