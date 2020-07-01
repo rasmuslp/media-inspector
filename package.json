@@ -25,19 +25,23 @@
   "bin": "./bin/run",
   "files": [
     "bin/",
-    "dist/"
+    "dist/",
+    "/oclif.manifest.json"
   ],
   "scripts": {
     "prebuild": "rm -rf dist/",
     "build": "tsc --noEmit false --outDir dist/",
     "full-test": "npm run type-check && npm run lint && npm run test",
     "lint": "eslint --ext .js,.ts .",
+    "prepack": "npm run build && oclif-dev manifest && oclif-dev readme",
+    "postpack": "rm -f oclif.manifest.json",
     "publish:beta": "np --no-publish --no-release-draft --any-branch",
     "publish:release": "np --no-publish --no-release-draft",
-    "start": "./bin/run-dev",
+    "start": "node -r ts-node/register ./bin/run",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "version": "oclif-dev readme && git add README.md"
   },
   "husky": {
     "hooks": {
@@ -57,6 +61,7 @@
     "mime-types": "^2.1.27"
   },
   "devDependencies": {
+    "@oclif/dev-cli": "1.22.2",
     "@rasmuslp/eslint-config": "2.0.0-9",
     "@types/debug": "4.1.5",
     "@types/jest": "26.0.3",
