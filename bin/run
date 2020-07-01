@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// NB: Requireing this '@oclif/command' or '../dist/index' is the same (for now).
+// NB: Requiring this '@oclif/command' or '../dist/index' is the same (for now).
 require('@oclif/command').run()
 .then(require('@oclif/command/flush'))
 .catch(require('@oclif/errors/handle'))
