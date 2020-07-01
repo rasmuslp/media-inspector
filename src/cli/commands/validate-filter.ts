@@ -16,7 +16,7 @@ export default class ValidateFilter extends Command {
 		{
 			name: 'filterPath',
 			required: true,
-			description: 'Relative path to filter in JSON or JSON5',
+			description: 'Path to filter in JSON or JSON5',
 			parse: (input: string): string => path.resolve(process.cwd(), input)
 		}
 	]
