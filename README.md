@@ -36,7 +36,7 @@ $ npm install -g media-inspector
 $ media-inspector COMMAND
 running command...
 $ media-inspector (-v|--version|version)
-media-inspector/0.4.0-0 darwin-x64 node-v12.16.3
+media-inspector/0.4.0-1 darwin-x64 node-v12.16.3
 $ media-inspector --help [COMMAND]
 USAGE
   $ media-inspector COMMAND
@@ -68,7 +68,7 @@ EXAMPLES
   $ media-inspector cache /Users/username/Downloads ~/Desktop/downloads.json
 ```
 
-_See code: [src/cli/commands/cache.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0-0/src/cli/commands/cache.ts)_
+_See code: [src/cli/commands/cache.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0-1/src/cli/commands/cache.ts)_
 
 ## `media-inspector help [COMMAND]`
 
@@ -102,7 +102,7 @@ OPTIONS
   -v, --verbose           Get more details of the operation and state
 ```
 
-_See code: [src/cli/commands/inspect.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0-0/src/cli/commands/inspect.ts)_
+_See code: [src/cli/commands/inspect.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0-1/src/cli/commands/inspect.ts)_
 
 ## `media-inspector validate-filter FILTERPATH`
 
@@ -119,7 +119,7 @@ EXAMPLE
   $ media-inspector validate-filter ./examples/filter-default.json5
 ```
 
-_See code: [src/cli/commands/validate-filter.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0-0/src/cli/commands/validate-filter.ts)_
+_See code: [src/cli/commands/validate-filter.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0-1/src/cli/commands/validate-filter.ts)_
 <!-- commandsstop -->
 
 # How filters work
