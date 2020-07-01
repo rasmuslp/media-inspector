@@ -14,8 +14,6 @@ import { FilterMatch } from '../../matcher/FilterMatch';
 import { FilterMatcher } from '../../matcher/FilterMatcher';
 import { Match } from '../../matcher/Match';
 
-import { verbose } from '../flags';
-
 const readFile = promisify(fs.readFile);
 
 export default class Inspect extends Command {
@@ -42,7 +40,12 @@ export default class Inspect extends Command {
 			required: true
 		}),
 
-		verbose: verbose
+		verbose: flags.boolean({
+			char: 'v',
+			default: false,
+			description: 'Enable to get progress and detailed information on matches. ' +
+				'By default only matched absolute paths are logged, so the output can be piped'
+		})
 	}
 
 	/*
