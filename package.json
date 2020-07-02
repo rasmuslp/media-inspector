@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "@oclif/command": "^1.6.1",
+    "@oclif/plugin-autocomplete": "~0.2.0",
     "chalk": "^4.1.0",
     "cli-ux": "^5.4.6",
     "debug": "^4.1.1",
@@ -91,6 +92,7 @@
     "bin": "media-inspector",
     "commands": "./src/cli/commands",
     "plugins": [
+      "@oclif/plugin-autocomplete",
       "@oclif/plugin-help"
     ]
   }
