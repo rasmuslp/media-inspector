@@ -154,8 +154,8 @@ When a media file satisfies all the `conditions` of *any* `rule`, that media-fil
 
 # Notes
 
-  * [https://github.com/jshttp/mime-types#readme]
-  * [https://github.com/mgcrea/node-mediainfo-parser]
+  * <https://github.com/jshttp/mime-types#readme>
+  * <https://github.com/mgcrea/node-mediainfo-parser>
 
 # Test files
-[https://www.sample-videos.com/about.php]
+<https://www.sample-videos.com/about.php>
