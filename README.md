@@ -36,7 +36,7 @@ $ npm install -g media-inspector
 $ media-inspector COMMAND
 running command...
 $ media-inspector (-v|--version|version)
-media-inspector/0.4.0-1 darwin-x64 node-v12.16.3
+media-inspector/0.4.0-2 darwin-x64 node-v12.16.3
 $ media-inspector --help [COMMAND]
 USAGE
   $ media-inspector COMMAND
@@ -46,10 +46,34 @@ USAGE
 
 # Commands
 <!-- commands -->
+* [`media-inspector autocomplete [SHELL]`](#media-inspector-autocomplete-shell)
 * [`media-inspector cache`](#media-inspector-cache)
 * [`media-inspector help [COMMAND]`](#media-inspector-help-command)
 * [`media-inspector inspect`](#media-inspector-inspect)
 * [`media-inspector validate-filter FILTERPATH`](#media-inspector-validate-filter-filterpath)
+
+## `media-inspector autocomplete [SHELL]`
+
+display autocomplete installation instructions
+
+```
+USAGE
+  $ media-inspector autocomplete [SHELL]
+
+ARGUMENTS
+  SHELL  shell type
+
+OPTIONS
+  -r, --refresh-cache  Refresh cache (ignores displaying instructions)
+
+EXAMPLES
+  $ media-inspector autocomplete
+  $ media-inspector autocomplete bash
+  $ media-inspector autocomplete zsh
+  $ media-inspector autocomplete --refresh-cache
+```
+
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v0.2.0/src/commands/autocomplete/index.ts)_
 
 ## `media-inspector cache`
 
@@ -68,7 +92,7 @@ EXAMPLES
   $ media-inspector cache /Users/username/Downloads ~/Desktop/downloads.json
 ```
 
-_See code: [src/cli/commands/cache.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0-1/src/cli/commands/cache.ts)_
+_See code: [src/cli/commands/cache.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0-2/src/cli/commands/cache.ts)_
 
 ## `media-inspector help [COMMAND]`
 
@@ -102,7 +126,7 @@ OPTIONS
   -v, --verbose           Get more details of the operation and state
 ```
 
-_See code: [src/cli/commands/inspect.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0-1/src/cli/commands/inspect.ts)_
+_See code: [src/cli/commands/inspect.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0-2/src/cli/commands/inspect.ts)_
 
 ## `media-inspector validate-filter FILTERPATH`
 
@@ -119,7 +143,7 @@ EXAMPLE
   $ media-inspector validate-filter ./examples/filter-default.json5
 ```
 
-_See code: [src/cli/commands/validate-filter.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0-1/src/cli/commands/validate-filter.ts)_
+_See code: [src/cli/commands/validate-filter.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0-2/src/cli/commands/validate-filter.ts)_
 <!-- commandsstop -->
 
 # How filters work
