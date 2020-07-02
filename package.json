@@ -41,7 +41,9 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "type-check": "tsc",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "husky": {
     "hooks": {
@@ -59,7 +61,8 @@
     "io-ts-reporters": "^0.0.21",
     "json5": "^2.1.3",
     "mediainfo-parser": "^1.1.5",
-    "mime-types": "^2.1.27"
+    "mime-types": "^2.1.27",
+    "snyk": "^1.359.1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "1.22.2",
@@ -95,5 +98,6 @@
       "@oclif/plugin-autocomplete",
       "@oclif/plugin-help"
     ]
-  }
+  },
+  "snyk": true
 }
