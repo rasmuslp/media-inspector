@@ -1,6 +1,6 @@
 {
   "name": "media-inspector",
-  "version": "0.4.0-0",
+  "version": "0.4.0-2",
   "description": "Find media files by searching in the metadata",
   "keywords": [
     "filter",
@@ -22,22 +22,26 @@
     "name": "Rasmus Ljungmann Pedersen",
     "email": "rasmuslp@gmail.com"
   },
-  "main": "dist/lib.js",
-  "bin": "./dist/cli.js",
+  "bin": "./bin/run",
   "files": [
-    "dist/"
+    "bin/",
+    "dist/",
+    "/oclif.manifest.json"
   ],
   "scripts": {
     "prebuild": "rm -rf dist/",
     "build": "tsc --noEmit false --outDir dist/",
     "full-test": "npm run type-check && npm run lint && npm run test",
     "lint": "eslint --ext .js,.ts .",
-    "start": "node -r ts-node/register $NODE_DEBUG_OPTION src/cli.ts",
+    "prepack": "npm run build && oclif-dev manifest && oclif-dev readme",
+    "postpack": "rm -f oclif.manifest.json",
     "publish:beta": "np --no-publish --no-release-draft --any-branch",
     "publish:release": "np --no-publish --no-release-draft",
+    "start": "node -r ts-node/register ./bin/run",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "version": "oclif-dev readme && git add README.md"
   },
   "husky": {
     "hooks": {
@@ -46,22 +50,24 @@
     }
   },
   "dependencies": {
+    "@oclif/command": "^1.6.1",
+    "@oclif/plugin-autocomplete": "~0.2.0",
     "chalk": "^4.1.0",
+    "cli-ux": "^5.4.6",
     "debug": "^4.1.1",
     "io-ts": "^1.10.4",
     "io-ts-reporters": "^0.0.21",
     "json5": "^2.1.3",
     "mediainfo-parser": "^1.1.5",
-    "mime-types": "^2.1.27",
-    "yargs": "^11.1.0"
+    "mime-types": "^2.1.27"
   },
   "devDependencies": {
+    "@oclif/dev-cli": "1.22.2",
     "@rasmuslp/eslint-config": "2.0.0-9",
     "@types/debug": "4.1.5",
     "@types/jest": "26.0.3",
     "@types/mime-types": "2.1.0",
     "@types/node": "14.0.14",
-    "@types/yargs": "13.0.3",
     "@typescript-eslint/eslint-plugin": "3.4.0",
     "codacy-coverage": "3.4.0",
     "eslint": "7.3.1",
@@ -81,5 +87,13 @@
   },
   "engines": {
     "node": ">=10.13.0"
+  },
+  "oclif": {
+    "bin": "media-inspector",
+    "commands": "./src/cli/commands",
+    "plugins": [
+      "@oclif/plugin-autocomplete",
+      "@oclif/plugin-help"
+    ]
   }
 }
