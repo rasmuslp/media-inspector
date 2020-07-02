@@ -21,8 +21,8 @@ media-inspector
 <!-- tocstop -->
 
 # Requirements
-  * Node 10 or newer
-  * [mediainfo](https://mediaarea.net/en/MediaInfo) executable in `$PATH`
+* Node 10 or newer
+* [mediainfo](https://mediaarea.net/en/MediaInfo) executable in `$PATH`
 
 # Supported media mime-types
 The current list of supported mime-types is
@@ -150,12 +150,11 @@ _See code: [src/cli/commands/validate-filter.ts](https://github.com/rasmuslp/med
 # How filters work
 A `filter` is a list of `rules`. A `rule` is a prioritised list of `conditions`.
 A `rule` is considered satisfied when all its `conditions` are satisfied.
-When a media file satisfies all the `conditions` of *any* `rule`, that media-file is considered a match.
+When a media file satisfies all the `conditions` of _any_ `rule`, that media-file is considered a match.
 
 # Notes
-
-  * <https://github.com/jshttp/mime-types#readme>
-  * <https://github.com/mgcrea/node-mediainfo-parser>
+* <https://github.com/jshttp/mime-types#readme>
+* <https://github.com/mgcrea/node-mediainfo-parser>
 
 # Test files
 <https://www.sample-videos.com/about.php>
