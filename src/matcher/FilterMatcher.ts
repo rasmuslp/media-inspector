@@ -12,12 +12,11 @@ export class FilterMatcher {
 			// Check all rules
 			const ruleResults: RuleResult[] = [];
 			for (const rule of filterRules) {
-				if (node instanceof File && node.mimeType.startsWith(rule.mimeType)) {
-					if (node instanceof MediaFile) {
-						const ruleResult = rule.checkRuleWithPathGetter(node.metadata.get.bind(node.metadata));
-						if (ruleResult) {
-							ruleResults.push(ruleResult);
-						}
+				const fileMatchesMimeType = node instanceof File && node.mimeType.startsWith(rule.mimeType);
+				if (fileMatchesMimeType && node instanceof MediaFile) {
+					const ruleResult = rule.checkRuleWithPathGetter(node.metadata.get.bind(node.metadata));
+					if (ruleResult) {
+						ruleResults.push(ruleResult);
 					}
 				}
 			}

@@ -53,7 +53,7 @@ export class FsTree {
 
 	static async traverseBfs(node: FsNode, nodeFn: (node: FsNode) => Promise<void>): Promise<void> {
 		const queue: [FsNode] = [node];
-		while (queue.length) {
+		while (queue.length > 0) {
 			// Get node
 			const node = queue.shift();
 

@@ -1,11 +1,11 @@
 import fs from 'fs';
-import util from 'util';
+import { promisify } from 'util';
 
 import { Condition } from './rule/condition/Condition';
 import { FilterFactory } from './FilterFactory';
 import { Rule } from './rule/Rule';
 
-const readFileAsync = util.promisify(fs.readFile);
+const readFileAsync = promisify(fs.readFile);
 
 describe('FilterFactory', () => {
 	const filterPath = 'test-assets/filter-simple.json5';

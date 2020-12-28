@@ -1,15 +1,15 @@
 import childProcess from 'child_process';
-import util from 'util';
+import { promisify } from 'util';
 
 import * as mediainfoParser from 'mediainfo-parser';
 
 import { MediainfoMetadata } from './MediainfoMetadata';
 import { MetadataData, MiMetadataRaw } from './Metadata';
 
-const exec = util.promisify(childProcess.exec);
+const exec = promisify(childProcess.exec);
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-const parse = util.promisify(mediainfoParser.parse);
+const parse = promisify(mediainfoParser.parse);
 
 const mediainfoPath = 'mediainfo';
 

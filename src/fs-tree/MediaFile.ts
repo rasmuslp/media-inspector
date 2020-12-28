@@ -27,7 +27,7 @@ export abstract class MediaFile extends File<MediaFileData> {
 		this._metadata = metadata;
 	}
 
-	abstract async readMetadataFromFileSystem(): Promise<void>;
+	abstract readMetadataFromFileSystem(): Promise<void>;
 
 	getDataForSerialization(): MediaFileData {
 		return {
