@@ -37,7 +37,7 @@ $ npm install -g media-inspector
 $ media-inspector COMMAND
 running command...
 $ media-inspector (-v|--version|version)
-media-inspector/0.4.0 darwin-x64 node-v12.16.3
+media-inspector/0.4.1 darwin-x64 node-v14.14.0
 $ media-inspector --help [COMMAND]
 USAGE
   $ media-inspector COMMAND
@@ -93,7 +93,7 @@ EXAMPLES
   $ media-inspector cache /Users/username/Downloads ~/Desktop/downloads.json
 ```
 
-_See code: [src/cli/commands/cache.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0/src/cli/commands/cache.ts)_
+_See code: [src/cli/commands/cache.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.1/src/cli/commands/cache.ts)_
 
 ## `media-inspector help [COMMAND]`
 
@@ -124,10 +124,12 @@ OPTIONS
   -f, --filter=filter     (required) Path of the filter to apply in JSON or JSON5
   -i, --includeAuxiliary  Will also include empty directories and 'container' directories
   -r, --read=read         (required) Path of a directory or cache file to read
-  -v, --verbose           Get more details of the operation and state
+
+  -v, --verbose           Enable to get progress and detailed information on matches. By default only matched absolute
+                          paths are logged, so the output can be piped
 ```
 
-_See code: [src/cli/commands/inspect.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0/src/cli/commands/inspect.ts)_
+_See code: [src/cli/commands/inspect.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.1/src/cli/commands/inspect.ts)_
 
 ## `media-inspector validate-filter FILTERPATH`
 
@@ -144,7 +146,7 @@ EXAMPLE
   $ media-inspector validate-filter ./examples/filter-default.json5
 ```
 
-_See code: [src/cli/commands/validate-filter.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.0/src/cli/commands/validate-filter.ts)_
+_See code: [src/cli/commands/validate-filter.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.1/src/cli/commands/validate-filter.ts)_
 <!-- commandsstop -->
 
 # How filters work
