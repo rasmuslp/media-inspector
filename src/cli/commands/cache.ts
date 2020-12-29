@@ -1,11 +1,12 @@
 import path from 'path';
 
-import Command, { flags } from '@oclif/command';
+import { flags } from '@oclif/command';
 import cli from 'cli-ux';
 
 import { FsTree } from '../../fs-tree';
+import BaseCommand from '../BaseCommand';
 
-export default class Cache extends Command {
+export default class Cache extends BaseCommand {
 	static description = 'Cache a directory structure as JSON'
 
 	static flags = {

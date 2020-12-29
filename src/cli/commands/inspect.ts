@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 
-import Command, { flags } from '@oclif/command';
+import { flags } from '@oclif/command';
 import chalk from 'chalk';
 import cli from 'cli-ux';
 
@@ -13,10 +13,11 @@ import { AuxiliaryMatch } from '../../matcher/AuxiliaryMatch';
 import { FilterMatch } from '../../matcher/FilterMatch';
 import { FilterMatcher } from '../../matcher/FilterMatcher';
 import { Match } from '../../matcher/Match';
+import BaseCommand from '../BaseCommand';
 
 const readFile = promisify(fs.readFile);
 
-export default class Inspect extends Command {
+export default class Inspect extends BaseCommand {
 	static description = 'Inspect input with filter'
 
 	static flags = {

@@ -2,14 +2,14 @@ import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 
-import Command from '@oclif/command';
 import cli from 'cli-ux';
 
 import { FilterFactory } from '../../filter';
+import BaseCommand from '../BaseCommand';
 
 const readFile = promisify(fs.readFile);
 
-export default class ValidateFilter extends Command {
+export default class ValidateFilter extends BaseCommand {
 	static description = 'Validate filter'
 
 	static args = [
