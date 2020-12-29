@@ -36,7 +36,7 @@ $ npm install -g media-inspector
 $ media-inspector COMMAND
 running command...
 $ media-inspector (-v|--version|version)
-media-inspector/0.4.1 darwin-x64 node-v14.14.0
+media-inspector/0.4.2 darwin-x64 node-v14.14.0
 $ media-inspector --help [COMMAND]
 USAGE
   $ media-inspector COMMAND
@@ -73,7 +73,7 @@ EXAMPLES
   $ media-inspector autocomplete --refresh-cache
 ```
 
-_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v0.2.0/src/commands/autocomplete/index.ts)_
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v0.3.0/src/commands/autocomplete/index.ts)_
 
 ## `media-inspector cache`
 
@@ -92,7 +92,7 @@ EXAMPLES
   $ media-inspector cache /Users/username/Downloads ~/Desktop/downloads.json
 ```
 
-_See code: [src/cli/commands/cache.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.1/src/cli/commands/cache.ts)_
+_See code: [src/cli/commands/cache.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.2/src/cli/commands/cache.ts)_
 
 ## `media-inspector help [COMMAND]`
 
@@ -109,7 +109,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.1.0/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.1/src/commands/help.ts)_
 
 ## `media-inspector inspect`
 
@@ -128,7 +128,7 @@ OPTIONS
                           paths are logged, so the output can be piped
 ```
 
-_See code: [src/cli/commands/inspect.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.1/src/cli/commands/inspect.ts)_
+_See code: [src/cli/commands/inspect.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.2/src/cli/commands/inspect.ts)_
 
 ## `media-inspector validate-filter FILTERPATH`
 
@@ -145,7 +145,7 @@ EXAMPLE
   $ media-inspector validate-filter ./examples/filter-default.json5
 ```
 
-_See code: [src/cli/commands/validate-filter.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.1/src/cli/commands/validate-filter.ts)_
+_See code: [src/cli/commands/validate-filter.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.2/src/cli/commands/validate-filter.ts)_
 <!-- commandsstop -->
 
 # How filters work
