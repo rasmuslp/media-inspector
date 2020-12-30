@@ -1,6 +1,8 @@
 import fs from 'fs';
 import { promisify } from 'util';
 
+import createDebug from 'debug';
+
 import { FsNode } from './FsNode';
 import { Directory } from './Directory';
 
@@ -11,15 +13,21 @@ import { SerializableData } from './Serializable';
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
+const debug = createDebug('FsTree');
+
 export class FsTree {
 	static async getFromFileSystem(nodePath: string): Promise<FsNode> {
+		debug('getFromFileSystem scanning files...');
 		const node = await DirectoryFactory.getTreeFromFileSystem(nodePath);
 
+		debug('getFromFileSystem reading metadata from files...');
 		await FsTree.traverse(node, async node => {
 			if (node instanceof MediaFile) {
 				await node.readMetadataFromFileSystem();
 			}
 		});
+
+		debug('getFromFileSystem done');
 
 		return node;
 	}
