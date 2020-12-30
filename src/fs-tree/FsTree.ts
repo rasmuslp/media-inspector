@@ -2,6 +2,7 @@ import fs from 'fs';
 import { promisify } from 'util';
 
 import createDebug from 'debug';
+import pLimit from 'p-limit';
 
 import { FsNode } from './FsNode';
 import { Directory } from './Directory';
@@ -15,17 +16,27 @@ const writeFile = promisify(fs.writeFile);
 
 const debug = createDebug('FsTree');
 
-export class FsTree {
-	static async getFromFileSystem(nodePath: string): Promise<FsNode> {
-		debug('getFromFileSystem scanning files...');
-		const node = await DirectoryFactory.getTreeFromFileSystem(nodePath);
+export interface getFromFileSystemOptions {
+	metadataConcurrency: number;
+}
 
-		debug('getFromFileSystem reading metadata from files...');
-		await FsTree.traverse(node, async node => {
-			if (node instanceof MediaFile) {
-				await node.readMetadataFromFileSystem();
-			}
-		});
+const defaultGetFromFileSystemOptions: getFromFileSystemOptions = {
+	metadataConcurrency: 10
+};
+
+export class FsTree {
+	static async getFromFileSystem(nodePath: string, options = defaultGetFromFileSystemOptions): Promise<FsNode> {
+		debug('getFromFileSystem: Scanning filesystem path %s, with options %j', nodePath, options);
+		const node = await DirectoryFactory.getTreeFromFileSystem(nodePath);
+		const nodes = await FsTree.getAsList(node);
+		const mediaFiles: MediaFile[] = nodes.filter(node => node instanceof MediaFile).map(node => node as MediaFile);
+		debug('getFromFileSystem: Found %d nodes', nodes.length);
+		debug('getFromFileSystem: Found %d media files', mediaFiles.length);
+
+		debug('getFromFileSystem: Reading metadata from %d files', mediaFiles.length);
+		const limiter = pLimit(options.metadataConcurrency);
+		const promises = mediaFiles.map(mediaFile => limiter(() => mediaFile.readMetadataFromFileSystem()));
+		await Promise.all(promises);
 
 		debug('getFromFileSystem done');
 
