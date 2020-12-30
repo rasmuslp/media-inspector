@@ -26,8 +26,8 @@ export default class Cache extends BaseCommand {
 	}
 
 	static examples = [
-		'$ media-inspector cache ~/Downloads downloads.json',
-		'$ media-inspector cache /Users/username/Downloads ~/Desktop/downloads.json'
+		'$ media-inspector cache -r ~/Downloads -w downloads.json',
+		'$ media-inspector cache -r /Users/username/Downloads -w ~/Desktop/downloads.json'
 	]
 
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
