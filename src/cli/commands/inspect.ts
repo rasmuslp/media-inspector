@@ -14,6 +14,7 @@ import { FilterMatch } from '../../matcher/FilterMatch';
 import { FilterMatcher } from '../../matcher/FilterMatcher';
 import { Match } from '../../matcher/Match';
 import BaseCommand from '../BaseCommand';
+import { defaultGetFromFileSystemOptions } from '../../fs-tree/FsTree';
 
 const readFile = promisify(fs.readFile);
 
@@ -64,15 +65,27 @@ export default class Inspect extends BaseCommand {
 				cli.action.start(`Reading from json ${flags.read}`);
 			}
 			node = await FsTree.getFromSerialized(flags.read);
+			if (flags.verbose) {
+				cli.action.stop();
+			}
 		}
 		else {
+			const options = { ...defaultGetFromFileSystemOptions };
+			let metadataProgressBar;
 			if (flags.verbose) {
-				cli.action.start(`Reading from file system ${flags.read}`);
+				cli.log(`Reading from file system ${flags.read}`);
+				metadataProgressBar = cli.progress({
+					format: 'Reading metadata | {bar} | {value}/{total} Files',
+					barCompleteChar: '\u2588',
+					barIncompleteChar: '\u2591'
+				});
+				options.metadataTotalFn = (total: number) => metadataProgressBar.start(total);
+				options.metadataIncrementFn = () => metadataProgressBar.increment();
 			}
-			node = await FsTree.getFromFileSystem(flags.read);
-		}
-		if (flags.verbose) {
-			cli.action.stop();
+			node = await FsTree.getFromFileSystem(flags.read, options);
+			if (flags.verbose) {
+				metadataProgressBar.stop();
+			}
 		}
 
 		const matches: Match[] = [];

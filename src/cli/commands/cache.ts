@@ -5,6 +5,7 @@ import cli from 'cli-ux';
 
 import { FsTree } from '../../fs-tree';
 import BaseCommand from '../BaseCommand';
+import { defaultGetFromFileSystemOptions } from '../../fs-tree/FsTree';
 
 export default class Cache extends BaseCommand {
 	static description = 'Cache a directory structure as JSON'
@@ -41,9 +42,19 @@ export default class Cache extends BaseCommand {
 			throw new Error('Write path should end with .json');
 		}
 
-		cli.action.start(`Reading from file system ${flags.read}`);
-		const node = await FsTree.getFromFileSystem(flags.read);
-		cli.action.stop();
+		cli.log(`Reading from file system ${flags.read}`);
+		const metadataProgressBar = cli.progress({
+			format: 'Reading metadata | {bar} | {value}/{total} Files',
+			barCompleteChar: '\u2588',
+			barIncompleteChar: '\u2591'
+		});
+		const node = await FsTree.getFromFileSystem(flags.read, {
+			...defaultGetFromFileSystemOptions,
+			metadataTotalFn: (total: number) => metadataProgressBar.start(total),
+			metadataIncrementFn: () => metadataProgressBar.increment()
+
+		});
+		metadataProgressBar.stop();
 
 		cli.action.start(`Writing ${flags.write}`);
 		await FsTree.write(node, flags.write);

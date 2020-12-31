@@ -18,10 +18,16 @@ const debug = createDebug('FsTree');
 
 export interface getFromFileSystemOptions {
 	metadataConcurrency: number;
+	metadataTotalFn: (number) => void;
+	metadataIncrementFn: () => void;
 }
 
-const defaultGetFromFileSystemOptions: getFromFileSystemOptions = {
-	metadataConcurrency: 10
+export const defaultGetFromFileSystemOptions: getFromFileSystemOptions = {
+	metadataConcurrency: 10,
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	metadataTotalFn: () => {},
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	metadataIncrementFn: () => {}
 };
 
 export class FsTree {
@@ -30,12 +36,13 @@ export class FsTree {
 		const node = await DirectoryFactory.getTreeFromFileSystem(nodePath);
 		const nodes = await FsTree.getAsList(node);
 		const mediaFiles: MediaFile[] = nodes.filter(node => node instanceof MediaFile).map(node => node as MediaFile);
+		options.metadataTotalFn(mediaFiles.length);
 		debug('getFromFileSystem: Found %d nodes', nodes.length);
 		debug('getFromFileSystem: Found %d media files', mediaFiles.length);
 
 		debug('getFromFileSystem: Reading metadata from %d files', mediaFiles.length);
 		const limiter = pLimit(options.metadataConcurrency);
-		const promises = mediaFiles.map(mediaFile => limiter(() => mediaFile.readMetadataFromFileSystem()));
+		const promises = mediaFiles.map(mediaFile => limiter(() => mediaFile.readMetadataFromFileSystem().finally(options.metadataIncrementFn)));
 		await Promise.all(promises);
 
 		debug('getFromFileSystem done');
