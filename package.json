@@ -34,6 +34,7 @@
     "full-test": "npm run type-check && npm run lint && npm run test",
     "lint": "eslint --ext .js,.ts .",
     "prepack": "npm run build && oclif-dev manifest && oclif-dev readme",
+    "prepare": "husky install",
     "postpack": "rm -f oclif.manifest.json",
     "publish:beta": "np --no-publish --no-release-draft --any-branch",
     "publish:release": "np --no-publish --no-release-draft",
@@ -42,12 +43,6 @@
     "test:coverage": "jest --coverage",
     "type-check": "tsc",
     "version": "oclif-dev readme && git add README.md"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm test",
-      "pre-push": "npm run lint && npm test"
-    }
   },
   "dependencies": {
     "@oclif/command": "^1.8.0",
@@ -77,7 +72,7 @@
     "eslint-plugin-promise": "5.1.0",
     "eslint-plugin-standard": "5.0.0",
     "eslint-plugin-unicorn": "25.0.1",
-    "husky": "4.3.6",
+    "husky": "6.0.0",
     "jest": "26.6.3",
     "jest-junit": "12.0.0",
     "np": "7.5.0",
