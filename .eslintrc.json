@@ -8,6 +8,9 @@
 		"plugin:jest/recommended"
 	],
 	"rules": {
+		"node/no-extraneous-import": ["error", {
+			"allowModules": ["cli-progress"]
+		}],
 		"node/shebang": "off",
 		"no-console": "off",
 		"no-return-await": "off" // So... Its nice to know if the function is async or not

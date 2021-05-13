@@ -15,6 +15,7 @@ import { FilterMatcher } from '../../matcher/FilterMatcher';
 import { Match } from '../../matcher/Match';
 import BaseCommand from '../BaseCommand';
 import { defaultGetFromFileSystemOptions } from '../../fs-tree/FsTree';
+import { SingleBar } from 'cli-progress';
 
 const readFile = promisify(fs.readFile);
 
@@ -71,15 +72,15 @@ export default class Inspect extends BaseCommand {
 		}
 		else {
 			const options = { ...defaultGetFromFileSystemOptions };
-			let metadataProgressBar;
+			let metadataProgressBar: SingleBar;
 			if (flags.verbose) {
 				cli.log(`Reading from file system ${flags.read}`);
 				metadataProgressBar = cli.progress({
 					format: 'Reading metadata | {bar} | {value}/{total} Files',
 					barCompleteChar: '\u2588',
 					barIncompleteChar: '\u2591'
-				});
-				options.metadataTotalFn = (total: number) => metadataProgressBar.start(total);
+				}) as SingleBar;
+				options.metadataTotalFn = (total: number) => metadataProgressBar.start(total, 0);
 				options.metadataIncrementFn = () => metadataProgressBar.increment();
 			}
 			node = await FsTree.getFromFileSystem(flags.read, options);

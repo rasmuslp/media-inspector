@@ -6,6 +6,7 @@ import cli from 'cli-ux';
 import { FsTree } from '../../fs-tree';
 import BaseCommand from '../BaseCommand';
 import { defaultGetFromFileSystemOptions } from '../../fs-tree/FsTree';
+import { SingleBar } from 'cli-progress';
 
 export default class Cache extends BaseCommand {
 	static description = 'Cache a directory structure as JSON'
@@ -47,10 +48,10 @@ export default class Cache extends BaseCommand {
 			format: 'Reading metadata | {bar} | {value}/{total} Files',
 			barCompleteChar: '\u2588',
 			barIncompleteChar: '\u2591'
-		});
+		}) as SingleBar;
 		const node = await FsTree.getFromFileSystem(flags.read, {
 			...defaultGetFromFileSystemOptions,
-			metadataTotalFn: (total: number) => metadataProgressBar.start(total),
+			metadataTotalFn: (total: number) => metadataProgressBar.start(total, 0),
 			metadataIncrementFn: () => metadataProgressBar.increment()
 
 		});
