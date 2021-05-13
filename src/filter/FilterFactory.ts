@@ -23,7 +23,7 @@ export class FilterFactory {
 
 	static _parse(data: string): FilterData {
 		try {
-			const parsed = JSON5.parse(data) as FilterData;
+			const parsed = JSON5.parse<FilterData>(data);
 			return parsed;
 		}
 		catch (error) {
