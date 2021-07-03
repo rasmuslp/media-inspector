@@ -1,0 +1,90 @@
+@startuml Video error detector
+scale 2
+
+interface LineParser<T> {
+	+canParse(line: string): boolean
+	+parse(line:string): T
+}
+
+class MetadataLineParser implements LineParser {
+	+lines: <MetadataType, string[]>
+	-currentlyProcessing: MetadataType
+	+getDuration(): Duration
+	{static} +findDuration(lines:string[]): string
+	{static} +getMetadataType(line:string): MetadataType
+}
+
+enum MetadataType {
+	FFMPEG
+	INPUT
+	OUTPUT
+	OTHER
+}
+
+MetadataType <-- MetadataLineParser
+
+class StreamLineParser implements LineParser {
+
+}
+
+class ProgressLineParser implements LineParser {
+
+}
+
+class LastMessageRepeatedLineParser implements LineParser {
+
+}
+
+class CorruptDecodedFrameLineParser implements LineParser {
+
+}
+
+class OutputParser {
+	#totalDuration: Duration
+	-lastLineProcessed: string
+	-progress: Progress
+	-errorSummary: ErrorSummary
+	+getProgress(): Progress
+	+getErrorSummary(): ErrorSummary
+	+parse(line:string): [Progress, ErrorSummary]
+	+getLineType(line:string): LineType
+	-updateProgress(ParsedProgressLine): void
+	-repeatLastLineProcessed(count: number): void
+}
+
+enum LineType {
+	METADATA
+	PROGRESS
+	STREAM
+	LAST_MESSAGE_REPEATED
+	CORRUPT_DECODED_FRAME
+}
+
+LineType <-- OutputParser
+
+class FFmpegVideoErrorDetector {
+	-path: string
+	-listeners: Listener[]
+	+constructor(path: string)
+	+promise(): Promise<ErrorSummary>
+	-handleLine(line:string): void
+	-notifyListeners(progress, errorSummary)
+	+addListener(listener: Listener)
+}
+
+class ProcessRunner {
+	+promise()
+	+all(): Readable
+}
+
+FFmpegVideoErrorDetector "1" *-- OutputParser
+FFmpegVideoErrorDetector "1" *-- ProcessRunner
+
+OutputParser "1" *-- LastMessageRepeatedLineParser
+OutputParser "1" *-- MetadataLineParser
+OutputParser "1" *-- StreamLineParser
+OutputParser "1" *-- ProgressLineParser
+OutputParser "1" *-- CorruptDecodedFrameLineParser
+
+
+@enduml
