@@ -1,7 +1,7 @@
 import * as t from 'io-ts';
 
 import { File, TFile } from './File';
-import { Metadata, TMetadata } from './Metadata';
+import { Metadata, TMetadata } from '../metadata/Metadata';
 import { FsNodeStats } from './FsNode';
 
 const TMediaFilePartial = t.type({

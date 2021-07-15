@@ -4,7 +4,7 @@ import { promisify } from 'util';
 import * as mediainfoParser from 'mediainfo-parser';
 
 import { MediainfoMetadata } from './MediainfoMetadata';
-import { MetadataData, MiMetadataRaw } from './Metadata';
+import { MetadataData, MiMetadataRaw } from '../Metadata';
 
 const exec = promisify(childProcess.exec);
 

@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 
-import { Serializable, TSerializable } from './Serializable';
+import { Serializable, TSerializable } from '../serializable/Serializable';
 
 export const TMiTrack = t.type({
 	_type: t.string

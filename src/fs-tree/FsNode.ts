@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 
-import { Serializable, TSerializable } from './Serializable';
+import { Serializable, TSerializable } from '../serializable/Serializable';
 
 export const TFsNodeStats = t.type({
 	size: t.number

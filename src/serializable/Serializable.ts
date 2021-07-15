@@ -12,7 +12,7 @@ export type SerializableData = t.TypeOf<typeof TSerializable>;
 export abstract class Serializable<T extends SerializableData> {
 	data: Partial<T>;
 
-	constructor() {
+	protected constructor() {
 		this.data = {};
 		this.data.type = this.constructor.name;
 	}

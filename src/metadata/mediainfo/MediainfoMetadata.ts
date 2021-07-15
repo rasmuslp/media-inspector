@@ -1,4 +1,4 @@
-import { Metadata } from './Metadata';
+import { Metadata } from '../Metadata';
 
 export class MediainfoMetadata extends Metadata {
 	_getTrack(trackType: string): unknown {

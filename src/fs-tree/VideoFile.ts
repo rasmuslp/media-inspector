@@ -1,5 +1,5 @@
 import { MediaFile } from './MediaFile';
-import { MediainfoMetadataFactory } from './MediainfoMetadataFactory';
+import { MediainfoMetadataFactory } from '../metadata/mediainfo/MediainfoMetadataFactory';
 
 export class VideoFile extends MediaFile {
 	async readMetadataFromFileSystem(): Promise<void> {

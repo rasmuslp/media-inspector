@@ -9,7 +9,7 @@ import { Directory } from './Directory';
 
 import { DirectoryFactory } from './DirectoryFactory';
 import { MediaFile } from './MediaFile';
-import { SerializableData } from './Serializable';
+import { SerializableData } from '../serializable/Serializable';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);

@@ -5,7 +5,7 @@ import { promisify } from 'util';
 import { Directory, DirectoryData } from './Directory';
 import { FileFactory } from './FileFactory';
 import { FsNode, FsNodeStats } from './FsNode';
-import { SerializableData } from './Serializable';
+import { SerializableData } from '../serializable/Serializable';
 
 const statAsync = promisify(fs.stat);
 const readdirAsync = promisify(fs.readdir);

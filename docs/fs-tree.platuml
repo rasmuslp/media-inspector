@@ -1,0 +1,78 @@
+@startuml Video error detector
+scale 2
+
+package serializable {
+	abstract class Serializable<T> {
+		data: Partial<T>
+		+serialize(): T
+		+getDataForSerialization(): T|void
+	}
+}
+
+package metadata {
+	abstract class Metadata extends Serializable {
+		{abstract} get(path: string): string
+	}
+
+	class MediainfoMetadata extends Metadata {
+		+_getTrack(trackType: string): unknown
+		+_getProperty(trackType: string, property: string): string
+		get(path: string): string
+	}
+
+	class MediainfoMetadataFactory {
+		+{static} _readFromFileSystem(path: string): Promise<MiMetadataRaw>
+		+{static} getFromFileSystem(path: string): Promise<MediainfoMetadata>
+		+{static} getFromSerialized(serialized: MetadataData): MediainfoMetadata
+	}
+
+	MediainfoMetadataFactory --> MediainfoMetadata : creates
+}
+
+package fs-tree {
+	abstract class FsNode<T> extends Serializable {
+		+path: string
+		+size: number
+		{abstract} isDirectory(): boolean
+		{abstract} isFile(): boolean
+	}
+
+	class File extends FsNode {
+		+mimeType: string
+		+type: string 
+		+{static} getTypeFrom(mimeType: string): string
+	}
+
+	class FileFactory {
+		+{static} getFromFileSystem(nodePath: string, stats: FsNodeStats): File
+		+{static} getFromSerialized(serialized: SerializableData): File
+	}
+
+	FileFactory --> File : creates
+
+	class Directory extends FsNode {
+		+children: FsNode[]
+		+childrenSorted: FsNode[]
+		+directories: FsNode[]
+		+files: FsNode[] 
+		+getDataForSerialization(): DirectoryData
+		+{static} getSortFnByPathDirFile(a: FsNode, b: FsNode): number
+	}
+
+	class DirectoryFactory {
+		+{static} getTreeFromFileSystem(nodePath: string): Promise<FsNode>
+		+{static} getFromFileSystem(nodePath: string, stats: FsNodeStats): Promise<Directory>
+		+{static} _getFsNodeFromFileSystem(nodePath: string): Promise<FsNode>
+		+{static} _getChildrenFromFileSystem(nodePath: string): Promise<(FsNode)[]>
+		+{static} getTreeFromSerialized(data: SerializableData): FsNode
+		+{static} _getFsNodeFromSerialized(data: SerializableData): FsNode
+		+{static} getFromSerialized(serialized: SerializableData): Directory
+		+{static} _getChildrenFromSerialized(serializedChildren: SerializableData[]): FsNode[]
+	}
+
+	DirectoryFactory --> FsNode : creates
+	DirectoryFactory --> File : creates
+	DirectoryFactory --> Directory : creates
+}
+
+@enduml

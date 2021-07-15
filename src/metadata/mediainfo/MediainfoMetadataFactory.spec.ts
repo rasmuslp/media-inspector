@@ -1,6 +1,6 @@
 import { MediainfoMetadataFactory } from './MediainfoMetadataFactory';
 
-import mediainfoOutput from '../../test-assets/SampleVideo.mediainfo';
+import mediainfoOutput from '../../../test-assets/SampleVideo.mediainfo';
 
 describe('MediainfoMetadataFactory', () => {
 	const partialPath = 'test-assets/SampleVideo.mov';

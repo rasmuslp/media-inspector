@@ -2,9 +2,9 @@ import mime from 'mime-types';
 
 import { File, FileData } from './File';
 import { VideoFile } from './VideoFile';
-import { MediainfoMetadataFactory } from './MediainfoMetadataFactory';
+import { MediainfoMetadataFactory } from '../metadata/mediainfo/MediainfoMetadataFactory';
 import { MediaFileData } from './MediaFile';
-import { SerializableData } from './Serializable';
+import { SerializableData } from '../serializable/Serializable';
 import { FsNodeStats } from './FsNode';
 
 export class FileFactory {
