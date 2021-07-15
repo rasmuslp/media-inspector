@@ -1,7 +1,7 @@
 import { LineParser } from './LineParser';
 
 function generateProgressParserMatcher(parameter: string) {
-	return new RegExp(parameter + '=\\s?([^\\s]*)\\s?');
+	return new RegExp(parameter + '=\\s*([^\\s]*)');
 }
 
 export interface ParsedProgressLine {

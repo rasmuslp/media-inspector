@@ -1,3 +1,5 @@
 export interface Progress {
-	percentage: number
+	percentage: number,
+	fps: number,
+	speed: string
 }

@@ -9,7 +9,7 @@ interface LineParser<T> {
 class MetadataLineParser implements LineParser {
 	+lines: <MetadataType, string[]>
 	-currentlyProcessing: MetadataType
-	+getDuration(): Duration
+	+getDurationMs(): number
 	{static} +findDuration(lines:string[]): string
 	{static} +getMetadataType(line:string): MetadataType
 }
@@ -40,7 +40,7 @@ class CorruptDecodedFrameLineParser implements LineParser {
 }
 
 class OutputParser {
-	#totalDuration: Duration
+	-totalDurationMs: Duration
 	-lastLineProcessed: string
 	-progress: Progress
 	-errorSummary: ErrorSummary
@@ -66,15 +66,15 @@ class FFmpegVideoErrorDetector {
 	-path: string
 	-listeners: Listener[]
 	+constructor(path: string)
-	+promise(): Promise<ErrorSummary>
+	+start(): Promise<ErrorSummary>
 	-handleLine(line:string): void
 	-notifyListeners(progress, errorSummary)
 	+addListener(listener: Listener)
 }
 
 class ProcessRunner {
-	+promise()
-	+all(): Readable
+	+process: ExecaChildProcess
+	+output(): Readable
 }
 
 FFmpegVideoErrorDetector "1" *-- OutputParser

@@ -32,7 +32,9 @@ describe('OutputParser', () => {
 			const input = 'frame= 3107 fps=1235 q=-0.0 size=N/A time=00:02:04.56 bitrate=N/A speed=49.5x    ';
 			const [progress] = outputParser.parse(input);
 			expect(progress).toEqual({
-				percentage: 0
+				fps: 1235,
+				percentage: 0,
+				speed: '49.5x'
 			});
 		});
 
@@ -44,7 +46,9 @@ describe('OutputParser', () => {
 			const [progress] = outputParser.parse('frame= 3107 fps=1235 q=-0.0 size=N/A time=00:02:04.56 bitrate=N/A speed=49.5x    ');
 
 			expect(progress).toEqual({
-				percentage: 71.46
+				fps: 1235,
+				percentage: 71.46,
+				speed: '49.5x'
 			});
 		});
 	});
@@ -61,23 +65,41 @@ describe('OutputParser', () => {
 			progressUpdates = progressUpdates.filter(progress => progress.percentage !== 0);
 
 			expect(progressUpdates).toEqual([{
-				percentage: 0.15
+				fps: 0,
+				percentage: 0.15,
+				speed: '21.3x'
 			}, {
-				percentage: 15.38
+				fps: 0,
+				percentage: 15.38,
+				speed: '52.3x'
 			}, {
-				percentage: 29.16
+				fps: 1246,
+				percentage: 29.16,
+				speed: '50.2x'
 			}, {
-				percentage: 43.68
+				fps: 1253,
+				percentage: 43.68,
+				speed: '50.3x'
 			}, {
-				percentage: 57.78
+				fps: 1246,
+				percentage: 57.78,
+				speed: '50x'
 			}, {
-				percentage: 71.46
+				fps: 1235,
+				percentage: 71.46,
+				speed: '49.5x'
 			}, {
-				percentage: 85
+				fps: 1225,
+				percentage: 85,
+				speed: '49.1x'
 			}, {
-				percentage: 99.85
+				fps: 1238,
+				percentage: 99.85,
+				speed: '49.5x'
 			}, {
-				percentage: 99.85
+				fps: 1238,
+				percentage: 99.85,
+				speed: '49.5x'
 			}]);
 		});
 	});

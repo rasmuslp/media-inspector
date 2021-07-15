@@ -103,7 +103,7 @@ describe('MetadataLineParser', () => {
 				metadataLineParser.parse(line);
 			}
 
-			expect(metadataLineParser.getDuration()).toEqual(174310);
+			expect(metadataLineParser.getDurationMs()).toEqual(174310);
 		});
 	});
 

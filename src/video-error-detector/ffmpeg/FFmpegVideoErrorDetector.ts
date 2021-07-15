@@ -22,27 +22,27 @@ export class FFmpegVideoErrorDetector {
 	}
 
 	// Throws or returns summary
-	promise(): Promise<ErrorSummary> {
+	start(): Promise<ErrorSummary> {
 		if (!this.ffmpegProcess) {
 			this.ffmpegProcess = new ProcessRunner('ffmpeg', ['-v', 'info', '-i', this.path, '-f', 'null', '-']);
 		}
 
-		this.ffmpegProcess.all.pipe(lineStream()).on('data', (line: string) => {
+		this.ffmpegProcess.output.pipe(lineStream()).on('data', (line: string) => {
 			this.handleLine(line);
 		});
 
-		return this.ffmpegProcess.promise().then(() => {
+		return this.ffmpegProcess.process.then(() => {
 			return this.outputParser.getErrorSummary();
 		});
 	}
 
-	protected handleLine(line: string): void {
+	private handleLine(line: string): void {
 		this.lines.push(line);
 		const [progress, errorSummary] = this.outputParser.parse(line);
 		this.notifyListeners(progress, errorSummary);
 	}
 
-	addListener(listener: Listener): void {
+	public addListener(listener: Listener): void {
 		this.listeners.push(listener);
 		listener(this.outputParser.getProgress(), this.outputParser.getErrorSummary());
 	}

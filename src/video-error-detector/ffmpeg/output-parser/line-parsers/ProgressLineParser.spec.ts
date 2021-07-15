@@ -16,10 +16,10 @@ describe('ProgressLineParser', () => {
 	describe('.parse', () => {
 		let line;
 		beforeEach(() => {
-			line = 'frame= 3697 fps=1225 q=-0.0 size=N/A time=00:02:28.16 bitrate=N/A speed=49.1x    ';
+			line = 'frame= 3697 fps=1225 q=-0.0 size=N/A time=00:02:28.16 bitrate=N/A speed=  49.1x    ';
 		});
 
-		it('gets frame counter as a number', () => {
+		it('gets frame counter as a number with 1 space separator after =', () => {
 			const result = progressLineParser.parse(line);
 			expect(result.frame).toEqual(3697);
 		});
@@ -49,7 +49,7 @@ describe('ProgressLineParser', () => {
 			expect(result.bitrate).toEqual('N/A');
 		});
 
-		it('gets speed as a string', () => {
+		it('gets speed as a string with 2 space separators after =', () => {
 			const result = progressLineParser.parse(line);
 			expect(result.speed).toEqual('49.1x');
 		});

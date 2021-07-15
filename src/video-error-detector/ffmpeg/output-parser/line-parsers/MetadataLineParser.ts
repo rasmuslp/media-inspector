@@ -55,7 +55,7 @@ export class MetadataLineParser implements LineParser<void> {
 		return MetadataType.OTHER;
 	}
 
-	getDuration(): number {
+	getDurationMs(): number {
 		const duration = MetadataLineParser.findDuration(this.lines[MetadataType.INPUT]);
 		return stringToDurationInMillis(duration);
 	}

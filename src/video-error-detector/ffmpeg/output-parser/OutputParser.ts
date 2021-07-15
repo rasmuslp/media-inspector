@@ -23,12 +23,14 @@ export class OutputParser {
 	private readonly progressLineParser = new ProgressLineParser();
 	private readonly streamLineParser = new StreamLineParser();
 
-	private totalDuration: number;
+	private totalDurationMs: number;
 
 	private lastLineProcessed: string;
 
 	private progress: Progress = {
-		percentage: 0
+		percentage: 0,
+		fps: 0,
+		speed: 'N/A'
 	};
 
 	private errorSummary: ErrorSummary = {
@@ -75,8 +77,8 @@ export class OutputParser {
 			case LineType.METADATA:
 			default:
 				this.metadataParser.parse(line);
-				if (!this.totalDuration) {
-					this.totalDuration = this.metadataParser.getDuration();
+				if (!this.totalDurationMs) {
+					this.totalDurationMs = this.metadataParser.getDurationMs();
 				}
 				break;
 		}
@@ -108,12 +110,14 @@ export class OutputParser {
 
 	private updateProgress(parsedProgressLine: ParsedProgressLine): void {
 		let percentage = 0;
-		if (this.totalDuration && parsedProgressLine.time) {
+		if (this.totalDurationMs && parsedProgressLine.time) {
 			const position = stringToDurationInMillis(parsedProgressLine.time);
-			percentage = getPercentageCompleted(position, this.totalDuration);
+			percentage = Math.min(getPercentageCompleted(position, this.totalDurationMs), 100);
 		}
 		this.progress = {
-			percentage
+			percentage,
+			fps: parsedProgressLine.fps,
+			speed: parsedProgressLine.speed
 		};
 	}
 
