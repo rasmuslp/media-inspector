@@ -31,8 +31,4 @@ export abstract class FsNode<T extends FsNodeData = FsNodeData> extends Serializ
 	get size(): number {
 		return this.data.stats.size;
 	}
-
-	abstract isDirectory(): boolean;
-
-	abstract isFile(): boolean;
 }

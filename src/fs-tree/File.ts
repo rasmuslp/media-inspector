@@ -25,14 +25,6 @@ export class File<T extends FileData = FileData> extends FsNode<T> {
 		return File.getTypeFrom(this.data.mimeType);
 	}
 
-	isDirectory(): boolean {
-		return false;
-	}
-
-	isFile(): boolean {
-		return true;
-	}
-
 	static getTypeFrom(mimeType: string): string {
 		const match = File._typeExtractor.exec(mimeType);
 		if (match) {

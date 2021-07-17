@@ -36,8 +36,6 @@ package fs-tree {
 	abstract class FsNode<T> extends Serializable {
 		+path: string
 		+size: number
-		{abstract} isDirectory(): boolean
-		{abstract} isFile(): boolean
 	}
 
 	class File extends FsNode {
@@ -56,8 +54,6 @@ package fs-tree {
 	class Directory extends FsNode {
 		+children: FsNode[]
 		+childrenSorted: FsNode[]
-		+directories: FsNode[]
-		+files: FsNode[] 
 		+getDataForSerialization(): DirectoryData
 		+{static} getSortFnByPathDirFile(a: FsNode, b: FsNode): number
 	}

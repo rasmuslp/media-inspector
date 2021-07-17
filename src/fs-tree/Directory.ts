@@ -39,22 +39,6 @@ export class Directory extends FsNode<DirectoryData> {
 		return sorted;
 	}
 
-	get directories(): FsNode[] {
-		return this._children.filter(i => i.isDirectory());
-	}
-
-	get files(): FsNode[] {
-		return this._children.filter(i => i.isFile());
-	}
-
-	isDirectory(): boolean {
-		return true;
-	}
-
-	isFile(): boolean {
-		return false;
-	}
-
 	getDataForSerialization(): DirectoryData {
 		return {
 			children: this._children.map(node => node.serialize())

@@ -61,9 +61,8 @@ export class FsTree {
 			const node = queue.shift();
 
 			// Queue any children
-			if (node.isDirectory()) {
-				const directory = node as Directory;
-				queue.push(...directory.children);
+			if (node instanceof Directory) {
+				queue.push(...node.children);
 			}
 
 			// Apply fn
