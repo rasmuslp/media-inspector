@@ -6,6 +6,9 @@ package serializable {
 		data: Partial<T>
 		+serialize(): T
 		+getDataForSerialization(): T|void
+		+{static} isSerializePath(serializePath: string): boolean
+		+{static} write(serializable: Serializable, writePath: string): Promise<void>
+		+{static} read(serializedPath: string): Promise<{data: SerializableData}>
 	}
 }
 

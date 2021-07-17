@@ -16,6 +16,7 @@ import { Match } from '../../matcher/Match';
 import BaseCommand from '../BaseCommand';
 import { defaultGetFromFileSystemOptions } from '../../fs-tree/FsTree';
 import { SingleBar } from 'cli-progress';
+import { Serializable } from '../../serializable/Serializable';
 
 const readFile = promisify(fs.readFile);
 
@@ -61,7 +62,7 @@ export default class Inspect extends BaseCommand {
 		const { flags } = this.parse(Inspect);
 
 		let node;
-		if (FsTree.isSerializePath(flags.read)) {
+		if (Serializable.isSerializePath(flags.read)) {
 			if (flags.verbose) {
 				cli.action.start(`Reading from json ${flags.read}`);
 			}

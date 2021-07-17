@@ -1,4 +1,10 @@
+import fs from 'fs';
+import { promisify } from 'util';
+
 import * as t from 'io-ts';
+
+const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
 
 /**
  * NB: While declared optional, Serializable ensures that it will always be added on serialization
@@ -9,23 +15,47 @@ export const TSerializable = t.type({
 
 export type SerializableData = t.TypeOf<typeof TSerializable>;
 
-export abstract class Serializable<T extends SerializableData> {
+export abstract class Serializable<T extends SerializableData = SerializableData> {
 	data: Partial<T>;
 
-	protected constructor() {
-		this.data = {};
-		this.data.type = this.constructor.name;
+	constructor(data?: Partial<T>) {
+		this.data = {
+			...this.data,
+			...data
+		};
 	}
 
 	serialize(): T {
 		return {
 			...this.data,
-			...(this.getDataForSerialization ? this.getDataForSerialization() : {}),
+			...this.getDataForSerialization(),
 			type: this.constructor.name // Override to ensure it has not been changed by accident
 		} as T;
 	}
 
-	getDataForSerialization(): T|void {
-		// Empty, but we shouldn't end up here..
+	getDataForSerialization(): Partial<T> {
+		return {};
+	}
+
+	static isSerializePath(serializePath: string): boolean {
+		return serializePath.endsWith('.json');
+	}
+
+	static async write(serializable: Serializable, writePath: string): Promise<void> {
+		const serialized = {
+			metadata: {
+				createdAt: Date.now()
+			},
+			data: serializable.serialize()
+		};
+		const json = JSON.stringify(serialized, undefined, 4);
+
+		return await writeFile(writePath, json, 'utf8');
+	}
+
+	static async read(serializedPath: string): Promise<{data: SerializableData}> {
+		const fileContent = await readFile(serializedPath, 'utf8');
+		const parsed = JSON.parse(fileContent) as {data: SerializableData};
+		return parsed;
 	}
 }

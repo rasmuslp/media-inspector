@@ -7,6 +7,7 @@ import { FsTree } from '../../fs-tree';
 import BaseCommand from '../BaseCommand';
 import { defaultGetFromFileSystemOptions } from '../../fs-tree/FsTree';
 import { SingleBar } from 'cli-progress';
+import { Serializable } from '../../serializable/Serializable';
 
 export default class Cache extends BaseCommand {
 	static description = 'Cache a directory structure as JSON'
@@ -36,10 +37,10 @@ export default class Cache extends BaseCommand {
 	async run() {
 		const { flags } = this.parse(Cache);
 
-		if (FsTree.isSerializePath(flags.read)) {
+		if (Serializable.isSerializePath(flags.read)) {
 			throw new Error('Why would you read json just to write it again?! (」ﾟﾛﾟ)｣');
 		}
-		if (!FsTree.isSerializePath(flags.write)) {
+		if (!Serializable.isSerializePath(flags.write)) {
 			throw new Error('Write path should end with .json');
 		}
 
@@ -58,7 +59,7 @@ export default class Cache extends BaseCommand {
 		metadataProgressBar.stop();
 
 		cli.action.start(`Writing ${flags.write}`);
-		await FsTree.write(node, flags.write);
+		await Serializable.write(node, flags.write);
 		cli.action.stop();
 	}
 }

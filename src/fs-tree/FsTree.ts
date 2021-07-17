@@ -1,18 +1,12 @@
-import fs from 'fs';
-import { promisify } from 'util';
-
 import createDebug from 'debug';
 import pLimit from 'p-limit';
 
 import { FsNode } from './FsNode';
 import { Directory } from './Directory';
-
 import { DirectoryFactory } from './DirectoryFactory';
 import { MediaFile } from './MediaFile';
-import { SerializableData } from '../serializable/Serializable';
 
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
+import { Serializable } from '../serializable/Serializable';
 
 const debug = createDebug('FsTree');
 
@@ -51,26 +45,9 @@ export class FsTree {
 	}
 
 	static async getFromSerialized(serializePath: string): Promise<FsNode> {
-		const fileContent = await readFile(serializePath, 'utf8');
-		const parsed = JSON.parse(fileContent) as {data: SerializableData};
+		const parsed = await Serializable.read(serializePath);
 		const node = DirectoryFactory.getTreeFromSerialized(parsed.data);
 		return node;
-	}
-
-	static async write(node: FsNode, writePath: string): Promise<void> {
-		const serialized = {
-			metadata: {
-				createdAt: Date.now()
-			},
-			data: node.serialize()
-		};
-		const json = JSON.stringify(serialized, undefined, 4);
-
-		return await writeFile(writePath, json, 'utf8');
-	}
-
-	static isSerializePath(serializePath: string): boolean {
-		return serializePath.endsWith('.json');
 	}
 
 	static async traverse(node: FsNode, nodeFn: (node: FsNode) => Promise<void>): Promise<void> {
