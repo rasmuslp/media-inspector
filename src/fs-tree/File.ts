@@ -21,10 +21,6 @@ export class File<T extends FileData = FileData> extends FsNode<T> {
 		return this.data.mimeType;
 	}
 
-	get type(): string {
-		return File.getTypeFrom(this.data.mimeType);
-	}
-
 	static getTypeFrom(mimeType: string): string {
 		const match = File._typeExtractor.exec(mimeType);
 		if (match) {
