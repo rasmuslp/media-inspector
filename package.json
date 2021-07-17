@@ -40,7 +40,7 @@
     "start": "node -r ts-node/register ./bin/run",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "type-check": "tsc",
+    "type-check": "tsc --project tsconfig.eslint.json",
     "version": "oclif-dev readme && git add README.md"
   },
   "dependencies": {
