@@ -5,18 +5,18 @@ import { promisify } from 'util';
 import { flags } from '@oclif/command';
 import chalk from 'chalk';
 import cli from 'cli-ux';
+import { SingleBar } from 'cli-progress';
 
 import { FilterFactory } from '../../filter';
 import { Directory, FsNode, FsTree, MediaFile } from '../../fs-tree';
-
+import { defaultGetFromFileSystemOptions } from '../../fs-tree/FsTree';
+import { PathSorters } from '../../fs-tree/PathSorters';
 import { AuxiliaryMatch } from '../../matcher/AuxiliaryMatch';
 import { FilterMatch } from '../../matcher/FilterMatch';
 import { FilterMatcher } from '../../matcher/FilterMatcher';
 import { Match } from '../../matcher/Match';
-import BaseCommand from '../BaseCommand';
-import { defaultGetFromFileSystemOptions } from '../../fs-tree/FsTree';
-import { SingleBar } from 'cli-progress';
 import { Serializable } from '../../serializable/Serializable';
+import BaseCommand from '../BaseCommand';
 
 const readFile = promisify(fs.readFile);
 
@@ -145,7 +145,7 @@ export default class Inspect extends BaseCommand {
 		}
 
 		// Sort deduped
-		const dedupedPurgres = [...dedupedMap.values()].sort((a, b) => Directory.getSortFnByPathDirFile(a.fsNode, b.fsNode));
+		const dedupedPurgres = [...dedupedMap.values()].sort((a, b) => PathSorters.childrenBeforeParents(a.fsNode.path, b.fsNode.path));
 
 		for (const match of dedupedPurgres) {
 			if (flags.verbose) {

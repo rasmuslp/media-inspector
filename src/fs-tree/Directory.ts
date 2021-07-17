@@ -17,26 +17,8 @@ export class Directory extends FsNode<DirectoryData> {
 		this._children = children;
 	}
 
-	// Children before parents
-	static getSortFnByPathDirFile(a: FsNode, b: FsNode): number {
-		if (a.path.startsWith(b.path)) {
-			return -1;
-		}
-		else if (b.path.startsWith(a.path)) {
-			return 1;
-		}
-
-		return a.path.localeCompare(b.path);
-	}
-
 	get children(): FsNode[] {
 		return this._children;
-	}
-
-	get childrenSorted(): FsNode[] {
-		const sorted = this._children.sort(Directory.getSortFnByPathDirFile.bind(Directory));
-
-		return sorted;
 	}
 
 	getDataForSerialization(): DirectoryData {

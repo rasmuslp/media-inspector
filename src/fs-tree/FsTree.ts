@@ -7,6 +7,7 @@ import { DirectoryFactory } from './DirectoryFactory';
 import { MediaFile } from './MediaFile';
 
 import { Serializable } from '../serializable/Serializable';
+import { PathSorters } from './PathSorters';
 
 const debug = createDebug('FsTree');
 
@@ -109,7 +110,7 @@ export class FsTree {
 	static async getAsSortedList(node: FsNode): Promise<FsNode[]> {
 		const tree = await FsTree.getAsList(node);
 		const sorted = [...tree];
-		sorted.sort(Directory.getSortFnByPathDirFile.bind(Directory));
+		sorted.sort((a, b) => PathSorters.childrenBeforeParents(a.path, b.path));
 
 		return sorted;
 	}
