@@ -40,7 +40,7 @@
     "start": "node -r ts-node/register ./bin/run",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "type-check": "tsc",
+    "type-check": "tsc --project tsconfig.eslint.json",
     "version": "oclif-dev readme && git add README.md"
   },
   "dependencies": {
@@ -67,6 +67,7 @@
     "@typescript-eslint/eslint-plugin": "4.28.2",
     "codacy-coverage": "3.4.0",
     "eslint": "7.30.0",
+    "eslint-plugin-deprecation": "1.2.1",
     "eslint-plugin-import": "2.23.4",
     "eslint-plugin-jest": "24.3.6",
     "eslint-plugin-node": "11.1.0",
