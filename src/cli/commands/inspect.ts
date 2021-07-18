@@ -5,17 +5,17 @@ import { promisify } from 'util';
 import { flags } from '@oclif/command';
 import chalk from 'chalk';
 import cli from 'cli-ux';
-import { SingleBar } from 'cli-progress';
 
 import { FilterFactory } from '../../filter';
-import { Directory, FsNode, FsTree, MediaFile } from '../../fs-tree';
-import { defaultGetFromFileSystemOptions } from '../../fs-tree/FsTree';
-import { PathSorters } from '../../fs-tree/PathSorters';
+import { Directory, FsNode, FsTree, PathSorters } from '../../fs-tree';
 import { AuxiliaryMatch } from '../../matcher/AuxiliaryMatch';
 import { FilterMatch } from '../../matcher/FilterMatch';
 import { FilterMatcher } from '../../matcher/FilterMatcher';
 import { Match } from '../../matcher/Match';
 import { Serializable } from '../../serializable/Serializable';
+import { readMetadataFromFileSystem } from '../glue/readMetadataFromFileSystem';
+import { readMetadataFromSerialized } from '../glue/readMetadataFromSerialized';
+import { MetadataCache } from '../glue/MetadataCache';
 import BaseCommand from '../BaseCommand';
 
 const readFile = promisify(fs.readFile);
@@ -61,44 +61,17 @@ export default class Inspect extends BaseCommand {
 	async run() {
 		const { flags } = this.parse(Inspect);
 
-		let node;
-		if (Serializable.isSerializePath(flags.read)) {
-			if (flags.verbose) {
-				cli.action.start(`Reading from json ${flags.read}`);
-			}
-			node = await FsTree.getFromSerialized(flags.read);
-			if (flags.verbose) {
-				cli.action.stop();
-			}
-		}
-		else {
-			const options = { ...defaultGetFromFileSystemOptions };
-			let metadataProgressBar: SingleBar;
-			if (flags.verbose) {
-				cli.log(`Reading from file system ${flags.read}`);
-				metadataProgressBar = cli.progress({
-					format: 'Reading metadata | {bar} | {value}/{total} Files',
-					barCompleteChar: '\u2588',
-					barIncompleteChar: '\u2591'
-				}) as SingleBar;
-				options.metadataTotalFn = (total: number) => metadataProgressBar.start(total, 0);
-				options.metadataIncrementFn = () => metadataProgressBar.increment();
-			}
-			node = await FsTree.getFromFileSystem(flags.read, options);
-			if (flags.verbose) {
-				metadataProgressBar.stop();
-			}
-		}
+		const metadataCache = await (Serializable.isSerializePath(flags.read) ? readMetadataFromSerialized(flags.read) : readMetadataFromFileSystem(flags.read, flags.verbose));
 
 		const matches: Match[] = [];
 		if (flags.filter) {
-			const filterMatches = await this.filter(node, flags.filter, flags.verbose);
+			const filterMatches = await this.filter(metadataCache, flags.filter, flags.verbose);
 			matches.push(...filterMatches);
 		}
 
 		if (flags.includeAuxiliary) {
 			// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for matcher
-			await FsTree.traverse(node, async (node: FsNode) => {
+			await FsTree.traverse(metadataCache.rootNode, async (node: FsNode) => {
 				if (node instanceof Directory) {
 					if (!node.children || node.children.length === 0) {
 						matches.push(new AuxiliaryMatch('Directory empty', node));
@@ -165,7 +138,7 @@ export default class Inspect extends BaseCommand {
 
 			this.log('Space freeable:\t', spaceFreeable);
 
-			const size = await FsTree.getSize(node);
+			const size = await FsTree.getSize(metadataCache.rootNode);
 			this.log('Total Size:\t', size);
 
 			const reduction = spaceFreeable / size * 100;
@@ -173,7 +146,7 @@ export default class Inspect extends BaseCommand {
 		}
 	}
 
-	async filter(node: FsNode, filterPath: string, verbose = false): Promise<Match[]> {
+	async filter(metadataCache: MetadataCache, filterPath: string, verbose = false): Promise<Match[]> {
 		const absoluteFilterPath = path.resolve(process.cwd(), filterPath);
 
 		if (verbose) {
@@ -195,7 +168,7 @@ export default class Inspect extends BaseCommand {
 		if (verbose) {
 			cli.action.start('Filtering...');
 		}
-		const matches = await FilterMatcher.getMatches(node, filterRules);
+		const matches = await FilterMatcher.getMatches(metadataCache, filterRules);
 		if (verbose) {
 			cli.action.stop();
 			this.log(`Found ${matches.length} item${matches.length === 1 ? 's' : ''} for purging`);
@@ -207,17 +180,7 @@ export default class Inspect extends BaseCommand {
 
 function getLogMessageOfMatch(match: Match, { colorized = false } = {}): string {
 	let message = `${colorized ? chalk.yellow(match.fsNode.path) : match.fsNode.path}\n\t`;
-
-	if (match.fsNode instanceof Directory) {
-		message += '[Directory]';
-	}
-	else if (match.fsNode instanceof MediaFile) {
-		message += '[Media file]';
-	}
-	else {
-		message += '[File]';
-	}
-
+	message += match.fsNode instanceof Directory ? '[Directory]' : '[File]';
 	message += ' ';
 
 	switch (match.constructor) {

@@ -3,10 +3,8 @@ import path from 'path';
 import { flags } from '@oclif/command';
 import cli from 'cli-ux';
 
-import { FsTree } from '../../fs-tree';
 import BaseCommand from '../BaseCommand';
-import { defaultGetFromFileSystemOptions } from '../../fs-tree/FsTree';
-import { SingleBar } from 'cli-progress';
+import { readMetadataFromFileSystem } from '../glue/readMetadataFromFileSystem';
 import { Serializable } from '../../serializable/Serializable';
 
 export default class Cache extends BaseCommand {
@@ -44,22 +42,10 @@ export default class Cache extends BaseCommand {
 			throw new Error('Write path should end with .json');
 		}
 
-		cli.log(`Reading from file system ${flags.read}`);
-		const metadataProgressBar = cli.progress({
-			format: 'Reading metadata | {bar} | {value}/{total} Files',
-			barCompleteChar: '\u2588',
-			barIncompleteChar: '\u2591'
-		}) as SingleBar;
-		const node = await FsTree.getFromFileSystem(flags.read, {
-			...defaultGetFromFileSystemOptions,
-			metadataTotalFn: (total: number) => metadataProgressBar.start(total, 0),
-			metadataIncrementFn: () => metadataProgressBar.increment()
-
-		});
-		metadataProgressBar.stop();
+		const metadataCache = await readMetadataFromFileSystem(flags.read, true);
 
 		cli.action.start(`Writing ${flags.write}`);
-		await Serializable.write(node, flags.write);
+		await Serializable.write(metadataCache, flags.write);
 		cli.action.stop();
 	}
 }

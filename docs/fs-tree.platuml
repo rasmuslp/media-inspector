@@ -71,9 +71,28 @@ package fs-tree {
 		+{static} _getChildrenFromSerialized(serializedChildren: SerializableData[]): FsNode[]
 	}
 
-	DirectoryFactory --> FsNode : creates
 	DirectoryFactory --> File : creates
 	DirectoryFactory --> Directory : creates
+	DirectoryFactory --> FsNode
+	DirectoryFactory --> FileFactory
+
+	class FsTree {
+		+{static} traverse(node: FsNode, nodeFn: (node: FsNode) => Promise<void>): Promise<void>
+		+{static} traverseBfs(node: FsNode, nodeFn: (node: FsNode) => Promise<void>): Promise<void>
+		+{static} find(node: FsNode, matchFn: (node: FsNode) => Promise<boolean>): Promise<FsNode[]>
+		+{static} getSize(node: FsNode): Promise<number>
+		+{static} getAsList(node: FsNode): Promise<FsNode[]>
+		+{static} getAsSortedList(node: FsNode): Promise<FsNode[]>
+	}
+
+	FsTree --> FsNode
+	FsTree --> Directory
+	FsTree --> PathSorters
+}
+
+class MetadataCache extends Serializable{
+	+rootNode: FsNode
+	+metadata: Map<path: string, MediainfoMetadata>
 }
 
 @enduml

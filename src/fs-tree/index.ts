@@ -1,15 +1,15 @@
 import { FsTree } from './FsTree';
-import { FsNode } from './FsNode';
+import { FsNode, TFsNode } from './FsNode';
 import { Directory } from './Directory';
+import { DirectoryFactory } from './DirectoryFactory';
 import { File } from './File';
-import { MediaFile } from './MediaFile';
-import { VideoFile } from './VideoFile';
+import { PathSorters } from './PathSorters';
 
 export {
 	FsTree,
-	FsNode,
+	FsNode, TFsNode,
 	Directory,
+	DirectoryFactory,
 	File,
-	MediaFile,
-	VideoFile
+	PathSorters
 };
