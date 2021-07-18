@@ -4,9 +4,10 @@ import { promisify } from 'util';
 
 import mime from 'mime-types';
 
-import { Directory, DirectoryData } from './Directory';
-import { File, FileData } from './File';
+import { decodeTo } from '../lib/io-ts';
 import { SerializableData } from '../serializable/Serializable';
+import { Directory, TDirectory } from './Directory';
+import { File, TFile } from './File';
 
 const statAsync = promisify(fs.stat);
 const readdirAsync = promisify(fs.readdir);
@@ -36,13 +37,14 @@ export class FsTreeFactory {
 
 	static getTreeFromSerialized(serialized: SerializableData): File|Directory {
 		if (serialized.type === 'Directory') {
-			const data = serialized as DirectoryData;
+			const data = decodeTo(TDirectory, serialized);
 			const children = data.children.map(child => FsTreeFactory.getTreeFromSerialized(child));
-			return new Directory(data.path, data.stats, children);
+			const directory = new Directory(data.path, data.stats, children);
+			return directory;
 		}
 
 		if (serialized.type === 'File') {
-			const data = serialized as FileData;
+			const data = decodeTo(TFile, serialized);
 			const file = new File(data.path, data.stats, data.mimeType);
 			return file;
 		}
