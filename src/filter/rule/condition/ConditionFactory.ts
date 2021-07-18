@@ -20,13 +20,12 @@ export class ConditionFactory {
 		const hash = crypto.createHash('md5').update(JSON.stringify(conditionData)).digest('hex');
 
 		// Check if already available
-		if (ConditionFactory._conditions.has(hash)) {
-			return ConditionFactory._conditions.get(hash);
+		let condition = ConditionFactory._conditions.get(hash);
+		if (!condition) {
+			// Otherwise create and store for future reuse
+			condition = ConditionFactory.getFromSerialized(conditionData);
+			ConditionFactory._conditions.set(hash, condition);
 		}
-
-		// Otherwise create and store for future reuse
-		const condition = ConditionFactory.getFromSerialized(conditionData);
-		ConditionFactory._conditions.set(hash, condition);
 
 		return condition;
 	}

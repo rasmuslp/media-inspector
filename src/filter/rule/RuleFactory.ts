@@ -1,3 +1,4 @@
+import { Condition } from './condition/Condition';
 import { ConditionFactory } from './condition/ConditionFactory';
 
 import { Rule, RuleData } from './Rule';
@@ -5,11 +6,10 @@ import { RuleType } from './RuleType';
 
 export class RuleFactory {
 	static getFromSerialized(data: RuleData): Rule {
-		let conditions = [];
+		let conditions: Condition[] = [];
 		if (data.conditions) {
 			conditions = data.conditions
-				.map(condition => ConditionFactory.getSharedInstanceFromSerialized(condition))
-				.filter(condition => condition);
+				.map(condition => ConditionFactory.getSharedInstanceFromSerialized(condition));
 		}
 
 		switch (data.type) {
