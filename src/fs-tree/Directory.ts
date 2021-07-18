@@ -1,13 +1,11 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { FsNode, FsNodeStats, TFsNode } from './FsNode';
+import { FsNode, FsNodeSchema, FsNodeStats } from './FsNode';
 
-const TDirectoryPartial = t.type({
-	children: t.array(TFsNode)
+export const DirectorySchema = FsNodeSchema.extend({
+	children: z.array(FsNodeSchema)
 });
-
-export const TDirectory = t.intersection([TFsNode, TDirectoryPartial]);
-export type DirectoryData = t.TypeOf<typeof TDirectory>;
+type DirectoryData = z.infer<typeof DirectorySchema>;
 
 export class Directory extends FsNode<DirectoryData> {
 	_children: FsNode[];
@@ -21,9 +19,9 @@ export class Directory extends FsNode<DirectoryData> {
 		return this._children;
 	}
 
-	getDataForSerialization(): DirectoryData {
+	getDataForSerialization(): Record<string, unknown> {
 		return {
 			children: this._children.map(node => node.serialize())
-		} as DirectoryData;
+		};
 	}
 }

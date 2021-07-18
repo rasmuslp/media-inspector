@@ -3,7 +3,7 @@ import { promisify } from 'util';
 
 import * as mediainfoParser from 'mediainfo-parser';
 
-import { MediainfoMetadata, MediainfoMetadataData, MiMetadataRaw } from './MediainfoMetadata';
+import { MediainfoMetadata, MiMetadataData, MiMetadataRawData } from './MediainfoMetadata';
 
 const exec = promisify(childProcess.exec);
 
@@ -13,12 +13,13 @@ const parse = promisify(mediainfoParser.parse);
 const mediainfoPath = 'mediainfo';
 
 export class MediainfoMetadataFactory {
-	static async _readFromFileSystem(path: string): Promise<MiMetadataRaw> {
+	static async _readFromFileSystem(path: string): Promise<MiMetadataRawData> {
 		// execute
 		const output = await exec(`${mediainfoPath} --Full --Output=XML "${path.replace(/`/g, '\\`')}"`);
 
+		// TODO: Parse with the zod validator
 		// Parse mediainfo output
-		const parsed = await parse(output.stdout) as MiMetadataRaw;
+		const parsed = await parse(output.stdout) as MiMetadataRawData;
 
 		return parsed;
 	}
@@ -32,7 +33,7 @@ export class MediainfoMetadataFactory {
 		return mediainfoMetadata;
 	}
 
-	static getFromSerialized(serialized: MediainfoMetadataData): MediainfoMetadata {
+	static getFromSerialized(serialized: MiMetadataData): MediainfoMetadata {
 		const mediainfoMetadata = new MediainfoMetadata(serialized.metadata);
 
 		return mediainfoMetadata;

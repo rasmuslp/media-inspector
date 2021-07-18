@@ -1,13 +1,11 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { FsNode, FsNodeStats, TFsNode } from './FsNode';
+import { FsNode, FsNodeSchema, FsNodeStats } from './FsNode';
 
-const TFilePartial = t.type({
-	mimeType: t.string
+export const FileSchema = FsNodeSchema.extend({
+	mimeType: z.string()
 });
-
-export const TFile = t.intersection([TFsNode, TFilePartial]);
-export type FileData = t.TypeOf<typeof TFile>;
+export type FileData = z.infer<typeof FileSchema>;
 
 export class File<T extends FileData = FileData> extends FsNode<T> {
 	constructor(nodePath: string, stats: FsNodeStats, mimeType: string) {
