@@ -10,11 +10,10 @@ export const TSerializable = t.type({
 export type SerializableData = t.TypeOf<typeof TSerializable>;
 
 export abstract class Serializable<T extends SerializableData = SerializableData> {
-	data: Partial<T>;
+	readonly data: Partial<T>;
 
 	constructor(data?: Partial<T>) {
 		this.data = {
-			...this.data,
 			...data
 		};
 	}
