@@ -3,7 +3,7 @@ import { SingleBar } from 'cli-progress';
 import createDebug from 'debug';
 import pLimit from 'p-limit';
 
-import { DirectoryFactory, File, FsTree } from '../../fs-tree';
+import { File, FsTree, FsTreeFactory } from '../../fs-tree';
 import { Metadata } from '../../metadata/Metadata';
 import { MediainfoMetadataFactory } from '../../metadata/mediainfo/MediainfoMetadataFactory';
 import { MetadataCache } from './MetadataCache';
@@ -15,7 +15,7 @@ export async function readMetadataFromFileSystem(path: string, verbose: boolean)
 	if (verbose) {
 		cli.action.start(`Reading from file system ${path}`);
 	}
-	const rootNode = await DirectoryFactory.getTreeFromFileSystem(path);
+	const rootNode = await FsTreeFactory.getTreeFromFileSystem(path);
 	const nodes = await FsTree.getAsList(rootNode);
 	debug('Found %d nodes', nodes.length);
 	if (verbose) {

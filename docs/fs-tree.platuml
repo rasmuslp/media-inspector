@@ -48,33 +48,18 @@ package fs-tree {
 		+{static} getTypeFrom(mimeType: string): string
 	}
 
-	class FileFactory {
-		+{static} getFromFileSystem(nodePath: string, stats: FsNodeStats): File
-		+{static} getFromSerialized(serialized: SerializableData): File
-	}
-
-	FileFactory --> File : creates
-
 	class Directory extends FsNode {
 		+children: FsNode[]
 		+getDataForSerialization(): DirectoryData
 	}
 
-	class DirectoryFactory {
+	class FsTreeFactory {
 		+{static} getTreeFromFileSystem(nodePath: string): Promise<FsNode>
-		+{static} getFromFileSystem(nodePath: string, stats: FsNodeStats): Promise<Directory>
-		+{static} _getFsNodeFromFileSystem(nodePath: string): Promise<FsNode>
-		+{static} _getChildrenFromFileSystem(nodePath: string): Promise<(FsNode)[]>
 		+{static} getTreeFromSerialized(data: SerializableData): FsNode
-		+{static} _getFsNodeFromSerialized(data: SerializableData): FsNode
-		+{static} getFromSerialized(serialized: SerializableData): Directory
-		+{static} _getChildrenFromSerialized(serializedChildren: SerializableData[]): FsNode[]
 	}
 
-	DirectoryFactory --> File : creates
-	DirectoryFactory --> Directory : creates
-	DirectoryFactory --> FsNode
-	DirectoryFactory --> FileFactory
+	FsTreeFactory --> File : creates
+	FsTreeFactory --> Directory : creates
 
 	class FsTree {
 		+{static} traverse(node: FsNode, nodeFn: (node: FsNode) => Promise<void>): Promise<void>
