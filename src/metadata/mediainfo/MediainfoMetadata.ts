@@ -3,9 +3,14 @@ import * as t from 'io-ts';
 import { Serializable, TSerializable } from '../../serializable/Serializable';
 import { Metadata } from '../Metadata';
 
-export const TMiTrack = t.type({
-	_type: t.string
-});
+export const TMiTrack = t.intersection([
+	t.type({
+		_type: t.string
+	}),
+	t.record(t.string, t.string)
+]);
+
+export type MiTrack = t.TypeOf<typeof TMiTrack>;
 
 export const TMiMetadataRaw = t.type({
 	media: t.record(t.string, t.array(TMiTrack))
@@ -27,13 +32,13 @@ export class MediainfoMetadata extends Serializable<MediainfoMetadataData> imple
 
 	get(path: string): string {
 		const [trackType, propertyName] = path.split('.');
-		const property = this._getProperty(trackType, propertyName);
+		const property = this.getProperty(trackType, propertyName);
 
 		return property;
 	}
 
-	_getProperty(trackType: string, property: string): string {
-		const track = this._getTrack(trackType);
+	getProperty(trackType: string, property: string): string {
+		const track = this.getTrack(trackType);
 
 		// eslint-disable-next-line default-case
 		switch (trackType) {
@@ -41,20 +46,20 @@ export class MediainfoMetadata extends Serializable<MediainfoMetadataData> imple
 				// eslint-disable-next-line default-case
 				switch (property) {
 					case 'bitrate':
-						return (track as {overallbitrate: string}).overallbitrate;
+						return track.overallbitrate;
 				}
 			}
 		}
 
 		// See if the property is there
 		if (track[property]) {
-			return track[property] as string;
+			return track[property];
 		}
 
 		throw new Error(`[get] could not find '${property}' in '${trackType}'`);
 	}
 
-	_getTrack(trackType: string): unknown {
+	getTrack(trackType: string): MiTrack {
 		for (const track of this.data.metadata.media.track) {
 			if (trackType.toLocaleLowerCase() === track._type.toLocaleLowerCase()) {
 				return track;

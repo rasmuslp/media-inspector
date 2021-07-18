@@ -2,6 +2,7 @@ import * as t from 'io-ts';
 
 import { FsNode, TFsNode } from '../../fs-tree';
 import { Serializable, TSerializable } from '../../serializable/Serializable';
+import { Metadata } from '../../metadata/Metadata';
 import { MediainfoMetadata, TMediainfoMetadata } from '../../metadata/mediainfo/MediainfoMetadata';
 
 const TMetadataCachePartial = t.type({
@@ -14,7 +15,7 @@ export type MetadataCacheData = t.TypeOf<typeof TMetadataCache>;
 
 export class MetadataCache extends Serializable<MetadataCacheData> {
 	public readonly rootNode: FsNode;
-	public readonly metadata: Map<string, MediainfoMetadata>;
+	private readonly metadata: Map<string, MediainfoMetadata>;
 
 	constructor(rootNode: FsNode, metadata: Map<string, MediainfoMetadata>) {
 		super();
@@ -32,5 +33,9 @@ export class MetadataCache extends Serializable<MetadataCacheData> {
 			rootNode: this.rootNode.serialize(),
 			metadata: serializedMetadata
 		};
+	}
+
+	getMetadata(path: string): Metadata {
+		return this.metadata.get(path);
 	}
 }

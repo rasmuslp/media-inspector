@@ -23,8 +23,8 @@ package metadata {
 	}
 
 	class MediainfoMetadata extends Serializable implements Metadata {
-		+_getTrack(trackType: string): unknown
-		+_getProperty(trackType: string, property: string): string
+		+getTrack(trackType: string): MiTrack
+		+getProperty(trackType: string, property: string): string
 	}
 
 	class MediainfoMetadataFactory {
@@ -79,7 +79,11 @@ package fs-tree {
 
 class MetadataCache extends Serializable{
 	+rootNode: FsNode
-	+metadata: Map<path: string, MediainfoMetadata>
+	-metadata: Map<path: string, MediainfoMetadata>
+	+getMetadata(path: string): Metadata
 }
+
+MetadataCache --> FsNode
+MetadataCache --> Metadata
 
 @enduml
