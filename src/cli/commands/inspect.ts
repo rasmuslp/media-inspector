@@ -39,7 +39,7 @@ export default class Inspect extends BaseCommand {
 
 		read: flags.string({
 			char: 'r',
-			description: 'Path of a directory or cache file to read', // TODO: Must this be a directory?
+			description: 'Path of a directory or a metadata cache file to read', // TODO: Must this be a directory?
 			parse: input => path.resolve(process.cwd(), input),
 			required: true
 		}),
