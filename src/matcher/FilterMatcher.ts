@@ -16,7 +16,6 @@ export class FilterMatcher {
 				const fileMatchesMimeType = node instanceof File && node.mimeType.startsWith(rule.mimeType);
 				const metadata = metadataCache.metadata.get(node.path);
 				if (fileMatchesMimeType && metadata) {
-					// TODO: Get metadata elsewhere
 					const ruleResult = rule.checkRuleWithPathGetter(metadata.get.bind(metadata));
 					if (ruleResult) {
 						ruleResults.push(ruleResult);

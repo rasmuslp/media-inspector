@@ -3,8 +3,7 @@ import { promisify } from 'util';
 
 import * as mediainfoParser from 'mediainfo-parser';
 
-import { MediainfoMetadata } from './MediainfoMetadata';
-import { MetadataData, MiMetadataRaw } from '../Metadata';
+import { MediainfoMetadata, MediainfoMetadataData, MiMetadataRaw } from './MediainfoMetadata';
 
 const exec = promisify(childProcess.exec);
 
@@ -33,7 +32,7 @@ export class MediainfoMetadataFactory {
 		return mediainfoMetadata;
 	}
 
-	static getFromSerialized(serialized: MetadataData): MediainfoMetadata {
+	static getFromSerialized(serialized: MediainfoMetadataData): MediainfoMetadata {
 		const mediainfoMetadata = new MediainfoMetadata(serialized.metadata);
 
 		return mediainfoMetadata;

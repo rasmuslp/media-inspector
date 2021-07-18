@@ -18,14 +18,13 @@ package serializable {
 }
 
 package metadata {
-	abstract class Metadata extends Serializable {
-		{abstract} get(path: string): string
+	interface Metadata  {
+		get(path: string): string
 	}
 
-	class MediainfoMetadata extends Metadata {
+	class MediainfoMetadata extends Serializable implements Metadata {
 		+_getTrack(trackType: string): unknown
 		+_getProperty(trackType: string, property: string): string
-		get(path: string): string
 	}
 
 	class MediainfoMetadataFactory {

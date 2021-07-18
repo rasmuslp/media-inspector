@@ -4,7 +4,7 @@ import createDebug from 'debug';
 import pLimit from 'p-limit';
 
 import { File, FsTree, FsTreeFactory } from '../../fs-tree';
-import { Metadata } from '../../metadata/Metadata';
+import { MediainfoMetadata } from '../../metadata/mediainfo/MediainfoMetadata';
 import { MediainfoMetadataFactory } from '../../metadata/mediainfo/MediainfoMetadataFactory';
 import { MetadataCache } from './MetadataCache';
 
@@ -37,7 +37,7 @@ export async function readMetadataFromFileSystem(path: string, verbose: boolean)
 		metadataProgressBar.start(videoFiles.length, 0);
 	}
 
-	const videoMetadata = new Map<string, Metadata>();
+	const videoMetadata = new Map<string, MediainfoMetadata>();
 	const limiter = pLimit(10);
 	const promises = videoFiles.map(videoFile => limiter(async () => {
 		try {

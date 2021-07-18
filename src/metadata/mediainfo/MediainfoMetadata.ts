@@ -1,14 +1,28 @@
+import * as t from 'io-ts';
+
+import { Serializable, TSerializable } from '../../serializable/Serializable';
 import { Metadata } from '../Metadata';
 
-export class MediainfoMetadata extends Metadata {
-	_getTrack(trackType: string): unknown {
-		for (const track of this.data.metadata.media.track) {
-			if (trackType.toLocaleLowerCase() === track._type.toLocaleLowerCase()) {
-				return track;
-			}
-		}
+export const TMiTrack = t.type({
+	_type: t.string
+});
 
-		throw new Error(`Track type '${trackType}' not found`);
+export const TMiMetadataRaw = t.type({
+	media: t.record(t.string, t.array(TMiTrack))
+});
+export type MiMetadataRaw = t.TypeOf<typeof TMiMetadataRaw>;
+
+export const TMiMetadataPartial = t.type({
+	metadata: TMiMetadataRaw
+});
+
+export const TMediainfoMetadata = t.intersection([TSerializable, TMiMetadataPartial]);
+export type MediainfoMetadataData = t.TypeOf<typeof TMediainfoMetadata>;
+
+export class MediainfoMetadata extends Serializable<MediainfoMetadataData> implements Metadata {
+	constructor(metadata: MiMetadataRaw) {
+		super();
+		this.data.metadata = metadata;
 	}
 
 	get(path: string): string {
@@ -38,5 +52,15 @@ export class MediainfoMetadata extends Metadata {
 		}
 
 		throw new Error(`[get] could not find '${property}' in '${trackType}'`);
+	}
+
+	_getTrack(trackType: string): unknown {
+		for (const track of this.data.metadata.media.track) {
+			if (trackType.toLocaleLowerCase() === track._type.toLocaleLowerCase()) {
+				return track;
+			}
+		}
+
+		throw new Error(`Track type '${trackType}' not found`);
 	}
 }
