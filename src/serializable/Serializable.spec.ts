@@ -7,7 +7,8 @@ const TSimpleSerializablePartial = t.type({
 });
 const TSimpleSerializable = t.intersection([TSerializable, TSimpleSerializablePartial]);
 type SimpleSerializableData = t.TypeOf<typeof TSimpleSerializable>;
-class SimpleSerializable extends Serializable<SimpleSerializableData> {}
+// eslint-disable-next-line jest/no-export
+export class SimpleSerializable extends Serializable<SimpleSerializableData> {}
 
 const TAdvancedSerializablePartial = t.type({
 	someConstructorData: t.string,

@@ -6,10 +6,15 @@ package serializable {
 		data: Partial<T>
 		+serialize(): T
 		+getDataForSerialization(): T|void
+	}
+
+	class SerializableIO {
 		+{static} isSerializePath(serializePath: string): boolean
 		+{static} write(serializable: Serializable, writePath: string): Promise<void>
 		+{static} read(serializedPath: string): Promise<{data: SerializableData}>
 	}
+
+	SerializableIO --> Serializable
 }
 
 package metadata {
@@ -52,8 +57,8 @@ package fs-tree {
 	}
 
 	class FsTreeFactory {
-		+{static} getTreeFromFileSystem(nodePath: string): Promise<FsNode>
-		+{static} getTreeFromSerialized(data: SerializableData): FsNode
+		+{static} getTreeFromFileSystem(nodePath: string): Promise<File|Directory>
+		+{static} getTreeFromSerialized(data: SerializableData): File|Directory
 	}
 
 	FsTreeFactory --> File : creates

@@ -12,7 +12,7 @@ import { AuxiliaryMatch } from '../../matcher/AuxiliaryMatch';
 import { FilterMatch } from '../../matcher/FilterMatch';
 import { FilterMatcher } from '../../matcher/FilterMatcher';
 import { Match } from '../../matcher/Match';
-import { Serializable } from '../../serializable/Serializable';
+import { SerializableIO } from '../../serializable/SerializableIO';
 import { readMetadataFromFileSystem } from '../glue/readMetadataFromFileSystem';
 import { readMetadataFromSerialized } from '../glue/readMetadataFromSerialized';
 import { MetadataCache } from '../glue/MetadataCache';
@@ -61,7 +61,7 @@ export default class Inspect extends BaseCommand {
 	async run() {
 		const { flags } = this.parse(Inspect);
 
-		const metadataCache = await (Serializable.isSerializePath(flags.read) ? readMetadataFromSerialized(flags.read) : readMetadataFromFileSystem(flags.read, flags.verbose));
+		const metadataCache = await (SerializableIO.isSerializePath(flags.read) ? readMetadataFromSerialized(flags.read) : readMetadataFromFileSystem(flags.read, flags.verbose));
 
 		const matches: Match[] = [];
 		if (flags.filter) {

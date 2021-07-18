@@ -3,7 +3,7 @@ import cli from 'cli-ux';
 import { FsTreeFactory } from '../../fs-tree';
 import { Metadata } from '../../metadata/Metadata';
 import { MediainfoMetadataFactory } from '../../metadata/mediainfo/MediainfoMetadataFactory';
-import { Serializable } from '../../serializable/Serializable';
+import { SerializableIO } from '../../serializable/SerializableIO';
 import { MetadataCache, MetadataCacheData } from './MetadataCache';
 
 export async function readMetadataFromSerialized(path: string, verbose = false): Promise<MetadataCache> {
@@ -11,7 +11,7 @@ export async function readMetadataFromSerialized(path: string, verbose = false):
 		cli.action.start(`Reading from json ${path}`);
 	}
 
-	const parsed = await Serializable.read(path);
+	const parsed = await SerializableIO.read(path);
 	const parsedData = parsed.data as MetadataCacheData;
 	const rootNode = FsTreeFactory.getTreeFromSerialized(parsedData.rootNode);
 	const videoMetadata = new Map<string, Metadata>();

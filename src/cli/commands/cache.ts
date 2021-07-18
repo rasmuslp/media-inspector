@@ -5,7 +5,7 @@ import cli from 'cli-ux';
 
 import BaseCommand from '../BaseCommand';
 import { readMetadataFromFileSystem } from '../glue/readMetadataFromFileSystem';
-import { Serializable } from '../../serializable/Serializable';
+import { SerializableIO } from '../../serializable/SerializableIO';
 
 export default class Cache extends BaseCommand {
 	static description = 'Cache a directory structure as JSON'
@@ -35,17 +35,17 @@ export default class Cache extends BaseCommand {
 	async run() {
 		const { flags } = this.parse(Cache);
 
-		if (Serializable.isSerializePath(flags.read)) {
+		if (SerializableIO.isSerializePath(flags.read)) {
 			throw new Error('Why would you read json just to write it again?! (」ﾟﾛﾟ)｣');
 		}
-		if (!Serializable.isSerializePath(flags.write)) {
+		if (!SerializableIO.isSerializePath(flags.write)) {
 			throw new Error('Write path should end with .json');
 		}
 
 		const metadataCache = await readMetadataFromFileSystem(flags.read, true);
 
 		cli.action.start(`Writing ${flags.write}`);
-		await Serializable.write(metadataCache, flags.write);
+		await SerializableIO.write(metadataCache, flags.write);
 		cli.action.stop();
 	}
 }
