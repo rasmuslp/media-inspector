@@ -3,12 +3,13 @@ import { ConditionFactory } from './condition/ConditionFactory';
 import { RuleResult } from './RuleResult';
 import { ConditionOperator } from './condition/ConditionOperator';
 import { ConditionData } from './condition/Condition';
+import { ConditionResult } from './condition/ConditionResult';
 
 describe('#satisfied', () => {
-	let failed1;
-	let failed2;
-	let satisfied1;
-	let satisfied2;
+	let failed1: ConditionResult;
+	let failed2: ConditionResult;
+	let satisfied1: ConditionResult;
+	let satisfied2: ConditionResult;
 	beforeEach(() => {
 		const condition = ConditionFactory.getFromSerialized({
 			path: 'dummy',
