@@ -1,8 +1,8 @@
-import { MetadataCache } from '../cli/glue/MetadataCache';
 import { FsTree, File } from '../fs-tree';
 import { FilterMatch } from './FilterMatch';
 import { Rule } from '../filter/rule/Rule';
 import { RuleResult } from '../filter/rule/RuleResult';
+import { MetadataCache } from '../metadata/MetadataCache';
 import { Match } from './Match';
 
 export class FilterMatcher {

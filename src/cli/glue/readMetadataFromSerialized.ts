@@ -1,10 +1,10 @@
 import cli from 'cli-ux';
 
 import { FsTreeFactory } from '../../fs-tree';
+import { MetadataCache, MetadataCacheData } from '../../metadata/MetadataCache';
 import { MediainfoMetadata } from '../../metadata/mediainfo/MediainfoMetadata';
 import { MediainfoMetadataFactory } from '../../metadata/mediainfo/MediainfoMetadataFactory';
 import { SerializableIO } from '../../serializable/SerializableIO';
-import { MetadataCache, MetadataCacheData } from './MetadataCache';
 
 export async function readMetadataFromSerialized(path: string, verbose = false): Promise<MetadataCache> {
 	if (verbose) {

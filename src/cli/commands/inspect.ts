@@ -12,10 +12,10 @@ import { AuxiliaryMatch } from '../../matcher/AuxiliaryMatch';
 import { FilterMatch } from '../../matcher/FilterMatch';
 import { FilterMatcher } from '../../matcher/FilterMatcher';
 import { Match } from '../../matcher/Match';
+import { MetadataCache } from '../../metadata/MetadataCache';
 import { SerializableIO } from '../../serializable/SerializableIO';
 import { readMetadataFromFileSystem } from '../glue/readMetadataFromFileSystem';
 import { readMetadataFromSerialized } from '../glue/readMetadataFromSerialized';
-import { MetadataCache } from '../glue/MetadataCache';
 import BaseCommand from '../BaseCommand';
 
 const readFile = promisify(fs.readFile);

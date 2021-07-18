@@ -4,9 +4,9 @@ import createDebug from 'debug';
 import pLimit from 'p-limit';
 
 import { File, FsTree, FsTreeFactory } from '../../fs-tree';
+import { MetadataCache } from '../../metadata/MetadataCache';
 import { MediainfoMetadata } from '../../metadata/mediainfo/MediainfoMetadata';
 import { MediainfoMetadataFactory } from '../../metadata/mediainfo/MediainfoMetadataFactory';
-import { MetadataCache } from './MetadataCache';
 
 const debug = createDebug('readMetadataFromFileSystem');
 

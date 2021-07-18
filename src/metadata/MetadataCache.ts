@@ -1,9 +1,9 @@
 import * as t from 'io-ts';
 
-import { FsNode, TFsNode } from '../../fs-tree';
-import { Serializable, TSerializable } from '../../serializable/Serializable';
-import { Metadata } from '../../metadata/Metadata';
-import { MediainfoMetadata, TMediainfoMetadata } from '../../metadata/mediainfo/MediainfoMetadata';
+import { FsNode, TFsNode } from '../fs-tree';
+import { Serializable, TSerializable } from '../serializable/Serializable';
+import { MediainfoMetadata, TMediainfoMetadata } from './mediainfo/MediainfoMetadata';
+import { Metadata } from './Metadata';
 
 const TMetadataCachePartial = t.type({
 	rootNode: TFsNode,

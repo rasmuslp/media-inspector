@@ -17,25 +17,6 @@ package serializable {
 	SerializableIO --> Serializable
 }
 
-package metadata {
-	interface Metadata  {
-		get(path: string): string
-	}
-
-	class MediainfoMetadata extends Serializable implements Metadata {
-		+getTrack(trackType: string): MiTrack
-		+getProperty(trackType: string, property: string): string
-	}
-
-	class MediainfoMetadataFactory {
-		+{static} _readFromFileSystem(path: string): Promise<MiMetadataRaw>
-		+{static} getFromFileSystem(path: string): Promise<MediainfoMetadata>
-		+{static} getFromSerialized(serialized: MetadataData): MediainfoMetadata
-	}
-
-	MediainfoMetadataFactory --> MediainfoMetadata : creates
-}
-
 package fs-tree {
 	class PathSorters {
 		+{static} childrenBeforeParents(a: string, b: string): number
@@ -54,6 +35,8 @@ package fs-tree {
 		+children: FsNode[]
 		+getDataForSerialization(): DirectoryData
 	}
+
+	Directory "*" *-- FsNode
 
 	class FsTreeFactory {
 		+{static} getTreeFromFileSystem(nodePath: string): Promise<File|Directory>
@@ -77,13 +60,33 @@ package fs-tree {
 	FsTree --> PathSorters
 }
 
-class MetadataCache extends Serializable{
-	+rootNode: FsNode
-	-metadata: Map<path: string, MediainfoMetadata>
-	+getMetadata(path: string): Metadata
-}
+package metadata {
+	interface Metadata  {
+		get(path: string): string
+	}
 
-MetadataCache --> FsNode
-MetadataCache --> Metadata
+	class MediainfoMetadata extends Serializable implements Metadata {
+		+getTrack(trackType: string): MiTrack
+		+getProperty(trackType: string, property: string): string
+	}
+
+	class MediainfoMetadataFactory {
+		+{static} _readFromFileSystem(path: string): Promise<MiMetadataRaw>
+		+{static} getFromFileSystem(path: string): Promise<MediainfoMetadata>
+		+{static} getFromSerialized(serialized: MetadataData): MediainfoMetadata
+	}
+
+	MediainfoMetadataFactory --> MediainfoMetadata : creates
+
+	class MetadataCache extends Serializable{
+		+rootNode: FsNode
+		-metadata: Map<path: string, MediainfoMetadata>
+		+getMetadata(path: string): Metadata
+	}
+
+	MetadataCache --> Metadata
+	MetadataCache "1" *-- FsNode
+	MetadataCache "*" *-- MediainfoMetadata
+}
 
 @enduml
