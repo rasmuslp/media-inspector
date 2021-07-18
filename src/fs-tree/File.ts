@@ -10,8 +10,6 @@ export const TFile = t.intersection([TFsNode, TFilePartial]);
 export type FileData = t.TypeOf<typeof TFile>;
 
 export class File<T extends FileData = FileData> extends FsNode<T> {
-	static _typeExtractor = /^([^/]+)/;
-
 	constructor(nodePath: string, stats: FsNodeStats, mimeType: string) {
 		super(nodePath, stats);
 		this.data.mimeType = mimeType;
@@ -19,16 +17,5 @@ export class File<T extends FileData = FileData> extends FsNode<T> {
 
 	get mimeType(): string {
 		return this.data.mimeType;
-	}
-
-	static getTypeFrom(mimeType: string): string {
-		const match = File._typeExtractor.exec(mimeType);
-		if (match) {
-			const type = match[1];
-
-			return type;
-		}
-
-		return 'unknown';
 	}
 }

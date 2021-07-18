@@ -44,8 +44,6 @@ package fs-tree {
 
 	class File extends FsNode {
 		+mimeType: string
-		+type: string
-		+{static} getTypeFrom(mimeType: string): string
 	}
 
 	class Directory extends FsNode {
