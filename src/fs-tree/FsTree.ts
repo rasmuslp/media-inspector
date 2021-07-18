@@ -11,7 +11,7 @@ export class FsTree {
 		const queue: [FsNode] = [node];
 		while (queue.length > 0) {
 			// Get node
-			const node = queue.shift();
+			const node = queue.shift()!;
 
 			// Queue any children
 			if (node instanceof Directory) {
@@ -40,7 +40,7 @@ export class FsTree {
 	static async getSize(node: FsNode): Promise<number> {
 		const sizes: number[] = [];
 
-		await FsTree.traverse(node, node => void sizes.push(node.size));
+		await FsTree.traverse(node, async node => void sizes.push(node.size));
 
 		let totalSize = 0;
 		for (const size of sizes) {
@@ -54,7 +54,7 @@ export class FsTree {
 	static async getAsList(node: FsNode): Promise<FsNode[]> {
 		const nodes: FsNode[] = [];
 
-		await FsTree.traverse(node, node => void nodes.push(node));
+		await FsTree.traverse(node, async node => void nodes.push(node));
 
 		return nodes;
 	}

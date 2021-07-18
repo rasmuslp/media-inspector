@@ -24,7 +24,7 @@ export class MetadataCache extends Serializable<MetadataCacheData> {
 	}
 
 	getDataForSerialization(): Partial<MetadataCacheData> {
-		const serializedMetadata = {};
+		const serializedMetadata: Record<string, any> = {};
 		this.metadata.forEach((metadata, path) => {
 			serializedMetadata[path] = metadata.serialize();
 		});
@@ -35,7 +35,7 @@ export class MetadataCache extends Serializable<MetadataCacheData> {
 		};
 	}
 
-	getMetadata(path: string): Metadata {
+	getMetadata(path: string): Metadata|undefined {
 		return this.metadata.get(path);
 	}
 }

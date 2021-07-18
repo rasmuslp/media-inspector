@@ -27,7 +27,7 @@ export async function readMetadataFromFileSystem(path: string, verbose: boolean)
 	const videoFiles = files.filter(file => file.mimeType.startsWith('video/'));
 	debug('Found %d video files', videoFiles.length);
 
-	let metadataProgressBar: SingleBar;
+	let metadataProgressBar: SingleBar|undefined;
 	if (verbose) {
 		metadataProgressBar = cli.progress({
 			format: 'Reading metadata | {bar} | {value}/{total} video files',
@@ -47,13 +47,13 @@ export async function readMetadataFromFileSystem(path: string, verbose: boolean)
 		catch {
 			// debug('sss Failed to read metadata from %s %s', videoFile.path, e.toString());
 		}
-		if (verbose) {
+		if (verbose && metadataProgressBar) {
 			metadataProgressBar.increment();
 		}
 	}));
 	debug('Reading metadata from %d files', videoFiles.length);
 	await Promise.all(promises);
-	if (verbose) {
+	if (verbose && metadataProgressBar) {
 		metadataProgressBar.stop();
 	}
 
