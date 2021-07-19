@@ -9,4 +9,8 @@ export class PathSorters {
 
 		return a.localeCompare(b);
 	}
+
+	static parentsBeforeChildren(a: string, b: string): number {
+		return a.localeCompare(b);
+	}
 }
