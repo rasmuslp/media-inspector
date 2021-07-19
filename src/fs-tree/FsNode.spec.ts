@@ -2,7 +2,8 @@ import path from 'path';
 
 import { FsNode } from './FsNode';
 
-class FsNodeImpl extends FsNode {}
+// eslint-disable-next-line jest/no-export
+export class TestFsNode extends FsNode {}
 
 describe('FsNode', () => {
 	const pathToFsNode = path.join(__dirname, 'FsNode.js');
@@ -12,7 +13,7 @@ describe('FsNode', () => {
 
 	let fsNode: FsNode;
 	beforeEach(() => {
-		fsNode = new FsNodeImpl(pathToFsNode, stats);
+		fsNode = new TestFsNode(pathToFsNode, stats);
 	});
 
 	test('path', () => {

@@ -7,7 +7,7 @@ import chalk from 'chalk';
 import cli from 'cli-ux';
 
 import { FilterFactory } from '../../filter';
-import { Directory, FsNode, FsTree, PathSorters } from '../../fs-tree';
+import { Directory, FsNode, PathSorters } from '../../fs-tree';
 import { AuxiliaryMatch } from '../../matcher/AuxiliaryMatch';
 import { FilterMatch } from '../../matcher/FilterMatch';
 import { FilterMatcher } from '../../matcher/FilterMatcher';
@@ -71,13 +71,14 @@ export default class Inspect extends BaseCommand {
 
 		if (flags.includeAuxiliary) {
 			// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for matcher
-			await FsTree.traverse(metadataCache.rootNode, async (node: FsNode) => {
+			await metadataCache.tree.traverse(async (node: FsNode) => {
 				if (node instanceof Directory) {
-					if (!node.children || node.children.length === 0) {
+					const children = metadataCache.tree.getDirectChildren(node);
+					if (children.length === 0) {
 						matches.push(new AuxiliaryMatch('Directory empty', node));
 					}
 					else {
-						const childPaths = new Set(node.children.map(fsNode => fsNode.path));
+						const childPaths = new Set(children.map(fsNode => fsNode.path));
 						const matchedChildren = matches.filter(match => childPaths.has(match.fsNode.path));
 
 						// Get sizes of matched children
@@ -86,12 +87,12 @@ export default class Inspect extends BaseCommand {
 							sizeOfMatchedChildren += match.fsNode.size;
 						}
 
-						const sizeOfTree = await FsTree.getSize(node);
+						const sizeOfTree = await metadataCache.tree.getSize(node);
 
 						// Take parent and all children when this was the majority
 						if (sizeOfMatchedChildren >= 0.9 * sizeOfTree) {
 							// Mark tree from directory as Purgable
-							const treeAsList = await FsTree.getAsSortedList(node);
+							const treeAsList = await metadataCache.tree.getAsSortedList(node);
 							const auxiliaryMatches = treeAsList.map(childNode => new AuxiliaryMatch(`Auxiliary to ${node.path}`, childNode));
 
 							matches.push(...auxiliaryMatches);
@@ -138,7 +139,7 @@ export default class Inspect extends BaseCommand {
 
 			this.log('Space freeable:\t', spaceFreeable);
 
-			const size = await FsTree.getSize(metadataCache.rootNode);
+			const size = await metadataCache.tree.getSize();
 			this.log('Total Size:\t', size);
 
 			const reduction = spaceFreeable / size * 100;

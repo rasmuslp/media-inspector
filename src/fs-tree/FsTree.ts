@@ -1,46 +1,34 @@
-import { FsNode } from './FsNode';
-import { Directory } from './Directory';
+import * as t from 'io-ts';
+
+import { TSerializable } from '../serializable/Serializable';
+
+import { FsNode, TFsNode } from './FsNode';
 import { PathSorters } from './PathSorters';
+import { Tree } from './Tree';
 
-export class FsTree {
-	static async traverse(node: FsNode, nodeFn: (node: FsNode) => Promise<void>): Promise<void> {
-		await FsTree.traverseBfs(node, nodeFn);
+const TFsTreePartial = t.type({
+	nodes: t.array(TFsNode)
+});
+export const TFsTree = t.intersection([TSerializable, TFsTreePartial]);
+export type FsTreeData = t.TypeOf<typeof TFsTree>;
+
+const FsNodeKeyMapper = (fsNode: FsNode): string => fsNode.path;
+
+export class FsTree extends Tree<FsNode, FsTreeData> {
+	constructor(rootNode: FsNode) {
+		super(FsNodeKeyMapper, rootNode);
 	}
 
-	static async traverseBfs(node: FsNode, nodeFn: (node: FsNode) => Promise<void>): Promise<void> {
-		const queue: [FsNode] = [node];
-		while (queue.length > 0) {
-			// Get node
-			const node = queue.shift()!;
-
-			// Queue any children
-			if (node instanceof Directory) {
-				queue.push(...node.children);
-			}
-
-			// Apply fn
-			await nodeFn(node);
-		}
+	getDataForSerialization(): Partial<FsTreeData> {
+		return {
+			nodes: this.getAsSortedListSync().map(node => node.serialize())
+		};
 	}
 
-	static async find(node: FsNode, matchFn: (node: FsNode) => Promise<boolean>): Promise<FsNode[]> {
-		const matches: FsNode[] = [];
-
-		await FsTree.traverse(node, async node => {
-			// Check match
-			const match = await matchFn(node);
-			if (match) {
-				matches.push(node);
-			}
-		});
-
-		return matches;
-	}
-
-	static async getSize(node: FsNode): Promise<number> {
+	async getSize(fromNode = this.rootNode): Promise<number> {
 		const sizes: number[] = [];
 
-		await FsTree.traverse(node, async node => void sizes.push(node.size));
+		await this.traverse(async node => void sizes.push(node.size), fromNode);
 
 		let totalSize = 0;
 		for (const size of sizes) {
@@ -50,19 +38,16 @@ export class FsTree {
 		return totalSize;
 	}
 
-	// Returns list of tree, this included
-	static async getAsList(node: FsNode): Promise<FsNode[]> {
-		const nodes: FsNode[] = [];
+	async getAsSortedList(fromNode = this.rootNode): Promise<FsNode[]> {
+		const nodes = await this.getAsList(fromNode);
+		const sorted = [...nodes].sort((a, b) => PathSorters.childrenBeforeParents(a.path, b.path));
 
-		await FsTree.traverse(node, async node => void nodes.push(node));
-
-		return nodes;
+		return sorted;
 	}
 
-	static async getAsSortedList(node: FsNode): Promise<FsNode[]> {
-		const tree = await FsTree.getAsList(node);
-		const sorted = [...tree];
-		sorted.sort((a, b) => PathSorters.childrenBeforeParents(a.path, b.path));
+	getAsSortedListSync(): FsNode[] {
+		const nodes = this.getAsListSync();
+		const sorted = [...nodes].sort((a, b) => PathSorters.childrenBeforeParents(a.path, b.path));
 
 		return sorted;
 	}

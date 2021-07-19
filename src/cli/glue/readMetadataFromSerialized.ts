@@ -13,7 +13,7 @@ export async function readMetadataFromSerialized(path: string, verbose = false):
 
 	const parsed = await SerializableIO.read(path);
 	const parsedData = parsed.data as MetadataCacheData;
-	const rootNode = FsTreeFactory.getTreeFromSerialized(parsedData.rootNode);
+	const fsTree = FsTreeFactory.getTreeFromSerialized(parsedData.tree);
 	const videoMetadata = new Map<string, MediainfoMetadata>();
 
 	for (const [path, data] of Object.entries(parsedData.metadata)) {
@@ -21,7 +21,7 @@ export async function readMetadataFromSerialized(path: string, verbose = false):
 		videoMetadata.set(path, metadata);
 	}
 
-	const metadataCache = new MetadataCache(rootNode, videoMetadata);
+	const metadataCache = new MetadataCache(fsTree, videoMetadata);
 
 	if (verbose) {
 		cli.action.stop();

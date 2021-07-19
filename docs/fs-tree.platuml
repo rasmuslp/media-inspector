@@ -31,32 +31,47 @@ package fs-tree {
 		+mimeType: string
 	}
 
-	class Directory extends FsNode {
-		+children: FsNode[]
-		+getDataForSerialization(): DirectoryData
+	class Directory extends FsNode {}
+
+	class Tree<T> extends Serializable {
+		-keyMapper: T => string
+		#rootNode: T
+		#nodes
+		#relations
+		+get root(): T
+		+addRelation(fromNode: T, toNode: T): void
+		+getDirectChildren(ofNode: T): T[]
+		+traverse(nodeFn: (node: T) => Promise<void>, fromNode = this.rootNode): Promise<void>
+		+traverseBfs(nodeFn: (node: T) => Promise<void>, fromNode = this.rootNode): Promise<void>
+		+find(matchFn: (node: T) => Promise<boolean>, fromNode = this.rootNode): Promise<T[]>
+		+getAsList(fromNode: T): Promise<T[]>
+		+getAsListSync(): T[]
 	}
 
-	Directory "*" *-- FsNode
+	Tree "1..*" *-- TreeT
 
 	class FsTreeFactory {
-		+{static} getTreeFromFileSystem(nodePath: string): Promise<File|Directory>
-		+{static} getTreeFromSerialized(data: SerializableData): File|Directory
+		+ {static} async getTreeFromFileSystem(nodePath: string): Promise<FsTree>
+		# {static} async getFsNodesFromFileSystem(nodePath: string): Promise<FsNode[]>
+		# {static} async getFsNodeFromFileSystem(nodePath: string): Promise<[File|Directory, string[]]>
+		+ {static} getTreeFromSerialized(serialized: FsTreeData): FsTree
+		# {static} getFsNodesFromSerialized(serialized: FsTreeData): FsNode[]
+		# {static} getFsNodeFromSerialized(serialized: FsNodeData): File|Directory
+		# {static} buildFsTreeFromSortedFsNodes(sortedNodes: FsNode[]): FsTree
 	}
 
+	FsTreeFactory --> FsTree : creates
+	FsTreeFactory --> FsNode : creates
 	FsTreeFactory --> File : creates
 	FsTreeFactory --> Directory : creates
 
-	class FsTree {
-		+{static} traverse(node: FsNode, nodeFn: (node: FsNode) => Promise<void>): Promise<void>
-		+{static} traverseBfs(node: FsNode, nodeFn: (node: FsNode) => Promise<void>): Promise<void>
-		+{static} find(node: FsNode, matchFn: (node: FsNode) => Promise<boolean>): Promise<FsNode[]>
-		+{static} getSize(node: FsNode): Promise<number>
-		+{static} getAsList(node: FsNode): Promise<FsNode[]>
-		+{static} getAsSortedList(node: FsNode): Promise<FsNode[]>
+	class FsTree extends Tree {
+		+getSize(node: FsNode): Promise<number>
+		+getAsSortedList(node: FsNode): Promise<FsNode[]>
+		+getAsSortedListSync(): FsNode[]
 	}
 
-	FsTree --> FsNode
-	FsTree --> Directory
+	FsTree "1..*" *-- FsNode
 	FsTree --> PathSorters
 }
 
@@ -79,14 +94,14 @@ package metadata {
 	MediainfoMetadataFactory --> MediainfoMetadata : creates
 
 	class MetadataCache extends Serializable{
-		+rootNode: FsNode
+		+tree: FsTree
 		-metadata: Map<path: string, MediainfoMetadata>
 		+getMetadata(path: string): Metadata
 	}
 
 	MetadataCache --> Metadata
-	MetadataCache "1" *-- FsNode
 	MetadataCache "*" *-- MediainfoMetadata
+	MetadataCache "1" *-- FsTree
 }
 
 @enduml

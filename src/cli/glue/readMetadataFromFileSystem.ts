@@ -3,7 +3,7 @@ import { SingleBar } from 'cli-progress';
 import createDebug from 'debug';
 import pLimit from 'p-limit';
 
-import { File, FsTree, FsTreeFactory } from '../../fs-tree';
+import { File, FsTreeFactory } from '../../fs-tree';
 import { MetadataCache } from '../../metadata/MetadataCache';
 import { MediainfoMetadata } from '../../metadata/mediainfo/MediainfoMetadata';
 import { MediainfoMetadataFactory } from '../../metadata/mediainfo/MediainfoMetadataFactory';
@@ -15,8 +15,8 @@ export async function readMetadataFromFileSystem(path: string, verbose: boolean)
 	if (verbose) {
 		cli.action.start(`Reading from file system ${path}`);
 	}
-	const rootNode = await FsTreeFactory.getTreeFromFileSystem(path);
-	const nodes = await FsTree.getAsList(rootNode);
+	const fsTree = await FsTreeFactory.getTreeFromFileSystem(path);
+	const nodes = await fsTree.getAsSortedList();
 	debug('Found %d nodes', nodes.length);
 	if (verbose) {
 		cli.action.stop();
@@ -57,7 +57,7 @@ export async function readMetadataFromFileSystem(path: string, verbose: boolean)
 		metadataProgressBar.stop();
 	}
 
-	const metadataCache = new MetadataCache(rootNode, videoMetadata);
+	const metadataCache = new MetadataCache(fsTree, videoMetadata);
 
 	debug('done');
 	return metadataCache;

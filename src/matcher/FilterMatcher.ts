@@ -1,4 +1,4 @@
-import { FsTree, File } from '../fs-tree';
+import { File } from '../fs-tree';
 import { FilterMatch } from './FilterMatch';
 import { Rule } from '../filter/rule/Rule';
 import { RuleResult } from '../filter/rule/RuleResult';
@@ -9,7 +9,7 @@ export class FilterMatcher {
 	static async getMatches(metadataCache: MetadataCache, filterRules: Rule[]): Promise<Match[]> {
 		// Build list of matches
 		const matches: Match[] = [];
-		await FsTree.traverse(metadataCache.rootNode, async node => {
+		await metadataCache.tree.traverse(async node => {
 			// Check all rules
 			const ruleResults: RuleResult[] = [];
 			for (const rule of filterRules) {
