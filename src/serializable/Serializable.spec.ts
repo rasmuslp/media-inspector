@@ -1,21 +1,21 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { Serializable, TSerializable } from './Serializable';
+import { Serializable, SerializableSchema } from './Serializable';
 
-const TSimpleSerializablePartial = t.type({
-	someConstructorData: t.string
+const SimpleSerializableSchema = SerializableSchema.extend({
+	someConstructorData: z.string()
 });
-const TSimpleSerializable = t.intersection([TSerializable, TSimpleSerializablePartial]);
-type SimpleSerializableData = t.TypeOf<typeof TSimpleSerializable>;
+type SimpleSerializableData = z.infer<typeof SimpleSerializableSchema>;
+
 // eslint-disable-next-line jest/no-export
 export class SimpleSerializable extends Serializable<SimpleSerializableData> {}
 
-const TAdvancedSerializablePartial = t.type({
-	someConstructorData: t.string,
-	someAdditionalData: t.string
+const AdvancedSerializableDataSchema = SerializableSchema.extend({
+	someConstructorData: z.string(),
+	someAdditionalData: z.string()
 });
-const TAdvancedSerializable = t.intersection([TSerializable, TAdvancedSerializablePartial]);
-type AdvancedSerializableData = t.TypeOf<typeof TAdvancedSerializable>;
+type AdvancedSerializableData = z.infer<typeof AdvancedSerializableDataSchema>;
+
 class AdvancedSerializable extends Serializable<AdvancedSerializableData> {
 	getDataForSerialization(): Partial<AdvancedSerializableData> {
 		return {
@@ -41,8 +41,8 @@ describe('Serializable', () => {
 		it('.serialize returns all relevant data for serialization', () => {
 			const result = serializable.serialize();
 			expect(result).toEqual({
-				someConstructorData: 'a',
-				type: 'SimpleSerializable'
+				type: 'SimpleSerializable',
+				someConstructorData: 'a'
 			});
 		});
 	});
@@ -65,9 +65,9 @@ describe('Serializable', () => {
 		it('.serialize returns all relevant data for serialization', () => {
 			const result = serializable.serialize();
 			expect(result).toEqual({
+				type: 'AdvancedSerializable',
 				someConstructorData: 'a',
-				someAdditionalData: 'more data',
-				type: 'AdvancedSerializable'
+				someAdditionalData: 'more data'
 			});
 		});
 	});

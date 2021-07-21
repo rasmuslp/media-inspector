@@ -1,17 +1,15 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { FsTree, TFsTree } from '../fs-tree';
-import { Serializable, TSerializable } from '../serializable/Serializable';
-import { MediainfoMetadata, TMediainfoMetadata } from './mediainfo/MediainfoMetadata';
+import { FsTree, FsTreeSchema } from '../fs-tree';
+import { Serializable, SerializableSchema } from '../serializable/Serializable';
+import { MediainfoMetadata, MiMetadataSchema } from './mediainfo/MediainfoMetadata';
 import { Metadata } from './Metadata';
 
-const TMetadataCachePartial = t.type({
-	tree: TFsTree,
-	metadata: t.record(t.string, TMediainfoMetadata)
+export const MetadataCacheSchema = SerializableSchema.extend({
+	tree: FsTreeSchema,
+	metadata: z.record(MiMetadataSchema)
 });
-
-export const TMetadataCache = t.intersection([TSerializable, TMetadataCachePartial]);
-export type MetadataCacheData = t.TypeOf<typeof TMetadataCache>;
+type MetadataCacheData = z.infer<typeof MetadataCacheSchema>;
 
 export class MetadataCache extends Serializable<MetadataCacheData> {
 	public readonly tree: FsTree;
@@ -23,8 +21,8 @@ export class MetadataCache extends Serializable<MetadataCacheData> {
 		this.metadata = metadata;
 	}
 
-	getDataForSerialization(): Partial<MetadataCacheData> {
-		const serializedMetadata: Record<string, any> = {};
+	getDataForSerialization(): Record<string, unknown> {
+		const serializedMetadata: Record<string, unknown> = {};
 		this.metadata.forEach((metadata, path) => {
 			serializedMetadata[path] = metadata.serialize();
 		});

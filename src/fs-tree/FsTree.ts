@@ -1,16 +1,16 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { TSerializable } from '../serializable/Serializable';
-
-import { FsNode, TFsNode } from './FsNode';
+import { SerializableSchema } from '../serializable/Serializable';
+import { FsNode } from './FsNode';
 import { PathSorters } from './PathSorters';
 import { Tree } from './Tree';
+import { FileSchema } from './File';
+import { DirectorySchema } from './Directory';
 
-const TFsTreePartial = t.type({
-	nodes: t.array(TFsNode)
+export const FsTreeSchema = SerializableSchema.extend({
+	nodes: z.array(FileSchema.or(DirectorySchema))
 });
-export const TFsTree = t.intersection([TSerializable, TFsTreePartial]);
-export type FsTreeData = t.TypeOf<typeof TFsTree>;
+export type FsTreeData = z.infer<typeof FsTreeSchema>;
 
 const FsNodeKeyMapper = (fsNode: FsNode): string => fsNode.path;
 

@@ -1,31 +1,32 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { Serializable, TSerializable } from '../../serializable/Serializable';
 import { Metadata } from '../Metadata';
+import { Serializable, SerializableSchema } from '../../serializable/Serializable';
 
-export const TMiTrack = t.intersection([
-	t.type({
-		_type: t.string
-	}),
-	t.record(t.string, t.string)
-]);
-
-export type MiTrack = t.TypeOf<typeof TMiTrack>;
-
-export const TMiMetadataRaw = t.type({
-	media: t.record(t.string, t.array(TMiTrack))
+const MiTrackKnownSchema = z.object({
+	_type: z.string()
 });
-export type MiMetadataRaw = t.TypeOf<typeof TMiMetadataRaw>;
+const MiTrackUnknownSchema = z.record(z.union([z.string(), z.record(z.string())]));
+// const MiTrackUnknownSchema = z.record(z.union([z.string(), z.unknown()]));
+const MiTrackSchema = MiTrackKnownSchema.and(MiTrackUnknownSchema);
+type MiTrackData = z.infer<typeof MiTrackSchema>;
 
-export const TMiMetadataPartial = t.type({
-	metadata: TMiMetadataRaw
+const MiMetadataRawSchema = z.object({
+	media: z.object({
+		track: z.array(MiTrackSchema)
+	})
 });
 
-export const TMediainfoMetadata = t.intersection([TSerializable, TMiMetadataPartial]);
-export type MediainfoMetadataData = t.TypeOf<typeof TMediainfoMetadata>;
+export type MiMetadataRawData = z.infer<typeof MiMetadataRawSchema>;
 
-export class MediainfoMetadata extends Serializable<MediainfoMetadataData> implements Metadata {
-	constructor(metadata: MiMetadataRaw) {
+export const MiMetadataSchema = SerializableSchema.extend({
+	metadata: MiMetadataRawSchema
+});
+
+export type MiMetadataData = z.infer<typeof MiMetadataSchema>;
+
+export class MediainfoMetadata extends Serializable<MiMetadataData> implements Metadata {
+	constructor(metadata: MiMetadataRawData) {
 		super();
 		this.data.metadata = metadata;
 	}
@@ -46,20 +47,20 @@ export class MediainfoMetadata extends Serializable<MediainfoMetadataData> imple
 				// eslint-disable-next-line default-case
 				switch (property) {
 					case 'bitrate':
-						return track.overallbitrate;
+						return track.overallbitrate as string; // TODO Improve type
 				}
 			}
 		}
 
 		// See if the property is there
 		if (track[property]) {
-			return track[property];
+			return track[property] as string; // TODO Improve type
 		}
 
 		throw new Error(`[get] could not find '${property}' in '${trackType}'`);
 	}
 
-	getTrack(trackType: string): MiTrack {
+	getTrack(trackType: string): MiTrackData {
 		for (const track of this.data.metadata.media.track) {
 			if (trackType.toLocaleLowerCase() === track._type.toLocaleLowerCase()) {
 				return track;

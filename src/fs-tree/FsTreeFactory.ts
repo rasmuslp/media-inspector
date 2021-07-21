@@ -4,11 +4,10 @@ import { promisify } from 'util';
 
 import mime from 'mime-types';
 
-import { decodeTo } from '../lib/io-ts';
-import { Directory } from './Directory';
-import { File, TFile } from './File';
+import { Directory, DirectorySchema } from './Directory';
+import { File, FileSchema } from './File';
 import { FsTree, FsTreeData } from './FsTree';
-import { FsNode, FsNodeData, TFsNode } from './FsNode';
+import { FsNode, FsNodeData } from './FsNode';
 import { PathSorters } from './PathSorters';
 
 const statAsync = promisify(fs.stat);
@@ -75,13 +74,13 @@ export class FsTreeFactory {
 
 	protected static getFsNodeFromSerialized(serialized: FsNodeData): File|Directory {
 		if (serialized.type === 'Directory') {
-			const data = decodeTo(TFsNode, serialized);
+			const data = DirectorySchema.parse(serialized);
 			const directory = new Directory(data.path, data.stats);
 			return directory;
 		}
 
 		if (serialized.type === 'File') {
-			const data = decodeTo(TFile, serialized);
+			const data = FileSchema.parse(serialized);
 			const file = new File(data.path, data.stats, data.mimeType);
 			return file;
 		}

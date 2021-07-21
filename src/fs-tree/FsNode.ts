@@ -1,19 +1,17 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { Serializable, TSerializable } from '../serializable/Serializable';
+import { Serializable, SerializableSchema } from '../serializable/Serializable';
 
-export const TFsNodeStats = t.type({
-	size: t.number
+const FsNodeStatsSchema = z.object({
+	size: z.number()
 });
-export type FsNodeStats = t.TypeOf<typeof TFsNodeStats>;
+export type FsNodeStats = z.infer<typeof FsNodeStatsSchema>;
 
-export const TFsNodePartial = t.type({
-	path: t.string,
-	stats: TFsNodeStats
+export const FsNodeSchema = SerializableSchema.extend({
+	path: z.string(),
+	stats: FsNodeStatsSchema
 });
-
-export const TFsNode = t.intersection([TSerializable, TFsNodePartial]);
-export type FsNodeData = t.TypeOf<typeof TFsNode>;
+export type FsNodeData = z.infer<typeof FsNodeSchema>;
 
 export abstract class FsNode<T extends FsNodeData = FsNodeData> extends Serializable<T> {
 	constructor(nodePath: string, stats: FsNodeStats) {

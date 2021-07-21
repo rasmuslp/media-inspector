@@ -1,3 +1,8 @@
-import { FsNode } from './FsNode';
+import { z } from 'zod';
 
-export class Directory extends FsNode {}
+import { FsNode, FsNodeSchema } from './FsNode';
+
+export const DirectorySchema = FsNodeSchema;
+type DirectoryData = z.infer<typeof DirectorySchema>;
+
+export class Directory extends FsNode<DirectoryData> {}

@@ -1,7 +1,7 @@
 import cli from 'cli-ux';
 
 import { FsTreeFactory } from '../../fs-tree';
-import { MetadataCache, MetadataCacheData } from '../../metadata/MetadataCache';
+import { MetadataCache, MetadataCacheSchema } from '../../metadata/MetadataCache';
 import { MediainfoMetadata } from '../../metadata/mediainfo/MediainfoMetadata';
 import { MediainfoMetadataFactory } from '../../metadata/mediainfo/MediainfoMetadataFactory';
 import { SerializableIO } from '../../serializable/SerializableIO';
@@ -11,8 +11,8 @@ export async function readMetadataFromSerialized(path: string, verbose = false):
 		cli.action.start(`Reading from json ${path}`);
 	}
 
-	const parsed = await SerializableIO.read(path);
-	const parsedData = parsed.data as MetadataCacheData;
+	const data = await SerializableIO.read(path);
+	const parsedData = MetadataCacheSchema.parse(data.data);
 	const fsTree = FsTreeFactory.getTreeFromSerialized(parsedData.tree);
 	const videoMetadata = new Map<string, MediainfoMetadata>();
 

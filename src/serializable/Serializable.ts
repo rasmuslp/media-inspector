@@ -1,18 +1,15 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-/**
- * NB: While declared optional, Serializable ensures that it will always be added on serialization
- */
-export const TSerializable = t.type({
-	type: t.string
+export const SerializableSchema = z.object({
+	type: z.string()
 });
 
-export type SerializableData = t.TypeOf<typeof TSerializable>;
+export type SerializableData = z.infer<typeof SerializableSchema>;
 
-export abstract class Serializable<T extends SerializableData = SerializableData> {
-	readonly data: Partial<T>;
+export abstract class Serializable<T extends SerializableData> {
+	readonly data: T;
 
-	constructor(data?: Partial<T>) {
+	constructor(data?: T) {
 		this.data = {
 			...data
 		};
@@ -22,11 +19,11 @@ export abstract class Serializable<T extends SerializableData = SerializableData
 		return {
 			...this.data,
 			...this.getDataForSerialization(),
-			type: this.constructor.name // Override to ensure it has not been changed by accident
-		} as T;
+			type: this.constructor.name
+		};
 	}
 
-	getDataForSerialization(): Partial<T> {
+	getDataForSerialization(): Record<string, unknown> {
 		return {};
 	}
 }
