@@ -1,73 +1,49 @@
 import { z } from 'zod';
 
-import { Serializable, SerializableSchema } from './Serializable';
+import { Serializable } from './Serializable';
 
-const SimpleSerializableSchema = SerializableSchema.extend({
-	someConstructorData: z.string()
+const TestSerializableSchema = z.object({
+	someData: z.string()
 });
-type SimpleSerializableData = z.infer<typeof SimpleSerializableSchema>;
+type TestSerializableSerialized = z.infer<typeof TestSerializableSchema>;
 
 // eslint-disable-next-line jest/no-export
-export class SimpleSerializable extends Serializable<SimpleSerializableData> {}
+export class TestSerializable extends Serializable<TestSerializableSerialized> {
+	private someData: string;
 
-const AdvancedSerializableDataSchema = SerializableSchema.extend({
-	someConstructorData: z.string(),
-	someAdditionalData: z.string()
-});
-type AdvancedSerializableData = z.infer<typeof AdvancedSerializableDataSchema>;
+	constructor(someData: string) {
+		super();
+		this.someData = someData;
+	}
 
-class AdvancedSerializable extends Serializable<AdvancedSerializableData> {
-	getDataForSerialization(): Partial<AdvancedSerializableData> {
+	getDataForSerialization(): TestSerializableSerialized {
 		return {
-			someAdditionalData: 'more data'
+			someData: this.someData
 		};
 	}
 }
 
 describe('Serializable', () => {
-	describe('SimpleSerializable', () => {
-		let serializable: SimpleSerializable;
+	describe('TestSerializable', () => {
+		let testSerializable: TestSerializable;
 		beforeEach(() => {
-			serializable = new SimpleSerializable({
-				someConstructorData: 'a'
-			});
+			testSerializable = new TestSerializable('here is data');
 		});
 
-		it('.getDataForSerialization is not overridden and returns void', () => {
-			const result = serializable.getDataForSerialization();
-			expect(result).toEqual({});
-		});
-
-		it('.serialize returns all relevant data for serialization', () => {
-			const result = serializable.serialize();
+		it('.getDataForSerialization returns TestSerializableSerialized', () => {
+			const result = testSerializable.getDataForSerialization();
 			expect(result).toEqual({
-				type: 'SimpleSerializable',
-				someConstructorData: 'a'
-			});
-		});
-	});
-
-	describe('AdvancedSerializable', () => {
-		let serializable: AdvancedSerializable;
-		beforeEach(() => {
-			serializable = new AdvancedSerializable({
-				someConstructorData: 'a'
-			});
-		});
-
-		it('.getDataForSerialization is overridden and returns data for serialization', () => {
-			const result = serializable.getDataForSerialization();
-			expect(result).toEqual({
-				someAdditionalData: 'more data'
+				someData: 'here is data'
 			});
 		});
 
 		it('.serialize returns all relevant data for serialization', () => {
-			const result = serializable.serialize();
+			const result = testSerializable.serialize();
 			expect(result).toEqual({
-				type: 'AdvancedSerializable',
-				someConstructorData: 'a',
-				someAdditionalData: 'more data'
+				type: 'TestSerializable',
+				data: {
+					someData: 'here is data'
+				}
 			});
 		});
 	});

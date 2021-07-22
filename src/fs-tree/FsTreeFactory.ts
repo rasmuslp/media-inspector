@@ -6,9 +6,11 @@ import mime from 'mime-types';
 
 import { Directory, DirectorySchema } from './Directory';
 import { File, FileSchema } from './File';
-import { FsTree, FsTreeData } from './FsTree';
-import { FsNode, FsNodeData } from './FsNode';
+import { FsTree } from './FsTree';
+import { FsNode } from './FsNode';
 import { PathSorters } from './PathSorters';
+import { SerializableSerialized } from '../serializable/Serializable';
+import { TreeSchema } from './Tree';
 
 const statAsync = promisify(fs.stat);
 const readdirAsync = promisify(fs.readdir);
@@ -55,33 +57,38 @@ export class FsTreeFactory {
 		throw new Error(`FsTreeFactory cannot determine what this is: ${nodePath}`);
 	}
 
-	static getTreeFromSerialized(serialized: FsTreeData): FsTree {
-		const nodes = FsTreeFactory.getFsNodesFromSerialized(serialized);
-		const sortedNodes = [...nodes].sort((a, b) => PathSorters.parentsBeforeChildren(a.path, b.path));
-		const fsTree = FsTreeFactory.buildFsTreeFromSortedFsNodes(sortedNodes);
-		return fsTree;
+	static getTreeFromSerialized(serialized: SerializableSerialized): FsTree {
+		if (serialized.type === 'FsTree') {
+			const parsed = TreeSchema.parse(serialized.data);
+			const nodes = FsTreeFactory.getFsNodesFromSerialized(parsed.nodes);
+			const sortedNodes = [...nodes].sort((a, b) => PathSorters.parentsBeforeChildren(a.path, b.path));
+			const fsTree = FsTreeFactory.buildFsTreeFromSortedFsNodes(sortedNodes);
+			return fsTree;
+		}
+
+		throw new Error(`FsTreeFactory cannot determine what this is: ${serialized.type}`);
 	}
 
-	protected static getFsNodesFromSerialized(serialized: FsTreeData): FsNode[] {
+	protected static getFsNodesFromSerialized(serializeds: SerializableSerialized[]): FsNode[] {
 		const nodes: FsNode[] = [];
-		for (const node of serialized.nodes) {
-			const fsNode = FsTreeFactory.getFsNodeFromSerialized(node);
+		for (const serialized of serializeds) {
+			const fsNode = FsTreeFactory.getFsNodeFromSerialized(serialized);
 			nodes.push(fsNode);
 		}
 
 		return nodes;
 	}
 
-	protected static getFsNodeFromSerialized(serialized: FsNodeData): File|Directory {
+	protected static getFsNodeFromSerialized(serialized: SerializableSerialized): File|Directory {
 		if (serialized.type === 'Directory') {
-			const data = DirectorySchema.parse(serialized);
-			const directory = new Directory(data.path, data.stats);
+			const parsed = DirectorySchema.parse(serialized.data);
+			const directory = new Directory(parsed.path, parsed.stats);
 			return directory;
 		}
 
 		if (serialized.type === 'File') {
-			const data = FileSchema.parse(serialized);
-			const file = new File(data.path, data.stats, data.mimeType);
+			const parsed = FileSchema.parse(serialized.data);
+			const file = new File(parsed.path, parsed.stats, parsed.mimeType);
 			return file;
 		}
 

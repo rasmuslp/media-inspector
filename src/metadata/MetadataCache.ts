@@ -1,17 +1,17 @@
 import { z } from 'zod';
 
-import { FsTree, FsTreeSchema } from '../fs-tree';
+import { FsTree } from '../fs-tree';
 import { Serializable, SerializableSchema } from '../serializable/Serializable';
-import { MediainfoMetadata, MiMetadataSchema } from './mediainfo/MediainfoMetadata';
+import { MediainfoMetadata } from './mediainfo/MediainfoMetadata';
 import { Metadata } from './Metadata';
 
-export const MetadataCacheSchema = SerializableSchema.extend({
-	tree: FsTreeSchema,
-	metadata: z.record(MiMetadataSchema)
+export const MetadataCacheSchema = z.object({
+	tree: SerializableSchema,
+	metadata: z.record(SerializableSchema)
 });
-type MetadataCacheData = z.infer<typeof MetadataCacheSchema>;
+type MetadataCacheSerialized = z.infer<typeof MetadataCacheSchema>;
 
-export class MetadataCache extends Serializable<MetadataCacheData> {
+export class MetadataCache extends Serializable<MetadataCacheSerialized> {
 	public readonly tree: FsTree;
 	private readonly metadata: Map<string, MediainfoMetadata>;
 
@@ -21,8 +21,8 @@ export class MetadataCache extends Serializable<MetadataCacheData> {
 		this.metadata = metadata;
 	}
 
-	getDataForSerialization(): Record<string, unknown> {
-		const serializedMetadata: Record<string, unknown> = {};
+	getDataForSerialization(): MetadataCacheSerialized {
+		const serializedMetadata: MetadataCacheSerialized = {};
 		this.metadata.forEach((metadata, path) => {
 			serializedMetadata[path] = metadata.serialize();
 		});

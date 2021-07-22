@@ -26,4 +26,11 @@ describe('MediainfoMetadata', () => {
 		const result = mediainfoMetadata.get('video.bitrate');
 		expect(result).toBe('23855');
 	});
+
+	it('.getDataForSerialization() returns MediainfoMetadataSerialized', () => {
+		const result = mediainfoMetadata.getDataForSerialization();
+		expect(result).toStrictEqual({
+			metadata: mediainfoOutput
+		});
+	});
 });

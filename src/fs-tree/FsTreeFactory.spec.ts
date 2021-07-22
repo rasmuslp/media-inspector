@@ -1,8 +1,9 @@
 import { FsTreeFactory } from './FsTreeFactory';
-import { FsNode, FsNodeData } from './FsNode';
+import { FsNode } from './FsNode';
 import { File } from './File';
 import { Directory } from './Directory';
-import { FsTree, FsTreeData } from './FsTree';
+import { FsTree } from './FsTree';
+import { SerializableSerialized } from '../serializable/Serializable';
 
 class TestFsTreeFactory extends FsTreeFactory {
 	static async getFsNodesFromFileSystem(nodePath: string): Promise<FsNode[]> {
@@ -13,11 +14,11 @@ class TestFsTreeFactory extends FsTreeFactory {
 		return super.getFsNodeFromFileSystem(nodePath);
 	}
 
-	static getFsNodesFromSerialized(serialized: FsTreeData): FsNode[] {
-		return super.getFsNodesFromSerialized(serialized);
+	static getFsNodesFromSerialized(serializeds: SerializableSerialized[]): FsNode[] {
+		return super.getFsNodesFromSerialized(serializeds);
 	}
 
-	static getFsNodeFromSerialized(serialized: FsNodeData): FsNode {
+	static getFsNodeFromSerialized(serialized: SerializableSerialized): FsNode {
 		return super.getFsNodeFromSerialized(serialized);
 	}
 
@@ -29,25 +30,28 @@ class TestFsTreeFactory extends FsTreeFactory {
 describe('FsTreeFactory', () => {
 	describe('#getFsNodesFromSerialized()', () => {
 		it('returns array of FsNode', () => {
-			const serialized = {
-				type: 'FsTree',
-				nodes: [{
-					type: 'Directory',
+			const serializeds = [{
+				type: 'Directory',
+				data: {
 					path: '/',
 					stats: { size: 1 }
-				}, {
-					type: 'Directory',
+				}
+			}, {
+				type: 'Directory',
+				data: {
 					path: '/folder',
 					stats: { size: 2 }
-				}, {
-					type: 'File',
+				}
+			}, {
+				type: 'File',
+				data: {
 					path: '/x-file',
 					stats: { size: 3 },
 					mimeType: 'mime'
-				}]
-			};
+				}
+			}];
 
-			const result = TestFsTreeFactory.getFsNodesFromSerialized(serialized);
+			const result = TestFsTreeFactory.getFsNodesFromSerialized(serializeds);
 
 			expect(result.length).toBe(3);
 
@@ -70,8 +74,10 @@ describe('FsTreeFactory', () => {
 		it('returns a Directory', () => {
 			const serialized = {
 				type: 'Directory',
-				path: '/',
-				stats: { size: 1 }
+				data: {
+					path: '/',
+					stats: { size: 1 }
+				}
 			};
 
 			const result = TestFsTreeFactory.getFsNodeFromSerialized(serialized);
@@ -84,9 +90,11 @@ describe('FsTreeFactory', () => {
 		it('returns a File', () => {
 			const serialized = {
 				type: 'File',
-				path: '/x-file',
-				stats: { size: 3 },
-				mimeType: 'mime'
+				data: {
+					path: '/x-file',
+					stats: { size: 3 },
+					mimeType: 'mime'
+				}
 			};
 
 			const result = TestFsTreeFactory.getFsNodeFromSerialized(serialized);

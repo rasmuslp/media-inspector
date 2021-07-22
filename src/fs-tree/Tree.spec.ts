@@ -1,18 +1,28 @@
-import { Tree } from './Tree';
-import { SerializableData } from '../serializable/Serializable';
+import { Tree, TreeSerialized } from './Tree';
+import { Serializable } from '../serializable/Serializable';
 
-class TestNode {
+class TestNode extends Serializable<unknown> {
 	public readonly id: string;
 	constructor(id: string) {
+		super();
 		this.id = id;
 	}
+
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	getDataForSerialization(): void {}
 }
 
 const testNodeKeyMapper = (testNode: TestNode) => testNode.id;
 
-class TestTree extends Tree<TestNode, SerializableData> {
+class TestTree extends Tree<TestNode> {
 	getNodes(): Map<string, TestNode> {
 		return this.nodes;
+	}
+
+	getDataForSerialization(): TreeSerialized {
+		return {
+			nodes: this.getAsListSync().map(node => node.serialize())
+		};
 	}
 }
 

@@ -1,6 +1,13 @@
-import { Serializable, SerializableData } from '../serializable/Serializable';
+import { z } from 'zod';
 
-export class Tree<T, U extends SerializableData> extends Serializable<U> {
+import { Serializable, SerializableSchema } from '../serializable/Serializable';
+
+export const TreeSchema = z.object({
+	nodes: z.array(SerializableSchema)
+});
+export type TreeSerialized = z.infer<typeof TreeSchema>;
+
+export abstract class Tree<T, U = TreeSerialized> extends Serializable<U> {
 	private readonly keyMapper: (T) => string;
 
 	protected readonly rootNode: T;

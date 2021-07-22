@@ -3,39 +3,51 @@ import { promisify } from 'util';
 
 import * as mediainfoParser from 'mediainfo-parser';
 
-import { MediainfoMetadata, MiMetadataData, MiMetadataRawData } from './MediainfoMetadata';
+import {
+	MediainfoMetadata,
+	MediainfoMetadataRaw, MediainfoMetadataRawSchema,
+	MediainfoMetadataSchema, MediainfoMetadataSerialized
+} from './MediainfoMetadata';
+import { SerializableSerialized } from '../../serializable/Serializable';
 
 const exec = promisify(childProcess.exec);
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-const parse = promisify(mediainfoParser.parse);
+const mediainfoParse = promisify(mediainfoParser.parse);
 
 const mediainfoPath = 'mediainfo';
 
 export class MediainfoMetadataFactory {
-	static async _readFromFileSystem(path: string): Promise<MiMetadataRawData> {
-		// execute
+	static async _readFromFileSystem(path: string): Promise<MediainfoMetadataRaw> {
 		const output = await exec(`${mediainfoPath} --Full --Output=XML "${path.replace(/`/g, '\\`')}"`);
 
-		// TODO: Parse with the zod validator
 		// Parse mediainfo output
-		const parsed = await parse(output.stdout) as MiMetadataRawData;
+		const mediainfo: unknown = await mediainfoParse(output.stdout);
 
-		return parsed;
+		// Can parse without throwing, then the full object - with any additional properties - can be returned
+		MediainfoMetadataRawSchema.parse(mediainfo);
+
+		return mediainfo as MediainfoMetadataRaw;
 	}
 
 	static async getFromFileSystem(path: string): Promise<MediainfoMetadata> {
 		const metadata = await MediainfoMetadataFactory._readFromFileSystem(path);
 
-		// Lets wrap that up
 		const mediainfoMetadata = new MediainfoMetadata(metadata);
 
 		return mediainfoMetadata;
 	}
 
-	static getFromSerialized(serialized: MiMetadataData): MediainfoMetadata {
-		const mediainfoMetadata = new MediainfoMetadata(serialized.metadata);
+	static getFromSerialized(serialized: SerializableSerialized): MediainfoMetadata {
+		if (serialized.type === 'MediainfoMetadata') {
+			// Can parse without throwing, then the full object - with any additional properties - can be returned
+			MediainfoMetadataSchema.parse(serialized.data);
+			const parsed = serialized.data as MediainfoMetadataSerialized;
+			const mediainfoMetadata = new MediainfoMetadata(parsed.metadata);
 
-		return mediainfoMetadata;
+			return mediainfoMetadata;
+		}
+
+		throw new Error(`MediainfoMetadataFactory cannot determine what this is: ${serialized.type}`);
 	}
 }

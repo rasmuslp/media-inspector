@@ -3,15 +3,14 @@ scale 2
 
 package serializable {
 	abstract class Serializable<T> {
-		data: Partial<T>
-		+serialize(): T
-		+getDataForSerialization(): T|void
+		+serialize(): SerializableSerialized
+		+{abstract} getDataForSerialization(): T
 	}
 
 	class SerializableIO {
 		+{static} isSerializePath(serializePath: string): boolean
 		+{static} write(serializable: Serializable, writePath: string): Promise<void>
-		+{static} read(serializedPath: string): Promise<{data: SerializableData}>
+		+{static} read(serializedPath: string): Promise<{data: SerializableSerialized}>
 	}
 
 	SerializableIO --> Serializable
@@ -24,6 +23,7 @@ package fs-tree {
 
 	abstract class FsNode<T> extends Serializable {
 		+path: string
+		#stats: FsNodeStats
 		+size: number
 	}
 
@@ -33,7 +33,7 @@ package fs-tree {
 
 	class Directory extends FsNode {}
 
-	class Tree<T> extends Serializable {
+	abstract class Tree<T> extends Serializable {
 		-keyMapper: T => string
 		#rootNode: T
 		#nodes
@@ -48,15 +48,15 @@ package fs-tree {
 		+getAsListSync(): T[]
 	}
 
-	Tree "1..*" *-- TreeT
+	Tree "1..*" *-- TreeNodeT
 
 	class FsTreeFactory {
 		+ {static} async getTreeFromFileSystem(nodePath: string): Promise<FsTree>
 		# {static} async getFsNodesFromFileSystem(nodePath: string): Promise<FsNode[]>
 		# {static} async getFsNodeFromFileSystem(nodePath: string): Promise<[File|Directory, string[]]>
-		+ {static} getTreeFromSerialized(serialized: FsTreeData): FsTree
-		# {static} getFsNodesFromSerialized(serialized: FsTreeData): FsNode[]
-		# {static} getFsNodeFromSerialized(serialized: FsNodeData): File|Directory
+		+ {static} getTreeFromSerialized(serialized: SerializableSerialized): FsTree
+		# {static} getFsNodesFromSerialized(serializeds: SerializableSerialized[]): FsNode[]
+		# {static} getFsNodeFromSerialized(serialized: SerializableSerialized): File|Directory
 		# {static} buildFsTreeFromSortedFsNodes(sortedNodes: FsNode[]): FsTree
 	}
 
@@ -81,6 +81,7 @@ package metadata {
 	}
 
 	class MediainfoMetadata extends Serializable implements Metadata {
+		+metadata: MediainfoMetadataRaw
 		+getTrack(trackType: string): MiTrack
 		+getProperty(trackType: string, property: string): string
 	}
@@ -88,12 +89,12 @@ package metadata {
 	class MediainfoMetadataFactory {
 		+{static} _readFromFileSystem(path: string): Promise<MiMetadataRaw>
 		+{static} getFromFileSystem(path: string): Promise<MediainfoMetadata>
-		+{static} getFromSerialized(serialized: MetadataData): MediainfoMetadata
+		+{static} getFromSerialized(serialized: SerializableSerialized): MediainfoMetadata
 	}
 
 	MediainfoMetadataFactory --> MediainfoMetadata : creates
 
-	class MetadataCache extends Serializable{
+	class MetadataCache extends Serializable {
 		+tree: FsTree
 		-metadata: Map<path: string, MediainfoMetadata>
 		+getMetadata(path: string): Metadata

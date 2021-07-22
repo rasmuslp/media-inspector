@@ -5,15 +5,21 @@ import { FsNode, FsNodeSchema, FsNodeStats } from './FsNode';
 export const FileSchema = FsNodeSchema.extend({
 	mimeType: z.string()
 });
-type FileData = z.infer<typeof FileSchema>;
+type FileSerialized = z.infer<typeof FileSchema>;
 
-export class File extends FsNode<FileData> {
+export class File extends FsNode<FileSerialized> {
+	readonly mimeType: string;
+
 	constructor(nodePath: string, stats: FsNodeStats, mimeType: string) {
 		super(nodePath, stats);
-		this.data.mimeType = mimeType;
+		this.mimeType = mimeType;
 	}
 
-	get mimeType(): string {
-		return this.data.mimeType;
+	getDataForSerialization(): FileSerialized {
+		return {
+			path: this.path,
+			stats: this.stats,
+			mimeType: this.mimeType
+		};
 	}
 }

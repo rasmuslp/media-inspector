@@ -1,9 +1,16 @@
 import path from 'path';
 
-import { FsNode } from './FsNode';
+import { FsNode, FsNodeSerialized } from './FsNode';
 
 // eslint-disable-next-line jest/no-export
-export class TestFsNode extends FsNode {}
+export class TestFsNode extends FsNode {
+	getDataForSerialization(): FsNodeSerialized {
+		return {
+			path: this.path,
+			stats: this.stats
+		};
+	}
+}
 
 describe('FsNode', () => {
 	const pathToFsNode = path.join(__dirname, 'FsNode.js');

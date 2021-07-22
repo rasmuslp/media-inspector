@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { promisify } from 'util';
 
-import { Serializable } from './Serializable';
+import { Serializable, SerializableSchema, SerializableSerialized } from './Serializable';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -23,9 +23,10 @@ export class SerializableIO {
 		return await writeFile(writePath, json, 'utf8');
 	}
 
-	static async read(serializedPath: string): Promise<{data: unknown}> {
+	static async read(serializedPath: string): Promise<SerializableSerialized> {
 		const fileContent = await readFile(serializedPath, 'utf8');
-		const parsed = JSON.parse(fileContent) as {data: unknown};
+		const fileParsed = JSON.parse(fileContent) as {data: unknown};
+		const parsed = SerializableSchema.parse(fileParsed.data);
 		return parsed;
 	}
 }

@@ -1,34 +1,35 @@
 import { z } from 'zod';
 
 import { Metadata } from '../Metadata';
-import { Serializable, SerializableSchema } from '../../serializable/Serializable';
+import { Serializable } from '../../serializable/Serializable';
 
-const MiTrackKnownSchema = z.object({
+const MediainfoTrackKnownSchema = z.object({
 	_type: z.string()
 });
-const MiTrackUnknownSchema = z.record(z.union([z.string(), z.record(z.string())]));
-// const MiTrackUnknownSchema = z.record(z.union([z.string(), z.unknown()]));
-const MiTrackSchema = MiTrackKnownSchema.and(MiTrackUnknownSchema);
-type MiTrackData = z.infer<typeof MiTrackSchema>;
+const MediainfoTrackUnknownSchema = z.record(z.union([z.string(), z.record(z.string())]));
+const MediainfoTrackSchema = MediainfoTrackKnownSchema.and(MediainfoTrackUnknownSchema);
+type MediainfoTrack = z.infer<typeof MediainfoTrackSchema>;
 
-const MiMetadataRawSchema = z.object({
+export const MediainfoMetadataRawSchema = z.object({
 	media: z.object({
-		track: z.array(MiTrackSchema)
+		track: z.array(MediainfoTrackSchema)
 	})
 });
 
-export type MiMetadataRawData = z.infer<typeof MiMetadataRawSchema>;
+export type MediainfoMetadataRaw = z.infer<typeof MediainfoMetadataRawSchema>;
 
-export const MiMetadataSchema = SerializableSchema.extend({
-	metadata: MiMetadataRawSchema
+export const MediainfoMetadataSchema = z.object({
+	metadata: MediainfoMetadataRawSchema
 });
 
-export type MiMetadataData = z.infer<typeof MiMetadataSchema>;
+export type MediainfoMetadataSerialized = z.infer<typeof MediainfoMetadataSchema>;
 
-export class MediainfoMetadata extends Serializable<MiMetadataData> implements Metadata {
-	constructor(metadata: MiMetadataRawData) {
+export class MediainfoMetadata extends Serializable<MediainfoMetadataSerialized> implements Metadata {
+	readonly metadata: MediainfoMetadataRaw;
+
+	constructor(metadata: MediainfoMetadataRaw) {
 		super();
-		this.data.metadata = metadata;
+		this.metadata = metadata;
 	}
 
 	get(path: string): string {
@@ -60,13 +61,19 @@ export class MediainfoMetadata extends Serializable<MiMetadataData> implements M
 		throw new Error(`[get] could not find '${property}' in '${trackType}'`);
 	}
 
-	getTrack(trackType: string): MiTrackData {
-		for (const track of this.data.metadata.media.track) {
+	getTrack(trackType: string): MediainfoTrack {
+		for (const track of this.metadata.media.track) {
 			if (trackType.toLocaleLowerCase() === track._type.toLocaleLowerCase()) {
 				return track;
 			}
 		}
 
 		throw new Error(`Track type '${trackType}' not found`);
+	}
+
+	getDataForSerialization(): MediainfoMetadataSerialized {
+		return {
+			metadata: this.metadata
+		};
 	}
 }

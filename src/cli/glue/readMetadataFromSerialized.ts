@@ -11,12 +11,15 @@ export async function readMetadataFromSerialized(path: string, verbose = false):
 		cli.action.start(`Reading from json ${path}`);
 	}
 
-	const data = await SerializableIO.read(path);
-	const parsedData = MetadataCacheSchema.parse(data.data);
-	const fsTree = FsTreeFactory.getTreeFromSerialized(parsedData.tree);
+	const serialized = await SerializableIO.read(path);
+	if (serialized.type !== 'MetadataCache') {
+		throw new Error(`readMetadataFromSerialized cannot read ${serialized.type}`);
+	}
+	const parsed = MetadataCacheSchema.parse(serialized.data);
+	const fsTree = FsTreeFactory.getTreeFromSerialized(parsed.tree);
 	const videoMetadata = new Map<string, MediainfoMetadata>();
 
-	for (const [path, data] of Object.entries(parsedData.metadata)) {
+	for (const [path, data] of Object.entries(parsed.metadata)) {
 		const metadata = MediainfoMetadataFactory.getFromSerialized(data);
 		videoMetadata.set(path, metadata);
 	}

@@ -1,29 +1,19 @@
 import { z } from 'zod';
 
 export const SerializableSchema = z.object({
-	type: z.string()
+	type: z.string(),
+	data: z.any()
 });
 
-export type SerializableData = z.infer<typeof SerializableSchema>;
+export type SerializableSerialized = z.infer<typeof SerializableSchema>;
 
-export abstract class Serializable<T extends SerializableData> {
-	readonly data: T;
-
-	constructor(data?: T) {
-		this.data = {
-			...data
-		};
-	}
-
-	serialize(): T {
+export abstract class Serializable<T> {
+	serialize(): SerializableSerialized {
 		return {
-			...this.data,
-			...this.getDataForSerialization(),
-			type: this.constructor.name
+			type: this.constructor.name,
+			data: this.getDataForSerialization()
 		};
 	}
 
-	getDataForSerialization(): Record<string, unknown> {
-		return {};
-	}
+	abstract getDataForSerialization(): T;
 }
