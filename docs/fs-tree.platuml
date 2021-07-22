@@ -1,0 +1,108 @@
+@startuml Video error detector
+scale 2
+
+package serializable {
+	abstract class Serializable<T> {
+		+serialize(): SerializableSerialized
+		+{abstract} getDataForSerialization(): T
+	}
+
+	class SerializableIO {
+		+{static} isSerializePath(serializePath: string): boolean
+		+{static} write(serializable: Serializable, writePath: string): Promise<void>
+		+{static} read(serializedPath: string): Promise<{data: SerializableSerialized}>
+	}
+
+	SerializableIO --> Serializable
+}
+
+package fs-tree {
+	class PathSorters {
+		+{static} childrenBeforeParents(a: string, b: string): number
+	}
+
+	abstract class FsNode<T> extends Serializable {
+		+path: string
+		#stats: FsNodeStats
+		+size: number
+	}
+
+	class File extends FsNode {
+		+mimeType: string
+	}
+
+	class Directory extends FsNode {}
+
+	abstract class Tree<T> extends Serializable {
+		-keyMapper: T => string
+		#rootNode: T
+		#nodes
+		#relations
+		+get root(): T
+		+addRelation(fromNode: T, toNode: T): void
+		+getDirectChildren(ofNode: T): T[]
+		+traverse(nodeFn: (node: T) => Promise<void>, fromNode = this.rootNode): Promise<void>
+		+traverseBfs(nodeFn: (node: T) => Promise<void>, fromNode = this.rootNode): Promise<void>
+		+find(matchFn: (node: T) => Promise<boolean>, fromNode = this.rootNode): Promise<T[]>
+		+getAsList(fromNode: T): Promise<T[]>
+		+getAsListSync(): T[]
+	}
+
+	Tree "1..*" *-- TreeNodeT
+
+	class FsTreeFactory {
+		+ {static} async getTreeFromFileSystem(nodePath: string): Promise<FsTree>
+		# {static} async getFsNodesFromFileSystem(nodePath: string): Promise<FsNode[]>
+		# {static} async getFsNodeFromFileSystem(nodePath: string): Promise<[File|Directory, string[]]>
+		+ {static} getTreeFromSerialized(serialized: SerializableSerialized): FsTree
+		# {static} getFsNodesFromSerialized(serializeds: SerializableSerialized[]): FsNode[]
+		# {static} getFsNodeFromSerialized(serialized: SerializableSerialized): File|Directory
+		# {static} buildFsTreeFromSortedFsNodes(sortedNodes: FsNode[]): FsTree
+	}
+
+	FsTreeFactory --> FsTree : creates
+	FsTreeFactory --> FsNode : creates
+	FsTreeFactory --> File : creates
+	FsTreeFactory --> Directory : creates
+
+	class FsTree extends Tree {
+		+getSize(node: FsNode): Promise<number>
+		+getAsSortedList(node: FsNode): Promise<FsNode[]>
+		+getAsSortedListSync(): FsNode[]
+	}
+
+	FsTree "1..*" *-- FsNode
+	FsTree --> PathSorters
+}
+
+package metadata {
+	interface Metadata  {
+		get(path: string): string
+	}
+
+	class MediainfoMetadata extends Serializable implements Metadata {
+		+metadata: MediainfoMetadataRaw
+		+getTrack(trackType: string): MiTrack
+		+getProperty(trackType: string, property: string): string
+	}
+
+	class MediainfoMetadataFactory {
+		+{static} _readFromFileSystem(path: string): Promise<MiMetadataRaw>
+		+{static} getFromFileSystem(path: string): Promise<MediainfoMetadata>
+		+{static} getFromSerialized(serialized: SerializableSerialized): MediainfoMetadata
+	}
+
+	MediainfoMetadataFactory --> MediainfoMetadata : creates
+
+	class MetadataCache extends Serializable {
+		+tree: FsTree
+		-metadata: Map<path: string, MediainfoMetadata>
+		+getMetadata(path: string): Metadata
+	}
+
+	MetadataCache --> Metadata
+	MetadataCache "*" *-- MediainfoMetadata
+	MetadataCache "1" *-- FsTree
+}
+
+@enduml

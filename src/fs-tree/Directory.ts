@@ -1,63 +1,15 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { FsNode, FsNodeStats, TFsNode } from './FsNode';
+import { FsNode, FsNodeSchema, FsNodeSerialized } from './FsNode';
 
-const TDirectoryPartial = t.type({
-	children: t.array(TFsNode)
-});
+export const DirectorySchema = FsNodeSchema;
+type DirectorySerialized = z.infer<typeof DirectorySchema>;
 
-export const TDirectory = t.intersection([TFsNode, TDirectoryPartial]);
-export type DirectoryData = t.TypeOf<typeof TDirectory>;
-
-export class Directory extends FsNode<DirectoryData> {
-	_children: FsNode[];
-
-	constructor(nodePath: string, stats: FsNodeStats, children: FsNode[] = []) {
-		super(nodePath, stats);
-		this._children = children;
-	}
-
-	// Children before parents
-	static getSortFnByPathDirFile(a: FsNode, b: FsNode): number {
-		if (a.path.startsWith(b.path)) {
-			return -1;
-		}
-		else if (b.path.startsWith(a.path)) {
-			return 1;
-		}
-
-		return a.path.localeCompare(b.path);
-	}
-
-	get children(): FsNode[] {
-		return this._children;
-	}
-
-	get childrenSorted(): FsNode[] {
-		const sorted = this._children.sort(Directory.getSortFnByPathDirFile.bind(Directory));
-
-		return sorted;
-	}
-
-	get directories(): FsNode[] {
-		return this._children.filter(i => i.isDirectory());
-	}
-
-	get files(): FsNode[] {
-		return this._children.filter(i => i.isFile());
-	}
-
-	isDirectory(): boolean {
-		return true;
-	}
-
-	isFile(): boolean {
-		return false;
-	}
-
-	getDataForSerialization(): DirectoryData {
+export class Directory extends FsNode<DirectorySerialized> {
+	getDataForSerialization(): FsNodeSerialized {
 		return {
-			children: this._children.map(node => node.serialize())
-		} as DirectoryData;
+			path: this.path,
+			stats: this.stats
+		};
 	}
 }

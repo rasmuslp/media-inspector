@@ -1,46 +1,25 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { FsNode, FsNodeStats, TFsNode } from './FsNode';
+import { FsNode, FsNodeSchema, FsNodeStats } from './FsNode';
 
-const TFilePartial = t.type({
-	mimeType: t.string
+export const FileSchema = FsNodeSchema.extend({
+	mimeType: z.string()
 });
+type FileSerialized = z.infer<typeof FileSchema>;
 
-export const TFile = t.intersection([TFsNode, TFilePartial]);
-export type FileData = t.TypeOf<typeof TFile>;
-
-export class File<T extends FileData = FileData> extends FsNode<T> {
-	static _typeExtractor = /^([^/]+)/;
+export class File extends FsNode<FileSerialized> {
+	readonly mimeType: string;
 
 	constructor(nodePath: string, stats: FsNodeStats, mimeType: string) {
 		super(nodePath, stats);
-		this.data.mimeType = mimeType;
+		this.mimeType = mimeType;
 	}
 
-	get mimeType(): string {
-		return this.data.mimeType;
-	}
-
-	get type(): string {
-		return File.getTypeFrom(this.data.mimeType);
-	}
-
-	isDirectory(): boolean {
-		return false;
-	}
-
-	isFile(): boolean {
-		return true;
-	}
-
-	static getTypeFrom(mimeType: string): string {
-		const match = File._typeExtractor.exec(mimeType);
-		if (match) {
-			const type = match[1];
-
-			return type;
-		}
-
-		return 'unknown';
+	getDataForSerialization(): FileSerialized {
+		return {
+			path: this.path,
+			stats: this.stats,
+			mimeType: this.mimeType
+		};
 	}
 }
