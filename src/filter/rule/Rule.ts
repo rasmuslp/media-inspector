@@ -31,22 +31,18 @@ export const RuleSchema = z.object({
 export type RuleSerialized = z.infer<typeof RuleSchema>;
 
 export class Rule {
-	_mimeType: string;
-	_conditions: Condition[];
+	public readonly mimeType: string;
+	protected conditions: Condition[];
 
 	constructor(mimeType: string, conditions: Condition[] = []) {
-		this._mimeType = mimeType;
-		this._conditions = conditions;
-	}
-
-	get mimeType(): string {
-		return this._mimeType;
+		this.mimeType = mimeType;
+		this.conditions = conditions;
 	}
 
 	checkRuleWithPathGetter(pathGetterFn: (path: string) => string): RuleResult|undefined {
 		// All conditions must be met
 		const conditionResults = [];
-		for (const condition of this._conditions) {
+		for (const condition of this.conditions) {
 			// Try to read value
 			let value;
 			try {

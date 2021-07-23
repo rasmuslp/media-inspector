@@ -1,6 +1,101 @@
 @startuml Video error detector
 scale 2
 
+package filter {
+	abstract class Condition<T> {
+		+ path: string
+		+ value: T
+		+ {abstract} toString(): string
+		+ toStringForValue(inputValue: string): string
+		+ {abstract} check(inputValue: string): ConditionResult
+		+ {static} convertValue(value: unknown): ConvertedValue
+	}
+
+	class ConditionBetween extends Condition {
+		+ toStringForValue(inputValue: string): string
+	}
+	class ConditionEqual extends Condition {}
+	class ConditionGreaterThanOrEqual extends Condition {}
+	class ConditionIn extends Condition {}
+	class ConditionLessThan extends Condition {}
+	class ConditionNotEqual extends Condition {}
+
+	class ConditionFactory {
+		+ {static} _conditions: Map<string, Condition>();
+		+ {static} getSharedInstanceFromSerialized(conditionData: ConditionSerialised): Condition
+		+ {static} getFromSerialized(serialized: ConditionSerialised): Condition
+	}
+
+	ConditionFactory --> ConditionOperator
+	ConditionFactory --> Condition : creates
+	ConditionFactory --> ConditionBetween : creates
+	ConditionFactory --> ConditionEqual : creates
+	ConditionFactory --> ConditionGreaterThanOrEqual : creates
+	ConditionFactory --> ConditionIn : creates
+	ConditionFactory --> ConditionLessThan : creates
+	ConditionFactory --> ConditionNotEqual : creates
+
+	enum ConditionOperator {
+		BETWEEN
+		IN
+		EQUAL
+		NOT_EQUAL
+		LESS_THAN
+		GREATER_THAN_OR_EQUAL
+	}
+
+	class ConditionResult {
+		- condition: Condition;
+		- value: unknown;
+		- satisfied: ConditionSatisfied;
+		+ isSatisfied: boolean;
+		+ toString(): string
+	}
+
+	class Rule {
+		+ readonly mimeType: string;
+		# conditions: Condition[];
+		+ checkRuleWithPathGetter(pathGetterFn: (path: string) => string): RuleResult|undefined
+	}
+
+	Rule --> Condition
+	Rule --> RuleResult : creates
+
+	class RuleFactory {
+		+ {static} getFromSerialized(serialized: RuleSerialized): Rule
+	}
+
+	RuleFactory --> RuleType
+	RuleFactory --> Rule : creates
+	RuleFactory --> Condition
+	RuleFactory --> ConditionFactory
+
+	class RuleResult {
+		- readonly conditionResults: ConditionResult[];
+		+ satisfied(): boolean
+		+ getResultsAsStrings(): string[]
+		+ getScore(): number
+		+ getWeightedScore(): number
+	}
+
+	RuleResult --> ConditionResult
+
+	enum RuleType {
+		DEFAULT
+		METADATA
+		SEASON_SIZE_DISCREPANCY
+	}
+
+	class FilterFactory {
+		+ {static} async read(serializedPath: string): Promise<string>
+		+ {static} async parse(serializedData: string): Promise<FilterSerialized>
+		+ {static} getFromSerialized(serialized: FilterSerialized): Rule[]
+	}
+
+	FilterFactory --> Rule
+	FilterFactory --> RuleFactory
+}
+
 package serializable {
 	abstract class Serializable<T> {
 		+serialize(): SerializableSerialized

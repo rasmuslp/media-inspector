@@ -44,9 +44,6 @@ describe('FilterFactory', () => {
 			expect(Array.isArray(rules)).toBe(true);
 			for (const rule of rules) {
 				expect(rule).toBeInstanceOf(Rule);
-				for (const condition of rule._conditions) {
-					expect(condition).toBeInstanceOf(Condition);
-				}
 			}
 		});
 	});

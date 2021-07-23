@@ -22,10 +22,6 @@ export abstract class Condition<T = unknown> {
 		this.value = value;
 	}
 
-	get pathParts(): string[] {
-		return this.path.split('.');
-	}
-
 	abstract toString(): string
 
 	toStringForValue(inputValue: string): string {
