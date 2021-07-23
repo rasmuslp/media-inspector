@@ -2,20 +2,18 @@ import crypto from 'crypto';
 
 import { ConditionOperator } from './ConditionOperator';
 
-import { Condition, ConditionData } from './Condition';
-import { ConditionBetween, TConditionBetween } from './operators/ConditionBetween';
-import { ConditionEqual, TConditionEqual } from './operators/ConditionEqual';
-import { ConditionGreaterThanOrEqual, TConditionGreaterThanOrEqual } from './operators/ConditionGreaterThanOrEqual';
-import { ConditionIn, TConditionIn } from './operators/ConditionIn';
-import { ConditionLessThan, TConditionLessThan } from './operators/ConditionLessThan';
-import { ConditionNotEqual, TConditionNotEqual } from './operators/ConditionNotEqual';
-
-import { decodeTo } from '../../../lib/io-ts';
+import { Condition, ConditionSerialised } from './Condition';
+import { ConditionBetween, ConditionBetweenSchema } from './operators/ConditionBetween';
+import { ConditionEqual, ConditionEqualSchema } from './operators/ConditionEqual';
+import { ConditionGreaterThanOrEqual, ConditionGreaterThanOrEqualSchema } from './operators/ConditionGreaterThanOrEqual';
+import { ConditionIn, ConditionInSchema } from './operators/ConditionIn';
+import { ConditionLessThan, ConditionLessThanSchema } from './operators/ConditionLessThan';
+import { ConditionNotEqual, ConditionNotEqualSchema } from './operators/ConditionNotEqual';
 
 export class ConditionFactory {
 	static _conditions = new Map<string, Condition>();
 
-	static getSharedInstanceFromSerialized(conditionData: ConditionData): Condition {
+	static getSharedInstanceFromSerialized(conditionData: ConditionSerialised): Condition {
 		// Calculate hash of input
 		const hash = crypto.createHash('md5').update(JSON.stringify(conditionData)).digest('hex');
 
@@ -30,41 +28,47 @@ export class ConditionFactory {
 		return condition;
 	}
 
-	static getFromSerialized(condition: ConditionData): Condition {
+	static getFromSerialized(serialized: ConditionSerialised): Condition {
 		// Create and return
-		switch (condition.operator) {
+		switch (serialized.operator) {
 			case ConditionOperator.BETWEEN: {
-				const data = decodeTo(TConditionBetween, condition);
-				return new ConditionBetween(data.path, data.value);
+				const parsed = ConditionBetweenSchema.parse(serialized);
+				const condition = new ConditionBetween(parsed.path, parsed.value);
+				return condition;
 			}
 
 			case ConditionOperator.EQUAL: {
-				const data = decodeTo(TConditionEqual, condition);
-				return new ConditionEqual(data.path, data.value);
+				const parsed = ConditionEqualSchema.parse(serialized);
+				const condition = new ConditionEqual(parsed.path, parsed.value);
+				return condition;
 			}
 
 			case ConditionOperator.GREATER_THAN_OR_EQUAL: {
-				const data = decodeTo(TConditionGreaterThanOrEqual, condition);
-				return new ConditionGreaterThanOrEqual(data.path, data.value);
+				const parsed = ConditionGreaterThanOrEqualSchema.parse(serialized);
+				const condition = new ConditionGreaterThanOrEqual(parsed.path, parsed.value);
+				return condition;
 			}
 
 			case ConditionOperator.IN: {
-				const data = decodeTo(TConditionIn, condition);
-				return new ConditionIn(data.path, data.value);
+				const parsed = ConditionInSchema.parse(serialized);
+				const condition = new ConditionIn(parsed.path, parsed.value);
+				return condition;
 			}
 
 			case ConditionOperator.LESS_THAN: {
-				const data = decodeTo(TConditionLessThan, condition);
-				return new ConditionLessThan(data.path, data.value);
+				const parsed = ConditionLessThanSchema.parse(serialized);
+				const condition = new ConditionLessThan(parsed.path, parsed.value);
+				return condition;
 			}
 
 			case ConditionOperator.NOT_EQUAL: {
-				const data = decodeTo(TConditionNotEqual, condition);
-				return new ConditionNotEqual(data.path, data.value);
+				const parsed = ConditionNotEqualSchema.parse(serialized);
+				const condition = new ConditionNotEqual(parsed.path, parsed.value);
+				return condition;
 			}
 
 			default:
-				throw new Error(`Unknown operator '${condition.operator as string}' in ${JSON.stringify(condition)}`);
+				throw new Error(`Unknown operator '${serialized.operator as string}' in ${JSON.stringify(serialized)}`);
 		}
 	}
 }

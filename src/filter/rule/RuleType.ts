@@ -1,4 +1,4 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
 export enum RuleType {
 	DEFAULT = 'default',
@@ -6,8 +6,4 @@ export enum RuleType {
 	SEASON_SIZE_DISCREPANCY = 'season-size-discrepancy'
 }
 
-export const RuleTypeValidator = t.keyof({
-	[RuleType.DEFAULT]: undefined,
-	[RuleType.METADATA]: undefined,
-	[RuleType.SEASON_SIZE_DISCREPANCY]: undefined
-});
+export const RuleTypeSchema = z.nativeEnum(RuleType);

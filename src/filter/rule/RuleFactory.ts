@@ -1,22 +1,24 @@
 import { Condition } from './condition/Condition';
 import { ConditionFactory } from './condition/ConditionFactory';
 
-import { Rule, RuleData } from './Rule';
+import { Rule, RuleSchema, RuleSerialized } from './Rule';
 import { RuleType } from './RuleType';
 
 export class RuleFactory {
-	static getFromSerialized(data: RuleData): Rule {
+	static getFromSerialized(serialized: RuleSerialized): Rule {
+		const parsed = RuleSchema.parse(serialized);
+
 		let conditions: Condition[] = [];
-		if (data.conditions) {
-			conditions = data.conditions
+		if (parsed.conditions) {
+			conditions = parsed.conditions
 				.map(condition => ConditionFactory.getSharedInstanceFromSerialized(condition));
 		}
 
-		switch (data.type) {
+		switch (parsed.type) {
 			case RuleType.DEFAULT:
 			case RuleType.METADATA:
 			default: {
-				return new Rule(data.mimeType, conditions);
+				return new Rule(parsed.mimeType, conditions);
 			}
 		}
 	}

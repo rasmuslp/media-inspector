@@ -1,4 +1,4 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
 export enum ConditionOperator {
 	BETWEEN = 'between',
@@ -9,11 +9,4 @@ export enum ConditionOperator {
 	GREATER_THAN_OR_EQUAL = '>='
 }
 
-export const ConditionOperatorValidator = t.keyof({ // using "keyof" for better performance instead of "union"
-	[ConditionOperator.BETWEEN]: undefined,
-	[ConditionOperator.IN]: undefined,
-	[ConditionOperator.EQUAL]: undefined,
-	[ConditionOperator.NOT_EQUAL]: undefined,
-	[ConditionOperator.LESS_THAN]: undefined,
-	[ConditionOperator.GREATER_THAN_OR_EQUAL]: undefined
-});
+export const ConditionOperatorSchema = z.nativeEnum(ConditionOperator);

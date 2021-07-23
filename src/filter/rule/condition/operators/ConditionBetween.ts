@@ -1,18 +1,16 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { Condition, TCondition } from '../Condition';
+import { Condition, ConditionSchema } from '../Condition';
 import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
 
-export const TConditionBetweenValueType = t.tuple([t.number, t.number]);
-export type ConditionBetweenValueType = t.TypeOf<typeof TConditionBetweenValueType>;
+const ValueSchema = z.tuple([z.number(), z.number()]);
+type Value = z.infer<typeof ValueSchema>;
 
-const TConditionBetweenPartial = t.type({
-	value: TConditionBetweenValueType
+export const ConditionBetweenSchema = ConditionSchema.extend({
+	value: ValueSchema
 });
-export const TConditionBetween = t.intersection([TConditionBetweenPartial, TCondition]);
-export type ConditionBetweenData = t.TypeOf<typeof TConditionBetween>;
 
-export class ConditionBetween extends Condition<ConditionBetweenValueType> {
+export class ConditionBetween extends Condition<Value> {
 	check(inputValue: string): ConditionResult {
 		// Convert the input
 		const value = ConditionBetween.convertValue(inputValue);

@@ -1,18 +1,16 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { Condition, TCondition } from '../Condition';
+import { Condition, ConditionSchema } from '../Condition';
 import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
 
-export const TConditionInValueType = t.array(t.union([t.number, t.string]));
-export type ConditionInValueType = t.TypeOf<typeof TConditionInValueType>;
+const ValueSchema = z.array(z.union([z.number(), z.string()]));
+type Value = z.infer<typeof ValueSchema>;
 
-const TConditionInPartial = t.type({
-	value: TConditionInValueType
+export const ConditionInSchema = ConditionSchema.extend({
+	value: ValueSchema
 });
-export const TConditionIn = t.intersection([TConditionInPartial, TCondition]);
-export type ConditionInData = t.TypeOf<typeof TConditionIn>;
 
-export class ConditionIn extends Condition<ConditionInValueType> {
+export class ConditionIn extends Condition<Value> {
 	check(inputValue: string): ConditionResult {
 		// Convert the input
 		const value = ConditionIn.convertValue(inputValue);

@@ -1,18 +1,16 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { Condition, TCondition } from '../Condition';
+import { Condition, ConditionSchema } from '../Condition';
 import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
 
-export const TConditionNotEqualValueType = t.union([t.number, t.string]);
-export type ConditionNotEqualValueType = t.TypeOf<typeof TConditionNotEqualValueType>;
+const ValueSchema = z.union([z.number(), z.string()]);
+type Value = z.infer<typeof ValueSchema>;
 
-const TConditionNotEqualPartial = t.type({
-	value: TConditionNotEqualValueType
+export const ConditionNotEqualSchema = ConditionSchema.extend({
+	value: ValueSchema
 });
-export const TConditionNotEqual = t.intersection([TConditionNotEqualPartial, TCondition]);
-export type ConditionNotEqualData = t.TypeOf<typeof TConditionNotEqual>;
 
-export class ConditionNotEqual extends Condition<ConditionNotEqualValueType> {
+export class ConditionNotEqual extends Condition<Value> {
 	check(inputValue: string): ConditionResult {
 		// Convert the input
 		const value = ConditionNotEqual.convertValue(inputValue);

@@ -1,12 +1,9 @@
-import fs from 'fs';
 import path from 'path';
-import { promisify } from 'util';
 
 import { flags } from '@oclif/command';
 import chalk from 'chalk';
 import cli from 'cli-ux';
 
-import { FilterFactory } from '../../filter';
 import { Directory, FsNode, PathSorters } from '../../fs-tree';
 import { AuxiliaryMatch } from '../../matcher/AuxiliaryMatch';
 import { FilterMatch } from '../../matcher/FilterMatch';
@@ -14,11 +11,10 @@ import { FilterMatcher } from '../../matcher/FilterMatcher';
 import { Match } from '../../matcher/Match';
 import { MetadataCache } from '../../metadata/MetadataCache';
 import { SerializableIO } from '../../serializable/SerializableIO';
+import { readFilterFromSerialized } from '../glue/readFilterFromSerialized';
 import { readMetadataFromFileSystem } from '../glue/readMetadataFromFileSystem';
 import { readMetadataFromSerialized } from '../glue/readMetadataFromSerialized';
 import BaseCommand from '../BaseCommand';
-
-const readFile = promisify(fs.readFile);
 
 export default class Inspect extends BaseCommand {
 	static description = 'Inspect input with filter'
@@ -27,7 +23,7 @@ export default class Inspect extends BaseCommand {
 		filter: flags.string({
 			char: 'f',
 			description: 'Path of the filter to apply in JSON or JSON5',
-			parse: input => path.resolve(process.cwd(), input),
+			parse: (input: string): string => path.resolve(process.cwd(), input),
 			required: true
 		}),
 
@@ -148,23 +144,7 @@ export default class Inspect extends BaseCommand {
 	}
 
 	async filter(metadataCache: MetadataCache, filterPath: string, verbose = false): Promise<Match[]> {
-		const absoluteFilterPath = path.resolve(process.cwd(), filterPath);
-
-		if (verbose) {
-			cli.action.start(`Reading filter rules from ${absoluteFilterPath}`);
-		}
-		let fileContent;
-		try {
-			fileContent = await readFile(absoluteFilterPath, 'utf8');
-		}
-		catch (error) {
-			throw new Error(`Could not read filter at '${absoluteFilterPath}': ${(error as Error).message}`);
-		}
-		if (verbose) {
-			cli.action.stop();
-		}
-
-		const filterRules = FilterFactory.getFromSerialized(fileContent);
+		const filterRules = await readFilterFromSerialized(filterPath, verbose);
 
 		if (verbose) {
 			cli.action.start('Filtering...');

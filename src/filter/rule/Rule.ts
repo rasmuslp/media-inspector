@@ -1,34 +1,34 @@
 import createDebug from 'debug';
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { RuleResult } from './RuleResult';
 import { Condition } from './condition/Condition';
-import { RuleTypeValidator } from './RuleType';
-import { TConditionBetween } from './condition/operators/ConditionBetween';
-import { TConditionEqual } from './condition/operators/ConditionEqual';
-import { TConditionGreaterThanOrEqual } from './condition/operators/ConditionGreaterThanOrEqual';
-import { TConditionIn } from './condition/operators/ConditionIn';
-import { TConditionLessThan } from './condition/operators/ConditionLessThan';
-import { TConditionNotEqual } from './condition/operators/ConditionNotEqual';
+import { ConditionBetweenSchema } from './condition/operators/ConditionBetween';
+import { ConditionEqualSchema } from './condition/operators/ConditionEqual';
+import { ConditionGreaterThanOrEqualSchema } from './condition/operators/ConditionGreaterThanOrEqual';
+import { ConditionInSchema } from './condition/operators/ConditionIn';
+import { ConditionLessThanSchema } from './condition/operators/ConditionLessThan';
+import { ConditionNotEqualSchema } from './condition/operators/ConditionNotEqual';
+import { RuleResult } from './RuleResult';
+import { RuleTypeSchema } from './RuleType';
 
 const debug = createDebug('Rule');
 
-const TAllConditionOperators = t.union([
-	TConditionBetween,
-	TConditionEqual,
-	TConditionGreaterThanOrEqual,
-	TConditionIn,
-	TConditionLessThan,
-	TConditionNotEqual
+const AllConditionOperatorsSchema = z.union([
+	ConditionBetweenSchema,
+	ConditionEqualSchema,
+	ConditionGreaterThanOrEqualSchema,
+	ConditionInSchema,
+	ConditionLessThanSchema,
+	ConditionNotEqualSchema
 ]);
 
-export const TRule = t.type({
-	mimeType: t.string,
-	type: RuleTypeValidator,
-	conditions: t.array(TAllConditionOperators)
+export const RuleSchema = z.object({
+	mimeType: z.string(),
+	type: RuleTypeSchema,
+	conditions: z.array(AllConditionOperatorsSchema)
 });
 
-export type RuleData = t.TypeOf<typeof TRule>;
+export type RuleSerialized = z.infer<typeof RuleSchema>;
 
 export class Rule {
 	_mimeType: string;

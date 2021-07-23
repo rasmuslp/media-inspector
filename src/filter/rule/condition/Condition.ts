@@ -1,17 +1,19 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
+import { ConditionOperatorSchema } from './ConditionOperator';
 import { ConditionResult } from './ConditionResult';
-import { ConditionOperatorValidator } from './ConditionOperator';
 
-export const TCondition = t.type({
-	path: t.string,
-	operator: ConditionOperatorValidator
+export const ConditionSchema = z.object({
+	path: z.string(),
+	operator: ConditionOperatorSchema,
+	value: z.any()
 });
-export type ConditionData = t.TypeOf<typeof TCondition>;
+export type ConditionSerialised = z.infer<typeof ConditionSchema>;
 
-export type ConditionConvertedValueType = number|string;
+const ConvertedValueSchema = z.union([z.number(), z.string()]);
+type ConvertedValue = z.infer<typeof ConvertedValueSchema>;
 
-export abstract class Condition<T = any> {
+export abstract class Condition<T = unknown> {
 	readonly path: string;
 	readonly value: T;
 
@@ -32,7 +34,7 @@ export abstract class Condition<T = any> {
 
 	abstract check(inputValue: string): ConditionResult;
 
-	static convertValue(value: unknown): ConditionConvertedValueType {
+	static convertValue(value: unknown): ConvertedValue {
 		if (!Number.isNaN(Number(value))) {
 			return Number(value);
 		}
