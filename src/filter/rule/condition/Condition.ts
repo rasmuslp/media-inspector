@@ -10,9 +10,6 @@ export const ConditionSchema = z.object({
 });
 export type ConditionSerialised = z.infer<typeof ConditionSchema>;
 
-const ConvertedValueSchema = z.union([z.number(), z.string()]);
-type ConvertedValue = z.infer<typeof ConvertedValueSchema>;
-
 export abstract class Condition<T = unknown> {
 	readonly path: string;
 	readonly value: T;
@@ -30,7 +27,7 @@ export abstract class Condition<T = unknown> {
 
 	abstract check(inputValue: string): ConditionResult;
 
-	static convertValue(value: unknown): ConvertedValue {
+	static convertValue(value: unknown): number|string {
 		if (!Number.isNaN(Number(value))) {
 			return Number(value);
 		}
