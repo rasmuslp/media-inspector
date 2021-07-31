@@ -1,16 +1,12 @@
-import { z } from 'zod';
-
 import { Condition, ConditionSchema } from '../Condition';
 import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
-
-const ValueSchema = z.union([z.number(), z.string()]);
-type Value = z.infer<typeof ValueSchema>;
+import { TNumberOrString, NumberOrStringSchema } from '../ConditionValues';
 
 export const ConditionEqualSchema = ConditionSchema.extend({
-	value: ValueSchema
+	value: NumberOrStringSchema
 });
 
-export class ConditionEqual extends Condition<Value> {
+export class ConditionEqual extends Condition<TNumberOrString> {
 	check(inputValue: string): ConditionResult {
 		// Convert the input
 		const value = ConditionEqual.convertValue(inputValue);

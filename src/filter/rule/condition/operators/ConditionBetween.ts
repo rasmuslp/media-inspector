@@ -1,16 +1,12 @@
-import { z } from 'zod';
-
 import { Condition, ConditionSchema } from '../Condition';
 import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
-
-const ValueSchema = z.tuple([z.number(), z.number()]);
-type Value = z.infer<typeof ValueSchema>;
+import { TNumberRange, NumberRangeSchema } from '../ConditionValues';
 
 export const ConditionBetweenSchema = ConditionSchema.extend({
-	value: ValueSchema
+	value: NumberRangeSchema
 });
 
-export class ConditionBetween extends Condition<Value> {
+export class ConditionBetween extends Condition<TNumberRange> {
 	check(inputValue: string): ConditionResult {
 		// Convert the input
 		const value = ConditionBetween.convertValue(inputValue);
