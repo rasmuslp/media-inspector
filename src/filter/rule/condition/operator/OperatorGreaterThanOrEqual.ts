@@ -8,11 +8,7 @@ export const OperatorGreaterThanOrEqualSchema = ConditionSchema.extend({
 });
 
 export class OperatorGreaterThanOrEqual extends Operator<TNumber> {
-	check(inputValue: string): ConditionResult {
-		// Convert the input
-		const value = OperatorGreaterThanOrEqual.convertValue(inputValue);
-
-		// Check condition
+	check(value: number): ConditionResult {
 		if (value >= this.value) {
 			return new ConditionResult(this, value, ConditionSatisfied.YES);
 		}
@@ -20,7 +16,7 @@ export class OperatorGreaterThanOrEqual extends Operator<TNumber> {
 		return new ConditionResult(this, value, ConditionSatisfied.NO);
 	}
 
-	toStringForValue(inputValue: number|string): string {
+	toStringForValue(inputValue: number): string {
 		return `${inputValue} >= ${this.value}`;
 	}
 }

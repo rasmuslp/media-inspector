@@ -13,8 +13,13 @@ describe('OperatorEqual', () => {
 				expect(result.isSatisfied).toEqual(false);
 			});
 
-			it('is satisfied for 7', () => {
+			it('is not satisfied for \'7\'', () => {
 				const result = operator.check('7');
+				expect(result.isSatisfied).toEqual(false);
+			});
+
+			it('is satisfied for 7', () => {
+				const result = operator.check(7);
 				expect(result.isSatisfied).toEqual(true);
 			});
 		});

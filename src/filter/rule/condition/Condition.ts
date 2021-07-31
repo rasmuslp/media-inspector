@@ -14,7 +14,7 @@ export interface Condition<T = unknown> {
 	path: string;
 	value: T;
 
-	check(inputValue: string): ConditionResult;
+	check(inputValue: number|string): ConditionResult;
 
 	toStringForValue(inputValue: number|string): string;
 }

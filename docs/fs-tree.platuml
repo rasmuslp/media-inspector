@@ -5,22 +5,44 @@ package filter {
 	interface Condition<T> {
 		+ path: string
 		+ value: T
-		+ check(inputValue: string): ConditionResult
+		+ check(inputValue: number|string): ConditionResult
 		+ toStringForValue(inputValue: number|string): string
 	}
 
 	abstract class Operator<T> implements Condition {
-		+ {abstract} check(inputValue: string): ConditionResult
+		+ {abstract} check(inputValue: number|string): ConditionResult
 		+ {abstract} toStringForValue(inputValue: number|string): string
-		+ {static} convertValue(value: unknown): ConvertedValue
 	}
 
-	class OperatorBetween extends Operator {}
-	class OperatorEqual extends Operator {}
-	class OperatorGreaterThanOrEqual extends Operator {}
-	class OperatorIn extends Operator {}
-	class OperatorLessThan extends Operator {}
-	class OperatorNotEqual extends Operator {}
+	class OperatorBetween extends Operator {
+		+ check(inputValue: number): ConditionResult
+		+ toStringForValue(inputValue: number): string
+	}
+
+	class OperatorGreaterThanOrEqual extends Operator {
+		+ check(inputValue: number): ConditionResult
+		+ toStringForValue(inputValue: number): string
+	}
+
+	class OperatorLessThan extends Operator {
+		+ check(inputValue: number): ConditionResult
+		+ toStringForValue(inputValue: number): string
+	}
+
+	class OperatorEqual extends Operator {
+		+ check(inputValue: number|string): ConditionResult
+		+ toStringForValue(inputValue: number|string): string
+	}
+
+	class OperatorNotEqual extends Operator {
+		+ check(inputValue: number|string): ConditionResult
+		+ toStringForValue(inputValue: number|string): string
+	}
+
+	class OperatorIn extends Operator {
+		+ check(inputValue: number|string): ConditionResult
+		+ toStringForValue(inputValue: number|string): string
+	}
 
 	class ConditionFactory {
 		+ {static} _conditions: Map<string, Condition>();
@@ -56,7 +78,7 @@ package filter {
 	class Rule {
 		+ readonly mimeType: string;
 		# conditions: Condition[];
-		+ checkRuleWithPathGetter(pathGetterFn: (path: string) => string): RuleResult|undefined
+		+ checkRuleWithPathGetter(pathGetterFn: (path: string) => number|string): RuleResult|undefined
 	}
 
 	Rule --> Condition

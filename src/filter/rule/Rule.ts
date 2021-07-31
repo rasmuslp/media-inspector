@@ -39,7 +39,7 @@ export class Rule {
 		this.conditions = conditions;
 	}
 
-	checkRuleWithPathGetter(pathGetterFn: (path: string) => string): RuleResult|undefined {
+	checkRuleWithPathGetter(pathGetterFn: (path: string) => number|string): RuleResult|undefined {
 		// All conditions must be met
 		const conditionResults = [];
 		for (const condition of this.conditions) {

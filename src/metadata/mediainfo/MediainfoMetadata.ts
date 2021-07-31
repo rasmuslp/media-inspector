@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { Metadata } from '../Metadata';
 import { Serializable } from '../../serializable/Serializable';
+import { stringToStringOrNumber } from '../../utils/stringToStringOrNumber';
 
 const MediainfoTrackKnownSchema = z.object({
 	_type: z.string()
@@ -32,11 +33,12 @@ export class MediainfoMetadata extends Serializable<MediainfoMetadataSerialized>
 		this.metadata = metadata;
 	}
 
-	get(path: string): string {
+	get(path: string): number|string {
 		const [trackType, propertyName] = path.split('.');
 		const property = this.getProperty(trackType, propertyName);
+		const convertedPropertyValue = stringToStringOrNumber(property);
 
-		return property;
+		return convertedPropertyValue;
 	}
 
 	getProperty(trackType: string, property: string): string {

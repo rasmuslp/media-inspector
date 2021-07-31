@@ -8,10 +8,7 @@ export const OperatorBetweenSchema = ConditionSchema.extend({
 });
 
 export class OperatorBetween extends Operator<TNumberRange> {
-	check(inputValue: string): ConditionResult {
-		// Convert the input
-		const value = OperatorBetween.convertValue(inputValue);
-
+	check(value: number): ConditionResult {
 		// Check condition
 		if (this.value[0] <= value && value <= this.value[1]) {
 			return new ConditionResult(this, value, ConditionSatisfied.YES);
@@ -20,7 +17,7 @@ export class OperatorBetween extends Operator<TNumberRange> {
 		return new ConditionResult(this, value, ConditionSatisfied.NO);
 	}
 
-	toStringForValue(inputValue: number|string): string {
+	toStringForValue(inputValue: number): string {
 		return `${this.value[0]} <= ${inputValue} <= ${this.value[1]}`;
 	}
 }

@@ -1,3 +1,3 @@
 export interface Metadata {
-	get(path: string): string;
+	get(path: string): number|string;
 }

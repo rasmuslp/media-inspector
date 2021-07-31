@@ -1,3 +1,4 @@
+import { stringToStringOrNumber } from '../../../../utils/stringToStringOrNumber';
 import { ConditionSchema } from '../Condition';
 import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
 import { TNumberOrStringArray, NumberOrStringArraySchema } from '../ConditionValues';
@@ -8,12 +9,8 @@ export const OperatorInSchema = ConditionSchema.extend({
 });
 
 export class OperatorIn extends Operator<TNumberOrStringArray> {
-	check(inputValue: string): ConditionResult {
-		// Convert the input
-		const value = OperatorIn.convertValue(inputValue);
-
-		// Supports both string and number comparison
-		const match = !!this.value.some(expected => OperatorIn.convertValue(expected) === value);
+	check(value: number|string): ConditionResult {
+		const match = !!this.value.some(expected => stringToStringOrNumber(expected as string) === value);
 		if (match) {
 			return new ConditionResult(this, value, ConditionSatisfied.YES);
 		}

@@ -8,11 +8,7 @@ export const OperatorEqualSchema = ConditionSchema.extend({
 });
 
 export class OperatorEqual extends Operator<TNumberOrString> {
-	check(inputValue: string): ConditionResult {
-		// Convert the input
-		const value = OperatorEqual.convertValue(inputValue);
-
-		// Check condition
+	check(value: number|string): ConditionResult {
 		if (value === this.value) {
 			return new ConditionResult(this, value, ConditionSatisfied.YES);
 		}
