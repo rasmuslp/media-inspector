@@ -21,6 +21,6 @@ export class OperatorNotEqual extends Operator<TNumberOrString> {
 	}
 
 	toStringForValue(inputValue: number|string): string {
-		return `${inputValue} = ${this.value}`;
+		return `${inputValue} != ${this.value}`;
 	}
 }
