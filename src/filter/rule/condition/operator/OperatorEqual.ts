@@ -1,18 +1,19 @@
-import { Condition, ConditionSchema } from '../Condition';
+import { ConditionSchema } from '../Condition';
 import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
 import { TNumberOrString, NumberOrStringSchema } from '../ConditionValues';
+import { Operator } from './Operator';
 
-export const ConditionNotEqualSchema = ConditionSchema.extend({
+export const OperatorEqualSchema = ConditionSchema.extend({
 	value: NumberOrStringSchema
 });
 
-export class ConditionNotEqual extends Condition<TNumberOrString> {
+export class OperatorEqual extends Operator<TNumberOrString> {
 	check(inputValue: string): ConditionResult {
 		// Convert the input
-		const value = ConditionNotEqual.convertValue(inputValue);
+		const value = OperatorEqual.convertValue(inputValue);
 
 		// Check condition
-		if (value !== this.value) {
+		if (value === this.value) {
 			return new ConditionResult(this, value, ConditionSatisfied.YES);
 		}
 

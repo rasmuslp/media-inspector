@@ -1,31 +1,31 @@
 import createDebug from 'debug';
 import { z } from 'zod';
 
+import { OperatorBetweenSchema } from './condition/operator/OperatorBetween';
+import { OperatorEqualSchema } from './condition/operator/OperatorEqual';
+import { OperatorGreaterThanOrEqualSchema } from './condition/operator/OperatorGreaterThanOrEqual';
+import { OperatorInSchema } from './condition/operator/OperatorIn';
+import { OperatorLessThanSchema } from './condition/operator/OperatorLessThan';
+import { OperatorNotEqualSchema } from './condition/operator/OperatorNotEqual';
 import { Condition } from './condition/Condition';
-import { ConditionBetweenSchema } from './condition/operators/ConditionBetween';
-import { ConditionEqualSchema } from './condition/operators/ConditionEqual';
-import { ConditionGreaterThanOrEqualSchema } from './condition/operators/ConditionGreaterThanOrEqual';
-import { ConditionInSchema } from './condition/operators/ConditionIn';
-import { ConditionLessThanSchema } from './condition/operators/ConditionLessThan';
-import { ConditionNotEqualSchema } from './condition/operators/ConditionNotEqual';
 import { RuleResult } from './RuleResult';
 import { RuleTypeSchema } from './RuleType';
 
 const debug = createDebug('Rule');
 
-const AllConditionOperatorsSchema = z.union([
-	ConditionBetweenSchema,
-	ConditionEqualSchema,
-	ConditionGreaterThanOrEqualSchema,
-	ConditionInSchema,
-	ConditionLessThanSchema,
-	ConditionNotEqualSchema
+const AllOperatorsSchema = z.union([
+	OperatorBetweenSchema,
+	OperatorEqualSchema,
+	OperatorGreaterThanOrEqualSchema,
+	OperatorInSchema,
+	OperatorLessThanSchema,
+	OperatorNotEqualSchema
 ]);
 
 export const RuleSchema = z.object({
 	mimeType: z.string(),
 	type: RuleTypeSchema,
-	conditions: z.array(AllConditionOperatorsSchema)
+	conditions: z.array(AllOperatorsSchema)
 });
 
 export type RuleSerialized = z.infer<typeof RuleSchema>;

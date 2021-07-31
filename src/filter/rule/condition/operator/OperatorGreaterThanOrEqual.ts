@@ -1,18 +1,19 @@
-import { Condition, ConditionSchema } from '../Condition';
+import { ConditionSchema } from '../Condition';
 import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
 import { TNumber, NumberSchema } from '../ConditionValues';
+import { Operator } from './Operator';
 
-export const ConditionLessThanSchema = ConditionSchema.extend({
+export const OperatorGreaterThanOrEqualSchema = ConditionSchema.extend({
 	value: NumberSchema
 });
 
-export class ConditionLessThan extends Condition<TNumber> {
+export class OperatorGreaterThanOrEqual extends Operator<TNumber> {
 	check(inputValue: string): ConditionResult {
 		// Convert the input
-		const value = ConditionLessThan.convertValue(inputValue);
+		const value = OperatorGreaterThanOrEqual.convertValue(inputValue);
 
 		// Check condition
-		if (value < this.value) {
+		if (value >= this.value) {
 			return new ConditionResult(this, value, ConditionSatisfied.YES);
 		}
 
@@ -20,6 +21,6 @@ export class ConditionLessThan extends Condition<TNumber> {
 	}
 
 	toString(): string {
-		return `< ${this.value}`;
+		return `>= ${this.value}`;
 	}
 }

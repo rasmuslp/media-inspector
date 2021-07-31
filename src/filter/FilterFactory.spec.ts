@@ -1,5 +1,4 @@
-import { Condition } from './rule/condition/Condition';
-import { ConditionOperator } from './rule/condition/ConditionOperator';
+import { OperatorType } from './rule/condition/OperatorType';
 import { FilterFactory, FilterSerialized } from './FilterFactory';
 import { Rule } from './rule/Rule';
 import { RuleType } from './rule/RuleType';
@@ -15,12 +14,12 @@ describe('FilterFactory', () => {
 				conditions: [
 					{
 						path: 'video.format',
-						operator: ConditionOperator.EQUAL,
+						operator: OperatorType.EQUAL,
 						value: 'hevc'
 					},
 					{
 						path: 'video.framerate',
-						operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
+						operator: OperatorType.GREATER_THAN_OR_EQUAL,
 						value: 25
 					}
 				]

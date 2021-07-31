@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export enum ConditionOperator {
+export enum OperatorType {
 	BETWEEN = 'between',
 	IN = 'in',
 	EQUAL = '=',
@@ -9,4 +9,4 @@ export enum ConditionOperator {
 	GREATER_THAN_OR_EQUAL = '>='
 }
 
-export const ConditionOperatorSchema = z.nativeEnum(ConditionOperator);
+export const OperatorTypeSchema = z.nativeEnum(OperatorType);

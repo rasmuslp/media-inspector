@@ -2,23 +2,26 @@
 scale 2
 
 package filter {
-	abstract class Condition<T> {
+	interface Condition<T> {
 		+ path: string
 		+ value: T
-		+ {abstract} toString(): string
+		+ toString(): string
 		+ toStringForValue(inputValue: string): string
+		+ check(inputValue: string): ConditionResult
+	}
+
+	abstract class Operator<T> implements Condition {
+		+ {abstract} toString(): string
 		+ {abstract} check(inputValue: string): ConditionResult
 		+ {static} convertValue(value: unknown): ConvertedValue
 	}
 
-	class ConditionBetween extends Condition {
-		+ toStringForValue(inputValue: string): string
-	}
-	class ConditionEqual extends Condition {}
-	class ConditionGreaterThanOrEqual extends Condition {}
-	class ConditionIn extends Condition {}
-	class ConditionLessThan extends Condition {}
-	class ConditionNotEqual extends Condition {}
+	class OperatorBetween extends Operator {}
+	class OperatorEqual extends Operator {}
+	class OperatorGreaterThanOrEqual extends Operator {}
+	class OperatorIn extends Operator {}
+	class OperatorLessThan extends Operator {}
+	class OperatorNotEqual extends Operator {}
 
 	class ConditionFactory {
 		+ {static} _conditions: Map<string, Condition>();
@@ -26,16 +29,15 @@ package filter {
 		+ {static} getFromSerialized(serialized: ConditionSerialised): Condition
 	}
 
-	ConditionFactory --> ConditionOperator
-	ConditionFactory --> Condition : creates
-	ConditionFactory --> ConditionBetween : creates
-	ConditionFactory --> ConditionEqual : creates
-	ConditionFactory --> ConditionGreaterThanOrEqual : creates
-	ConditionFactory --> ConditionIn : creates
-	ConditionFactory --> ConditionLessThan : creates
-	ConditionFactory --> ConditionNotEqual : creates
+	ConditionFactory --> OperatorType
+	ConditionFactory --> OperatorBetween : creates
+	ConditionFactory --> OperatorEqual : creates
+	ConditionFactory --> OperatorGreaterThanOrEqual : creates
+	ConditionFactory --> OperatorIn : creates
+	ConditionFactory --> OperatorLessThan : creates
+	ConditionFactory --> OperatorNotEqual : creates
 
-	enum ConditionOperator {
+	enum OperatorType {
 		BETWEEN
 		IN
 		EQUAL
@@ -58,7 +60,7 @@ package filter {
 		+ checkRuleWithPathGetter(pathGetterFn: (path: string) => string): RuleResult|undefined
 	}
 
-	Rule --> Condition
+	Rule --> Operator
 	Rule --> RuleResult : creates
 
 	class RuleFactory {
