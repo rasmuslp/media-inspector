@@ -42,7 +42,7 @@ jobs:
           name: test-report
           path: reports/junit/results.xml
       - name: Upload codecoverage to Codacy (Node 12 only)
-        run: cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r ./coverage/lcov.info
         if: matrix.node == 12
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
