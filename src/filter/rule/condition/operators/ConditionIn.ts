@@ -12,7 +12,7 @@ export class ConditionIn extends Condition<TNumberOrStringArray> {
 		const value = ConditionIn.convertValue(inputValue);
 
 		// Supports both string and number comparison
-		const match = this.value.find(expected => ConditionIn.convertValue(expected) === value);
+		const match = !!this.value.some(expected => ConditionIn.convertValue(expected) === value);
 		if (match) {
 			return new ConditionResult(this, value, ConditionSatisfied.YES);
 		}
