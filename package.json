@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "1.26.0",
-    "@rasmuslp/eslint-config": "2.0.0-14",
+    "@rasmuslp/eslint-config": "2.0.0-17",
     "@types/cli-progress": "3.9.2",
     "@types/debug": "4.1.6",
     "@types/jest": "26.0.24",
