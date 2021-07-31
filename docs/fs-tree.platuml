@@ -5,14 +5,13 @@ package filter {
 	interface Condition<T> {
 		+ path: string
 		+ value: T
-		+ toString(): string
-		+ toStringForValue(inputValue: string): string
 		+ check(inputValue: string): ConditionResult
+		+ toStringForValue(inputValue: number|string): string
 	}
 
 	abstract class Operator<T> implements Condition {
-		+ {abstract} toString(): string
 		+ {abstract} check(inputValue: string): ConditionResult
+		+ {abstract} toStringForValue(inputValue: number|string): string
 		+ {static} convertValue(value: unknown): ConvertedValue
 	}
 
@@ -48,7 +47,7 @@ package filter {
 
 	class ConditionResult {
 		- condition: Condition;
-		- value: unknown;
+		- value: number|string;
 		- satisfied: ConditionSatisfied;
 		+ isSatisfied: boolean;
 		+ toString(): string
@@ -60,7 +59,7 @@ package filter {
 		+ checkRuleWithPathGetter(pathGetterFn: (path: string) => string): RuleResult|undefined
 	}
 
-	Rule --> Operator
+	Rule --> Condition
 	Rule --> RuleResult : creates
 
 	class RuleFactory {

@@ -21,7 +21,7 @@ export class OperatorIn extends Operator<TNumberOrStringArray> {
 		return new ConditionResult(this, value, ConditionSatisfied.NO);
 	}
 
-	toString(): string {
-		return `in [${this.value.join(', ')}]`;
+	toStringForValue(inputValue: number|string): string {
+		return `'${inputValue}' in [${this.value.join(', ')}]`;
 	}
 }

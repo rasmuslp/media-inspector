@@ -20,7 +20,7 @@ export class OperatorLessThan extends Operator<TNumber> {
 		return new ConditionResult(this, value, ConditionSatisfied.NO);
 	}
 
-	toString(): string {
-		return `< ${this.value}`;
+	toStringForValue(inputValue: number|string): string {
+		return `${inputValue} < ${this.value}`;
 	}
 }

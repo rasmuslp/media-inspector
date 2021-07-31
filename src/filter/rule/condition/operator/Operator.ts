@@ -10,13 +10,9 @@ export abstract class Operator<T = unknown> implements Condition {
 		this.value = value;
 	}
 
-	abstract toString(): string
-
-	toStringForValue(inputValue: string): string {
-		return `${inputValue} ${this.toString()}`;
-	}
-
 	abstract check(inputValue: string): ConditionResult;
+
+	abstract toStringForValue(inputValue: number|string): string;
 
 	static convertValue(value: unknown): number|string {
 		if (!Number.isNaN(Number(value))) {

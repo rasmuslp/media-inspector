@@ -20,11 +20,7 @@ export class OperatorBetween extends Operator<TNumberRange> {
 		return new ConditionResult(this, value, ConditionSatisfied.NO);
 	}
 
-	toString(): string {
-		return `${this.value[0]} <= X <= ${this.value[1]}`;
-	}
-
-	toStringForValue(inputValue: string): string {
+	toStringForValue(inputValue: number|string): string {
 		return `${this.value[0]} <= ${inputValue} <= ${this.value[1]}`;
 	}
 }
