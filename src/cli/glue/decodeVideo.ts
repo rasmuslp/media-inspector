@@ -8,12 +8,13 @@ import { File } from '../../fs-tree';
 
 const debug = createDebug('decodeVideos');
 
-export async function decodeVideos(videoFiles: File[], verbose: boolean, parallel: number): Promise<Map<File, ErrorSummary>> {
+export async function decodeVideos(videoFiles: File[], verbose: boolean, parallel: number, demuxOnly: boolean): Promise<Map<File, ErrorSummary>> {
 	let summaryProgressBar: MultiBar|undefined;
 	if (verbose) {
 		summaryProgressBar = new MultiBar({
 			clearOnComplete: false,
 			hideCursor: true,
+			noTTYOutput: Boolean(process.env.TERM === 'dumb' || !process.stdin.isTTY),
 
 			format: '{bar} | {percentage}% | {fps} fps | Speed {speed} | {name} | {errors} errors',
 			barCompleteChar: '\u2588',
@@ -44,7 +45,7 @@ export async function decodeVideos(videoFiles: File[], verbose: boolean, paralle
 
 		let errorSummary: ErrorSummary;
 		try {
-			errorSummary = await ffmpegVideoErrorDetector.start();
+			errorSummary = await ffmpegVideoErrorDetector.start(demuxOnly);
 		}
 		catch (error) {
 			debug('Failed to run error detection on %s %s', videoFile.path, (error as Error).toString());

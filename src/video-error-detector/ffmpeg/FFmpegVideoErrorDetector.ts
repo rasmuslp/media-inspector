@@ -22,14 +22,22 @@ export class FFmpegVideoErrorDetector {
 	}
 
 	// Throws or returns summary
-	start(): Promise<ErrorSummary> {
+	start(demuxOnly = false): Promise<ErrorSummary> {
 		if (!this.ffmpegProcess) {
-			this.ffmpegProcess = new ProcessRunner('ffmpeg', ['-v', 'info', '-i', this.path, '-f', 'null', '-']);
-		}
+			const arguments_ = ['-v', 'info'];
+			arguments_.push('-i', this.path);
+			if (demuxOnly) {
+				arguments_.push('-c', 'copy');
+			}
+			arguments_.push('-f', 'null');
+			arguments_.push('-');
 
-		this.ffmpegProcess.output.pipe(lineStream()).on('data', (line: string) => {
-			this.handleLine(line);
-		});
+			this.ffmpegProcess = new ProcessRunner('ffmpeg', arguments_);
+
+			this.ffmpegProcess.output.pipe(lineStream()).on('data', (line: string) => {
+				this.handleLine(line);
+			});
+		}
 
 		return this.ffmpegProcess.process.then(() => {
 			return this.outputParser.getErrorSummary();

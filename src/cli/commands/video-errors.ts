@@ -40,6 +40,12 @@ export default class VideoErrors extends BaseCommand {
 			required: true
 		}),
 
+		'demux-only': flags.boolean({
+			char: 'd',
+			default: false,
+			description: 'Skip decode and demux only'
+		}),
+
 		verbose: verbose
 	}
 
@@ -65,7 +71,7 @@ export default class VideoErrors extends BaseCommand {
 			this.log(`Found ${videoFilesFilteredByExtension.length} video files matching extension`);
 		}
 
-		const errorSummaries = await decodeVideos(videoFilesFilteredByExtension, flags.verbose, flags.parallel);
+		const errorSummaries = await decodeVideos(videoFilesFilteredByExtension, flags.verbose, flags.parallel, flags['demux-only']);
 
 		for (const [file, errorSummary] of errorSummaries.entries()) {
 			if (errorSummary?.corruptDecodedFrames || errorSummary?.streams) {
