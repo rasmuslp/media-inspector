@@ -11,9 +11,9 @@ import { FilterMatcher } from '../../matcher/FilterMatcher';
 import { Match } from '../../matcher/Match';
 import { MetadataCache } from '../../metadata/MetadataCache';
 import { SerializableIO } from '../../serializable/SerializableIO';
-import { readFilterFromSerialized } from '../glue/readFilterFromSerialized';
-import { readMetadataFromFileSystem } from '../glue/readMetadataFromFileSystem';
-import { readMetadataFromSerialized } from '../glue/readMetadataFromSerialized';
+import { readFilterFromSerialized } from '../helpers/readFilterFromSerialized';
+import { readMetadataFromFileSystem } from '../helpers/readMetadataFromFileSystem';
+import { readMetadataFromSerialized } from '../helpers/readMetadataFromSerialized';
 import BaseCommand from '../BaseCommand';
 import { verbose } from '../flags';
 

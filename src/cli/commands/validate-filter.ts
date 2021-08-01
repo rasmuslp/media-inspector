@@ -3,7 +3,7 @@ import path from 'path';
 import cli from 'cli-ux';
 
 import BaseCommand from '../BaseCommand';
-import { readFilterFromSerialized } from '../glue/readFilterFromSerialized';
+import { readFilterFromSerialized } from '../helpers/readFilterFromSerialized';
 
 export default class ValidateFilter extends BaseCommand {
 	static description = 'Validate filter'

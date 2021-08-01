@@ -4,7 +4,7 @@ import { flags } from '@oclif/command';
 import cli from 'cli-ux';
 
 import BaseCommand from '../BaseCommand';
-import { readMetadataFromFileSystem } from '../glue/readMetadataFromFileSystem';
+import { readMetadataFromFileSystem } from '../helpers/readMetadataFromFileSystem';
 import { SerializableIO } from '../../serializable/SerializableIO';
 
 export default class Cache extends BaseCommand {

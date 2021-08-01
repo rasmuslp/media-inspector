@@ -3,8 +3,8 @@ import path from 'path';
 import { flags } from '@oclif/command';
 import createDebug from 'debug';
 
-import { decodeVideos } from '../glue/decodeVideo';
-import { readTreeAndVideos } from '../glue/readTreeAndVideos';
+import { decodeVideos } from '../helpers/decodeVideo';
+import { readTreeAndVideos } from '../helpers/readTreeAndVideos';
 import BaseCommand from '../BaseCommand';
 import { verbose } from '../flags';
 
