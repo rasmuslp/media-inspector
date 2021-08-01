@@ -1,3 +1,5 @@
+import path from 'path';
+
 import { z } from 'zod';
 
 import { Serializable } from '../serializable/Serializable';
@@ -24,6 +26,14 @@ export abstract class FsNode<T extends FsNodeSerialized = FsNodeSerialized> exte
 		this.stats = {
 			size: stats?.size ?? 0
 		};
+	}
+
+	get name() {
+		return path.basename(this.path);
+	}
+
+	get extension(): string {
+		return path.extname(this.path);
 	}
 
 	get size(): number {

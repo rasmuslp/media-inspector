@@ -3,29 +3,15 @@ import { SingleBar } from 'cli-progress';
 import createDebug from 'debug';
 import pLimit from 'p-limit';
 
-import { File, FsTreeFactory } from '../../fs-tree';
 import { MetadataCache } from '../../metadata/MetadataCache';
 import { MediainfoMetadata } from '../../metadata/mediainfo/MediainfoMetadata';
 import { MediainfoMetadataFactory } from '../../metadata/mediainfo/MediainfoMetadataFactory';
+import { readTreeAndVideos } from './readTreeAndVideos';
 
 const debug = createDebug('readMetadataFromFileSystem');
 
 export async function readMetadataFromFileSystem(path: string, verbose: boolean): Promise<MetadataCache> {
-	debug('Scanning filesystem path %s', path);
-	if (verbose) {
-		cli.action.start(`Reading from file system ${path}`);
-	}
-	const fsTree = await FsTreeFactory.getTreeFromFileSystem(path);
-	const nodes = await fsTree.getAsSortedList();
-	debug('Found %d nodes', nodes.length);
-	if (verbose) {
-		cli.action.stop();
-		cli.log(`Found ${nodes.length} files and directories`);
-	}
-
-	const files: File[] = nodes.filter(node => node instanceof File).map(node => node as File);
-	const videoFiles = files.filter(file => file.mimeType.startsWith('video/'));
-	debug('Found %d video files', videoFiles.length);
+	const { fsTree, videoFiles } = await readTreeAndVideos(path, verbose);
 
 	let metadataProgressBar: SingleBar|undefined;
 	if (verbose) {

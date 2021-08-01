@@ -27,6 +27,14 @@ describe('FsNode', () => {
 		expect(fsNode.path).toBe(pathToFsNode);
 	});
 
+	test('name', () => {
+		expect(fsNode.name).toBe('FsNode.js');
+	});
+
+	test('extension', () => {
+		expect(fsNode.extension).toBe('.js');
+	});
+
 	test('size', () => {
 		expect(fsNode.size).toBe(123);
 	});

@@ -142,6 +142,9 @@ package fs-tree {
 	abstract class FsNode<T> extends Serializable {
 		+path: string
 		#stats: FsNodeStats
+		--
+		+name: string
+		+extension: string
 		+size: number
 	}
 
