@@ -15,6 +15,7 @@ import { readFilterFromSerialized } from '../glue/readFilterFromSerialized';
 import { readMetadataFromFileSystem } from '../glue/readMetadataFromFileSystem';
 import { readMetadataFromSerialized } from '../glue/readMetadataFromSerialized';
 import BaseCommand from '../BaseCommand';
+import { verbose } from '../flags';
 
 export default class Inspect extends BaseCommand {
 	static description = 'Inspect input with filter'
@@ -40,12 +41,7 @@ export default class Inspect extends BaseCommand {
 			required: true
 		}),
 
-		verbose: flags.boolean({
-			char: 'v',
-			default: false,
-			description: 'Enable to get progress and detailed information on matches. ' +
-				'By default only matched absolute paths are logged, so the output can be piped'
-		})
+		verbose: verbose
 	}
 
 	static examples = [
@@ -60,10 +56,8 @@ export default class Inspect extends BaseCommand {
 		const metadataCache = await (SerializableIO.isSerializePath(flags.read) ? readMetadataFromSerialized(flags.read) : readMetadataFromFileSystem(flags.read, flags.verbose));
 
 		const matches: Match[] = [];
-		if (flags.filter) {
-			const filterMatches = await this.filter(metadataCache, flags.filter, flags.verbose);
-			matches.push(...filterMatches);
-		}
+		const filterMatches = await this.filter(metadataCache, flags.filter, flags.verbose);
+		matches.push(...filterMatches);
 
 		if (flags.includeAuxiliary) {
 			// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for matcher

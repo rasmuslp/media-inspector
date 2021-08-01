@@ -1,4 +1,3 @@
-import cli from 'cli-ux';
 import { SingleBar } from 'cli-progress';
 import createDebug from 'debug';
 import pLimit from 'p-limit';
@@ -15,11 +14,12 @@ export async function readMetadataFromFileSystem(path: string, verbose: boolean)
 
 	let metadataProgressBar: SingleBar|undefined;
 	if (verbose) {
-		metadataProgressBar = cli.progress({
+		metadataProgressBar = new SingleBar({
+			noTTYOutput: Boolean(process.env.TERM === 'dumb' || !process.stdin.isTTY),
 			format: 'Reading metadata | {bar} | {value}/{total} video files',
 			barCompleteChar: '\u2588',
 			barIncompleteChar: '\u2591'
-		}) as SingleBar;
+		});
 		metadataProgressBar.start(videoFiles.length, 0);
 	}
 
@@ -30,8 +30,8 @@ export async function readMetadataFromFileSystem(path: string, verbose: boolean)
 			const metadata = await MediainfoMetadataFactory.getFromFileSystem(videoFile.path);
 			videoMetadata.set(videoFile.path, metadata);
 		}
-		catch {
-			// debug('sss Failed to read metadata from %s %s', videoFile.path, e.toString());
+		catch (error) {
+			debug('Failed to read metadata from %s %s', videoFile.path, (error as Error).toString());
 		}
 		if (verbose && metadataProgressBar) {
 			metadataProgressBar.increment();
