@@ -47,7 +47,15 @@ jobs:
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
       - name: Upload codecoverage to Codecov (Node 12 only)
-        run: bash <(curl -s https://codecov.io/bash)
+        run: |
+          curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --import # One-time step
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM
+          curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM.sig
+          gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
+          shasum -a 256 -c codecov.SHA256SUM
+          chmod +x codecov
+          ./codecov -t ${CODECOV_TOKEN}
         if: matrix.node == 12
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
