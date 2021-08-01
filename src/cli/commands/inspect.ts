@@ -1,23 +1,20 @@
-import fs from 'fs';
 import path from 'path';
-import { promisify } from 'util';
 
 import { flags } from '@oclif/command';
 import chalk from 'chalk';
 import cli from 'cli-ux';
 
-import { FilterFactory } from '../../filter';
-import { Directory, FsNode, FsTree, MediaFile } from '../../fs-tree';
-
+import { Directory, FsNode, PathSorters } from '../../fs-tree';
 import { AuxiliaryMatch } from '../../matcher/AuxiliaryMatch';
 import { FilterMatch } from '../../matcher/FilterMatch';
 import { FilterMatcher } from '../../matcher/FilterMatcher';
 import { Match } from '../../matcher/Match';
+import { MetadataCache } from '../../metadata/MetadataCache';
+import { SerializableIO } from '../../serializable/SerializableIO';
+import { readFilterFromSerialized } from '../glue/readFilterFromSerialized';
+import { readMetadataFromFileSystem } from '../glue/readMetadataFromFileSystem';
+import { readMetadataFromSerialized } from '../glue/readMetadataFromSerialized';
 import BaseCommand from '../BaseCommand';
-import { defaultGetFromFileSystemOptions } from '../../fs-tree/FsTree';
-import { SingleBar } from 'cli-progress';
-
-const readFile = promisify(fs.readFile);
 
 export default class Inspect extends BaseCommand {
 	static description = 'Inspect input with filter'
@@ -26,7 +23,7 @@ export default class Inspect extends BaseCommand {
 		filter: flags.string({
 			char: 'f',
 			description: 'Path of the filter to apply in JSON or JSON5',
-			parse: input => path.resolve(process.cwd(), input),
+			parse: (input: string): string => path.resolve(process.cwd(), input),
 			required: true
 		}),
 
@@ -38,7 +35,7 @@ export default class Inspect extends BaseCommand {
 
 		read: flags.string({
 			char: 'r',
-			description: 'Path of a directory or cache file to read', // TODO: Must this be a directory?
+			description: 'Path of a directory or a metadata cache file to read', // TODO: Must this be a directory?
 			parse: input => path.resolve(process.cwd(), input),
 			required: true
 		}),
@@ -60,50 +57,24 @@ export default class Inspect extends BaseCommand {
 	async run() {
 		const { flags } = this.parse(Inspect);
 
-		let node;
-		if (FsTree.isSerializePath(flags.read)) {
-			if (flags.verbose) {
-				cli.action.start(`Reading from json ${flags.read}`);
-			}
-			node = await FsTree.getFromSerialized(flags.read);
-			if (flags.verbose) {
-				cli.action.stop();
-			}
-		}
-		else {
-			const options = { ...defaultGetFromFileSystemOptions };
-			let metadataProgressBar: SingleBar;
-			if (flags.verbose) {
-				cli.log(`Reading from file system ${flags.read}`);
-				metadataProgressBar = cli.progress({
-					format: 'Reading metadata | {bar} | {value}/{total} Files',
-					barCompleteChar: '\u2588',
-					barIncompleteChar: '\u2591'
-				}) as SingleBar;
-				options.metadataTotalFn = (total: number) => metadataProgressBar.start(total, 0);
-				options.metadataIncrementFn = () => metadataProgressBar.increment();
-			}
-			node = await FsTree.getFromFileSystem(flags.read, options);
-			if (flags.verbose) {
-				metadataProgressBar.stop();
-			}
-		}
+		const metadataCache = await (SerializableIO.isSerializePath(flags.read) ? readMetadataFromSerialized(flags.read) : readMetadataFromFileSystem(flags.read, flags.verbose));
 
 		const matches: Match[] = [];
 		if (flags.filter) {
-			const filterMatches = await this.filter(node, flags.filter, flags.verbose);
+			const filterMatches = await this.filter(metadataCache, flags.filter, flags.verbose);
 			matches.push(...filterMatches);
 		}
 
 		if (flags.includeAuxiliary) {
 			// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for matcher
-			await FsTree.traverse(node, async (node: FsNode) => {
+			await metadataCache.tree.traverse(async (node: FsNode) => {
 				if (node instanceof Directory) {
-					if (!node.children || node.children.length === 0) {
+					const children = metadataCache.tree.getDirectChildren(node);
+					if (children.length === 0) {
 						matches.push(new AuxiliaryMatch('Directory empty', node));
 					}
 					else {
-						const childPaths = new Set(node.children.map(fsNode => fsNode.path));
+						const childPaths = new Set(children.map(fsNode => fsNode.path));
 						const matchedChildren = matches.filter(match => childPaths.has(match.fsNode.path));
 
 						// Get sizes of matched children
@@ -112,12 +83,12 @@ export default class Inspect extends BaseCommand {
 							sizeOfMatchedChildren += match.fsNode.size;
 						}
 
-						const sizeOfTree = await FsTree.getSize(node);
+						const sizeOfTree = await metadataCache.tree.getSize(node);
 
 						// Take parent and all children when this was the majority
 						if (sizeOfMatchedChildren >= 0.9 * sizeOfTree) {
 							// Mark tree from directory as Purgable
-							const treeAsList = await FsTree.getAsSortedList(node);
+							const treeAsList = await metadataCache.tree.getAsSortedList(node);
 							const auxiliaryMatches = treeAsList.map(childNode => new AuxiliaryMatch(`Auxiliary to ${node.path}`, childNode));
 
 							matches.push(...auxiliaryMatches);
@@ -144,7 +115,7 @@ export default class Inspect extends BaseCommand {
 		}
 
 		// Sort deduped
-		const dedupedPurgres = [...dedupedMap.values()].sort((a, b) => Directory.getSortFnByPathDirFile(a.fsNode, b.fsNode));
+		const dedupedPurgres = [...dedupedMap.values()].sort((a, b) => PathSorters.childrenBeforeParents(a.fsNode.path, b.fsNode.path));
 
 		for (const match of dedupedPurgres) {
 			if (flags.verbose) {
@@ -164,7 +135,7 @@ export default class Inspect extends BaseCommand {
 
 			this.log('Space freeable:\t', spaceFreeable);
 
-			const size = await FsTree.getSize(node);
+			const size = await metadataCache.tree.getSize();
 			this.log('Total Size:\t', size);
 
 			const reduction = spaceFreeable / size * 100;
@@ -172,29 +143,13 @@ export default class Inspect extends BaseCommand {
 		}
 	}
 
-	async filter(node: FsNode, filterPath: string, verbose = false): Promise<Match[]> {
-		const absoluteFilterPath = path.resolve(process.cwd(), filterPath);
-
-		if (verbose) {
-			cli.action.start(`Reading filter rules from ${absoluteFilterPath}`);
-		}
-		let fileContent;
-		try {
-			fileContent = await readFile(absoluteFilterPath, 'utf8');
-		}
-		catch (error) {
-			throw new Error(`Could not read filter at '${absoluteFilterPath}': ${(error as Error).message}`);
-		}
-		if (verbose) {
-			cli.action.stop();
-		}
-
-		const filterRules = FilterFactory.getFromSerialized(fileContent);
+	async filter(metadataCache: MetadataCache, filterPath: string, verbose = false): Promise<Match[]> {
+		const filterRules = await readFilterFromSerialized(filterPath, verbose);
 
 		if (verbose) {
 			cli.action.start('Filtering...');
 		}
-		const matches = await FilterMatcher.getMatches(node, filterRules);
+		const matches = await FilterMatcher.getMatches(metadataCache, filterRules);
 		if (verbose) {
 			cli.action.stop();
 			this.log(`Found ${matches.length} item${matches.length === 1 ? 's' : ''} for purging`);
@@ -206,17 +161,7 @@ export default class Inspect extends BaseCommand {
 
 function getLogMessageOfMatch(match: Match, { colorized = false } = {}): string {
 	let message = `${colorized ? chalk.yellow(match.fsNode.path) : match.fsNode.path}\n\t`;
-
-	if (match.fsNode instanceof Directory) {
-		message += '[Directory]';
-	}
-	else if (match.fsNode instanceof MediaFile) {
-		message += '[Media file]';
-	}
-	else {
-		message += '[File]';
-	}
-
+	message += match.fsNode instanceof Directory ? '[Directory]' : '[File]';
 	message += ' ';
 
 	switch (match.constructor) {

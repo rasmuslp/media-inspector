@@ -1,52 +1,48 @@
 import createDebug from 'debug';
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { RuleResult } from './RuleResult';
+import { OperatorBetweenSchema } from './condition/operator/OperatorBetween';
+import { OperatorEqualSchema } from './condition/operator/OperatorEqual';
+import { OperatorGreaterThanOrEqualSchema } from './condition/operator/OperatorGreaterThanOrEqual';
+import { OperatorInSchema } from './condition/operator/OperatorIn';
+import { OperatorLessThanSchema } from './condition/operator/OperatorLessThan';
+import { OperatorNotEqualSchema } from './condition/operator/OperatorNotEqual';
 import { Condition } from './condition/Condition';
-import { RuleTypeValidator } from './RuleType';
-import { TConditionBetween } from './condition/operators/ConditionBetween';
-import { TConditionEqual } from './condition/operators/ConditionEqual';
-import { TConditionGreaterThanOrEqual } from './condition/operators/ConditionGreaterThanOrEqual';
-import { TConditionIn } from './condition/operators/ConditionIn';
-import { TConditionLessThan } from './condition/operators/ConditionLessThan';
-import { TConditionNotEqual } from './condition/operators/ConditionNotEqual';
+import { RuleResult } from './RuleResult';
+import { RuleTypeSchema } from './RuleType';
 
 const debug = createDebug('Rule');
 
-const TAllConditionOperators = t.union([
-	TConditionBetween,
-	TConditionEqual,
-	TConditionGreaterThanOrEqual,
-	TConditionIn,
-	TConditionLessThan,
-	TConditionNotEqual
+const AllOperatorsSchema = z.union([
+	OperatorBetweenSchema,
+	OperatorEqualSchema,
+	OperatorGreaterThanOrEqualSchema,
+	OperatorInSchema,
+	OperatorLessThanSchema,
+	OperatorNotEqualSchema
 ]);
 
-export const TRule = t.type({
-	mimeType: t.string,
-	type: RuleTypeValidator,
-	conditions: t.array(TAllConditionOperators)
+export const RuleSchema = z.object({
+	mimeType: z.string(),
+	type: RuleTypeSchema,
+	conditions: z.array(AllOperatorsSchema)
 });
 
-export type RuleData = t.TypeOf<typeof TRule>;
+export type RuleSerialized = z.infer<typeof RuleSchema>;
 
 export class Rule {
-	_mimeType: string;
-	_conditions: Condition[];
+	public readonly mimeType: string;
+	protected conditions: Condition[];
 
 	constructor(mimeType: string, conditions: Condition[] = []) {
-		this._mimeType = mimeType;
-		this._conditions = conditions;
+		this.mimeType = mimeType;
+		this.conditions = conditions;
 	}
 
-	get mimeType(): string {
-		return this._mimeType;
-	}
-
-	checkRuleWithPathGetter(pathGetterFn: (string) => string): RuleResult|undefined {
+	checkRuleWithPathGetter(pathGetterFn: (path: string) => number|string): RuleResult|undefined {
 		// All conditions must be met
 		const conditionResults = [];
-		for (const condition of this._conditions) {
+		for (const condition of this.conditions) {
 			// Try to read value
 			let value;
 			try {

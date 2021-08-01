@@ -1,13 +1,9 @@
-import fs from 'fs';
 import path from 'path';
-import { promisify } from 'util';
 
 import cli from 'cli-ux';
 
-import { FilterFactory } from '../../filter';
 import BaseCommand from '../BaseCommand';
-
-const readFile = promisify(fs.readFile);
+import { readFilterFromSerialized } from '../glue/readFilterFromSerialized';
 
 export default class ValidateFilter extends BaseCommand {
 	static description = 'Validate filter'
@@ -31,19 +27,9 @@ export default class ValidateFilter extends BaseCommand {
 
 		const filterPath = args.filterPath as string;
 
-		cli.action.start(`Reading filter from ${filterPath}`);
-		let fileContent;
+		cli.action.start(`Validating rules from ${filterPath}`);
 		try {
-			fileContent = await readFile(args.filterPath, 'utf8');
-		}
-		catch (error) {
-			throw new Error(`Could not read filter at '${filterPath}': ${(error as Error).message}`);
-		}
-		cli.action.stop();
-
-		cli.action.start('Validating');
-		try {
-			FilterFactory.getFromSerialized(fileContent);
+			await readFilterFromSerialized(filterPath, false);
 		}
 		catch (error) {
 			this.error('Validation failed');

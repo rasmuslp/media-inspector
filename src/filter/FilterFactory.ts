@@ -1,33 +1,45 @@
-import * as t from 'io-ts';
+import fs from 'fs';
+import { promisify } from 'util';
+
 import JSON5 from 'json5';
+import { z } from 'zod';
 
-import { Rule, TRule } from './rule/Rule';
+import { Rule, RuleSchema } from './rule/Rule';
 import { RuleFactory } from './rule/RuleFactory';
-import { decodeTo } from '../lib/io-ts';
 
-export const TFilter = t.array(TRule);
-export type FilterData = t.TypeOf<typeof TFilter>;
+const readFile = promisify(fs.readFile);
+
+const FilterSchema = z.array(RuleSchema);
+export type FilterSerialized = z.infer<typeof FilterSchema>;
 
 export class FilterFactory {
-	static getFromSerialized(data: string): Rule[] {
-		const parsed = FilterFactory._parse(data);
-		const validatedRuleDatas = decodeTo(TFilter, parsed);
-		const rules: Rule[] = [];
-		for (const ruleData of validatedRuleDatas) {
-			const rule = RuleFactory.getFromSerialized(ruleData);
-			rules.push(rule);
+	static async read(serializedPath: string): Promise<string> {
+		try {
+			const fileContent = await readFile(serializedPath, 'utf8');
+			return fileContent;
 		}
-
-		return rules;
+		catch (error) {
+			throw new Error(`Could not read filter at '${serializedPath}': ${(error as Error).message}`);
+		}
 	}
 
-	static _parse(data: string): FilterData {
+	static async parse(serializedData: string): Promise<FilterSerialized> {
 		try {
-			const parsed = JSON5.parse<FilterData>(data);
+			const parsed = JSON5.parse<FilterSerialized>(serializedData);
 			return parsed;
 		}
 		catch (error) {
 			throw new Error(`Could not parse filter: ${(error as Error).message}`);
 		}
+	}
+
+	static getFromSerialized(serialized: FilterSerialized): Rule[] {
+		const rules: Rule[] = [];
+		for (const ruleSerialized of serialized) {
+			const rule = RuleFactory.getFromSerialized(ruleSerialized);
+			rules.push(rule);
+		}
+
+		return rules;
 	}
 }

@@ -1,18 +1,18 @@
 import { ConditionResult } from './condition/ConditionResult';
 
 export class RuleResult {
-	_conditionResults: ConditionResult[];
+	private readonly conditionResults: ConditionResult[];
 
 	constructor(conditionResults: ConditionResult[]) {
 		if (conditionResults.length === 0) {
 			throw new Error('ConditionResults are required, none were provided.');
 		}
-		this._conditionResults = conditionResults;
+		this.conditionResults = conditionResults;
 	}
 
 	get satisfied(): boolean {
 		// Check if _any_ condition was not satisfied failed
-		const anyNotSatisfied = this._conditionResults.find(result => !result.satisfied);
+		const anyNotSatisfied = this.conditionResults.find(result => !result.isSatisfied);
 		if (anyNotSatisfied) {
 			return false;
 		}
@@ -22,7 +22,7 @@ export class RuleResult {
 
 	getResultsAsStrings(): string[] {
 		const messages: string[] = [];
-		for (const result of this._conditionResults) {
+		for (const result of this.conditionResults) {
 			messages.push(result.toString());
 		}
 
@@ -31,8 +31,8 @@ export class RuleResult {
 
 	// Ratio of: # satisfied / # conditions
 	getScore(): number {
-		const satisfiedConditions = this._conditionResults.filter(result => result.satisfied);
-		const score = satisfiedConditions.length / this._conditionResults.length;
+		const satisfiedConditions = this.conditionResults.filter(result => result.isSatisfied);
+		const score = satisfiedConditions.length / this.conditionResults.length;
 
 		return score;
 	}
@@ -40,10 +40,10 @@ export class RuleResult {
 	// Weighted ratio of passes/results
 	getWeightedScore(): number {
 		let score = 0;
-		for (let i = 0; i < this._conditionResults.length; i++) {
-			const result = this._conditionResults[i];
-			if (result.satisfied) {
-				const weigth = this._conditionResults.length - i;
+		for (let i = 0; i < this.conditionResults.length; i++) {
+			const result = this.conditionResults[i];
+			if (result.isSatisfied) {
+				const weigth = this.conditionResults.length - i;
 				const partialScore = Math.pow(weigth, 2);
 				score += partialScore;
 			}

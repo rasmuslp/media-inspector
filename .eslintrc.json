@@ -3,11 +3,13 @@
 	"parserOptions": {
 		"project": "./tsconfig.eslint.json"
 	},
+	"plugins": ["deprecation"],
 	"extends": [
 		"@rasmuslp",
 		"plugin:jest/recommended"
 	],
 	"rules": {
+		"deprecation/deprecation": "warn",
 		"node/no-extraneous-import": ["error", {
 			"allowModules": ["cli-progress"]
 		}],

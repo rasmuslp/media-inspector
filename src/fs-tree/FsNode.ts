@@ -1,38 +1,32 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
-import { Serializable, TSerializable } from './Serializable';
+import { Serializable } from '../serializable/Serializable';
 
-export const TFsNodeStats = t.type({
-	size: t.number
+const FsNodeStatsSchema = z.object({
+	size: z.number()
 });
-export type FsNodeStats = t.TypeOf<typeof TFsNodeStats>;
+export type FsNodeStats = z.infer<typeof FsNodeStatsSchema>;
 
-export const TFsNodePartial = t.type({
-	path: t.string,
-	stats: TFsNodeStats
+export const FsNodeSchema = z.object({
+	path: z.string(),
+	stats: FsNodeStatsSchema
 });
+export type FsNodeSerialized = z.infer<typeof FsNodeSchema>;
 
-export const TFsNode = t.intersection([TSerializable, TFsNodePartial]);
-export type FsNodeData = t.TypeOf<typeof TFsNode>;
+export abstract class FsNode<T extends FsNodeSerialized = FsNodeSerialized> extends Serializable<T> {
+	public readonly path: string;
 
-export abstract class FsNode<T extends FsNodeData = FsNodeData> extends Serializable<T> {
+	protected readonly stats: FsNodeStats;
+
 	constructor(nodePath: string, stats: FsNodeStats) {
 		super();
-		this.data.path = nodePath;
-		this.data.stats = {
+		this.path = nodePath;
+		this.stats = {
 			size: stats?.size ?? 0
 		};
 	}
 
-	get path(): string {
-		return this.data.path;
-	}
-
 	get size(): number {
-		return this.data.stats.size;
+		return this.stats.size;
 	}
-
-	abstract isDirectory(): boolean;
-
-	abstract isFile(): boolean;
 }

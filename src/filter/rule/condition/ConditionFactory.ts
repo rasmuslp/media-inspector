@@ -1,71 +1,73 @@
 import crypto from 'crypto';
 
-import { ConditionOperator } from './ConditionOperator';
-
-import { Condition, ConditionData } from './Condition';
-import { ConditionBetween, TConditionBetween } from './operators/ConditionBetween';
-import { ConditionEqual, TConditionEqual } from './operators/ConditionEqual';
-import { ConditionGreaterThanOrEqual, TConditionGreaterThanOrEqual } from './operators/ConditionGreaterThanOrEqual';
-import { ConditionIn, TConditionIn } from './operators/ConditionIn';
-import { ConditionLessThan, TConditionLessThan } from './operators/ConditionLessThan';
-import { ConditionNotEqual, TConditionNotEqual } from './operators/ConditionNotEqual';
-
-import { decodeTo } from '../../../lib/io-ts';
+import { OperatorBetween, OperatorBetweenSchema } from './operator/OperatorBetween';
+import { OperatorEqual, OperatorEqualSchema } from './operator/OperatorEqual';
+import { OperatorGreaterThanOrEqual, OperatorGreaterThanOrEqualSchema } from './operator/OperatorGreaterThanOrEqual';
+import { OperatorIn, OperatorInSchema } from './operator/OperatorIn';
+import { OperatorLessThan, OperatorLessThanSchema } from './operator/OperatorLessThan';
+import { OperatorNotEqual, OperatorNotEqualSchema } from './operator/OperatorNotEqual';
+import { Condition, ConditionSerialised } from './Condition';
+import { OperatorType } from './OperatorType';
 
 export class ConditionFactory {
 	static _conditions = new Map<string, Condition>();
 
-	static getSharedInstanceFromSerialized(conditionData: ConditionData): Condition {
+	static getSharedInstanceFromSerialized(conditionData: ConditionSerialised): Condition {
 		// Calculate hash of input
 		const hash = crypto.createHash('md5').update(JSON.stringify(conditionData)).digest('hex');
 
 		// Check if already available
-		if (ConditionFactory._conditions.has(hash)) {
-			return ConditionFactory._conditions.get(hash);
+		let condition = ConditionFactory._conditions.get(hash);
+		if (!condition) {
+			// Otherwise create and store for future reuse
+			condition = ConditionFactory.getFromSerialized(conditionData);
+			ConditionFactory._conditions.set(hash, condition);
 		}
-
-		// Otherwise create and store for future reuse
-		const condition = ConditionFactory.getFromSerialized(conditionData);
-		ConditionFactory._conditions.set(hash, condition);
 
 		return condition;
 	}
 
-	static getFromSerialized(condition: ConditionData): Condition {
+	static getFromSerialized(serialized: ConditionSerialised): Condition {
 		// Create and return
-		switch (condition.operator) {
-			case ConditionOperator.BETWEEN: {
-				const data = decodeTo(TConditionBetween, condition);
-				return new ConditionBetween(data.path, data.value);
+		switch (serialized.operator) {
+			case OperatorType.BETWEEN: {
+				const parsed = OperatorBetweenSchema.parse(serialized);
+				const condition = new OperatorBetween(parsed.path, parsed.value);
+				return condition;
 			}
 
-			case ConditionOperator.EQUAL: {
-				const data = decodeTo(TConditionEqual, condition);
-				return new ConditionEqual(data.path, data.value);
+			case OperatorType.EQUAL: {
+				const parsed = OperatorEqualSchema.parse(serialized);
+				const condition = new OperatorEqual(parsed.path, parsed.value);
+				return condition;
 			}
 
-			case ConditionOperator.GREATER_THAN_OR_EQUAL: {
-				const data = decodeTo(TConditionGreaterThanOrEqual, condition);
-				return new ConditionGreaterThanOrEqual(data.path, data.value);
+			case OperatorType.GREATER_THAN_OR_EQUAL: {
+				const parsed = OperatorGreaterThanOrEqualSchema.parse(serialized);
+				const condition = new OperatorGreaterThanOrEqual(parsed.path, parsed.value);
+				return condition;
 			}
 
-			case ConditionOperator.IN: {
-				const data = decodeTo(TConditionIn, condition);
-				return new ConditionIn(data.path, data.value);
+			case OperatorType.IN: {
+				const parsed = OperatorInSchema.parse(serialized);
+				const condition = new OperatorIn(parsed.path, parsed.value);
+				return condition;
 			}
 
-			case ConditionOperator.LESS_THAN: {
-				const data = decodeTo(TConditionLessThan, condition);
-				return new ConditionLessThan(data.path, data.value);
+			case OperatorType.LESS_THAN: {
+				const parsed = OperatorLessThanSchema.parse(serialized);
+				const condition = new OperatorLessThan(parsed.path, parsed.value);
+				return condition;
 			}
 
-			case ConditionOperator.NOT_EQUAL: {
-				const data = decodeTo(TConditionNotEqual, condition);
-				return new ConditionNotEqual(data.path, data.value);
+			case OperatorType.NOT_EQUAL: {
+				const parsed = OperatorNotEqualSchema.parse(serialized);
+				const condition = new OperatorNotEqual(parsed.path, parsed.value);
+				return condition;
 			}
 
 			default:
-				throw new Error(`Unknown operator '${condition.operator as string}' in ${JSON.stringify(condition)}`);
+				throw new Error(`Unknown operator '${serialized.operator as string}' in ${JSON.stringify(serialized)}`);
 		}
 	}
 }

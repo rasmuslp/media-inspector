@@ -1,46 +1,20 @@
-import * as t from 'io-ts';
+import { z } from 'zod';
 
 import { ConditionResult } from './ConditionResult';
-import { ConditionOperatorValidator } from './ConditionOperator';
+import { OperatorTypeSchema } from './OperatorType';
 
-export const TCondition = t.type({
-	path: t.string,
-	operator: ConditionOperatorValidator
+export const ConditionSchema = z.object({
+	path: z.string(),
+	operator: OperatorTypeSchema,
+	value: z.any()
 });
-export type ConditionData = t.TypeOf<typeof TCondition>;
+export type ConditionSerialised = z.infer<typeof ConditionSchema>;
 
-export type ConditionConvertedValueType = number|string;
+export interface Condition<T = unknown> {
+	path: string;
+	value: T;
 
-export abstract class Condition<T = any> {
-	readonly path: string;
-	readonly value: T;
+	check(inputValue: number|string): ConditionResult;
 
-	constructor(path: string, value: T) {
-		this.path = path;
-		this.value = value;
-	}
-
-	get pathParts(): string[] {
-		return this.path.split('.');
-	}
-
-	abstract toString(): string
-
-	toStringForValue(inputValue: string): string {
-		return `${inputValue} ${this.toString()}`;
-	}
-
-	abstract check(inputValue: string): ConditionResult;
-
-	static convertValue(value: unknown): ConditionConvertedValueType {
-		if (!Number.isNaN(Number(value))) {
-			return Number(value);
-		}
-
-		if (typeof value === 'string') {
-			return value.toLocaleLowerCase();
-		}
-
-		return value.toString();
-	}
+	toStringForValue(inputValue: number|string): string;
 }

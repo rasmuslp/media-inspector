@@ -1,20 +1,20 @@
 import { ConditionFactory } from './condition/ConditionFactory';
 
 import { RuleResult } from './RuleResult';
-import { ConditionOperator } from './condition/ConditionOperator';
-import { ConditionData } from './condition/Condition';
+import { ConditionResult } from './condition/ConditionResult';
+import { OperatorType } from './condition/OperatorType';
 
 describe('#satisfied', () => {
-	let failed1;
-	let failed2;
-	let satisfied1;
-	let satisfied2;
+	let failed1: ConditionResult;
+	let failed2: ConditionResult;
+	let satisfied1: ConditionResult;
+	let satisfied2: ConditionResult;
 	beforeEach(() => {
 		const condition = ConditionFactory.getFromSerialized({
 			path: 'dummy',
-			operator: ConditionOperator.EQUAL,
+			operator: OperatorType.EQUAL,
 			value: 'yesyes'
-		} as ConditionData);
+		});
 		failed1 = condition.check('nono');
 		failed2 = condition.check('nono');
 		satisfied1 = condition.check('yesyes');
@@ -43,9 +43,9 @@ describe('#getResultsAsStrings', () => {
 	test('that string reports as satisfied for passed checks', () => {
 		const condition = ConditionFactory.getFromSerialized({
 			path: 'video.framerate',
-			operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
+			operator: OperatorType.GREATER_THAN_OR_EQUAL,
 			value: 25
-		} as ConditionData);
+		});
 		const result = condition.check('25');
 
 		const ruleResult = new RuleResult([result]);
@@ -59,9 +59,9 @@ describe('#getResultsAsStrings', () => {
 	test('that string reports as failed for failed checks', () => {
 		const condition = ConditionFactory.getFromSerialized({
 			path: 'audio.channels',
-			operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
+			operator: OperatorType.GREATER_THAN_OR_EQUAL,
 			value: 2
-		} as ConditionData);
+		});
 		const result = condition.check('1');
 
 		const ruleResult = new RuleResult([result]);
@@ -78,15 +78,15 @@ describe('#getWeightedScore', () => {
 		const conditions = [
 			ConditionFactory.getFromSerialized({
 				path: 'video.framerate',
-				operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
+				operator: OperatorType.GREATER_THAN_OR_EQUAL,
 				value: 25
-			} as ConditionData),
+			}),
 
 			ConditionFactory.getFromSerialized({
 				path: 'audio.channels',
-				operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
+				operator: OperatorType.GREATER_THAN_OR_EQUAL,
 				value: 2
-			} as ConditionData)
+			})
 		];
 
 		const results = [
@@ -103,15 +103,15 @@ describe('#getWeightedScore', () => {
 		const conditions = [
 			ConditionFactory.getFromSerialized({
 				path: 'video.framerate',
-				operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
+				operator: OperatorType.GREATER_THAN_OR_EQUAL,
 				value: 25
-			} as ConditionData),
+			}),
 
 			ConditionFactory.getFromSerialized({
 				path: 'audio.channels',
-				operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
+				operator: OperatorType.GREATER_THAN_OR_EQUAL,
 				value: 2
-			} as ConditionData)
+			})
 		];
 
 		const results = [

@@ -1,4 +1,6 @@
 import { OutputParser } from './OutputParser';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { getCleanFullSample, getMetadataInputSample1 } from '../../../../test-assets/ffmpeg-example-outputs';
 import { Progress } from './Progress';
 
