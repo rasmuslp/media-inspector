@@ -1,5 +1,4 @@
 import { ConditionSchema } from '../Condition';
-import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
 import { TNumber, NumberSchema } from '../ConditionValues';
 import { Operator } from './Operator';
 
@@ -8,12 +7,9 @@ export const OperatorLessThanSchema = ConditionSchema.extend({
 });
 
 export class OperatorLessThan extends Operator<TNumber> {
-	check(value: number): ConditionResult {
-		if (value < this.value) {
-			return new ConditionResult(this, value, ConditionSatisfied.YES);
-		}
-
-		return new ConditionResult(this, value, ConditionSatisfied.NO);
+	check(value: number): boolean {
+		const result = value < this.value;
+		return result;
 	}
 
 	toStringForValue(inputValue: number): string {

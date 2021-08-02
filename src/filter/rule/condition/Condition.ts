@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-import { ConditionResult } from './ConditionResult';
 import { OperatorTypeSchema } from './OperatorType';
 
 export const ConditionSchema = z.object({
@@ -14,7 +13,7 @@ export interface Condition<T = unknown> {
 	path: string;
 	value: T;
 
-	check(inputValue: number | string): ConditionResult;
+	check(inputValue: number | string): boolean;
 
 	toStringForValue(inputValue: number | string): string;
 }

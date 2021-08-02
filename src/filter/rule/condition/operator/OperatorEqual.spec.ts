@@ -10,17 +10,17 @@ describe('OperatorEqual', () => {
 		describe('.check returns ConditionResult', () => {
 			it('is not satisfied for 5', () => {
 				const result = operator.check('5');
-				expect(result.isSatisfied).toEqual(false);
+				expect(result).toEqual(false);
 			});
 
 			it('is not satisfied for \'7\'', () => {
 				const result = operator.check('7');
-				expect(result.isSatisfied).toEqual(false);
+				expect(result).toEqual(false);
 			});
 
 			it('is satisfied for 7', () => {
 				const result = operator.check(7);
-				expect(result.isSatisfied).toEqual(true);
+				expect(result).toEqual(true);
 			});
 		});
 
@@ -41,12 +41,12 @@ describe('OperatorEqual', () => {
 		describe('.check returns ConditionResult', () => {
 			it('is not satisfied for \'hello\'', () => {
 				const result = operator.check('hello');
-				expect(result.isSatisfied).toEqual(false);
+				expect(result).toEqual(false);
 			});
 
 			it('is satisfied for \'match me\'', () => {
 				const result = operator.check('match me');
-				expect(result.isSatisfied).toEqual(true);
+				expect(result).toEqual(true);
 			});
 		});
 

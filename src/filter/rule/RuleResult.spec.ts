@@ -1,8 +1,8 @@
-import { ConditionFactory } from './condition/ConditionFactory';
-
-import { RuleResult } from './RuleResult';
 import { ConditionResult } from './condition/ConditionResult';
-import { OperatorType } from './condition/OperatorType';
+import { OperatorEqual } from './condition/operator/OperatorEqual';
+import { OperatorGreaterThanOrEqual } from './condition/operator/OperatorGreaterThanOrEqual';
+import { ConditionChecker } from './condition/ConditionChecker';
+import { RuleResult } from './RuleResult';
 
 describe('#satisfied', () => {
 	let failed1: ConditionResult;
@@ -10,15 +10,11 @@ describe('#satisfied', () => {
 	let satisfied1: ConditionResult;
 	let satisfied2: ConditionResult;
 	beforeEach(() => {
-		const condition = ConditionFactory.getFromSerialized({
-			path: 'dummy',
-			operator: OperatorType.EQUAL,
-			value: 'yesyes'
-		});
-		failed1 = condition.check('nono');
-		failed2 = condition.check('nono');
-		satisfied1 = condition.check('yesyes');
-		satisfied2 = condition.check('yesyes');
+		const condition = new OperatorEqual('dummy', 'yesyes');
+		failed1 = ConditionChecker.getResultFor(condition, 'nono');
+		failed2 = ConditionChecker.getResultFor(condition, 'nono');
+		satisfied1 = ConditionChecker.getResultFor(condition, 'yesyes');
+		satisfied2 = ConditionChecker.getResultFor(condition, 'yesyes');
 	});
 
 	test('throws on empty input', () => {
@@ -41,12 +37,8 @@ describe('#satisfied', () => {
 
 describe('#getResultsAsStrings', () => {
 	test('that string reports as satisfied for passed checks', () => {
-		const condition = ConditionFactory.getFromSerialized({
-			path: 'video.framerate',
-			operator: OperatorType.GREATER_THAN_OR_EQUAL,
-			value: 25
-		});
-		const result = condition.check('25');
+		const condition = new OperatorGreaterThanOrEqual('video.framerate', 25);
+		const result = ConditionChecker.getResultFor(condition, '25');
 
 		const ruleResult = new RuleResult([result]);
 		const resultAsStrings = ruleResult.getResultsAsStrings();
@@ -57,12 +49,8 @@ describe('#getResultsAsStrings', () => {
 	});
 
 	test('that string reports as failed for failed checks', () => {
-		const condition = ConditionFactory.getFromSerialized({
-			path: 'audio.channels',
-			operator: OperatorType.GREATER_THAN_OR_EQUAL,
-			value: 2
-		});
-		const result = condition.check('1');
+		const condition = new OperatorGreaterThanOrEqual('audio.channels', 2);
+		const result = ConditionChecker.getResultFor(condition, '1');
 
 		const ruleResult = new RuleResult([result]);
 		const resultAsStrings = ruleResult.getResultsAsStrings();
@@ -76,22 +64,13 @@ describe('#getResultsAsStrings', () => {
 describe('#getWeightedScore', () => {
 	test('#1: Fail, #2: Pass --> 1', () => {
 		const conditions = [
-			ConditionFactory.getFromSerialized({
-				path: 'video.framerate',
-				operator: OperatorType.GREATER_THAN_OR_EQUAL,
-				value: 25
-			}),
-
-			ConditionFactory.getFromSerialized({
-				path: 'audio.channels',
-				operator: OperatorType.GREATER_THAN_OR_EQUAL,
-				value: 2
-			})
+			new OperatorGreaterThanOrEqual('video.framerate', 25),
+			new OperatorGreaterThanOrEqual('audio.channels', 2)
 		];
 
 		const results = [
-			conditions[0].check('23'),
-			conditions[1].check('2')
+			ConditionChecker.getResultFor(conditions[0], '23'),
+			ConditionChecker.getResultFor(conditions[1], '2')
 		];
 
 		const ruleResult = new RuleResult(results);
@@ -101,22 +80,13 @@ describe('#getWeightedScore', () => {
 
 	test('#1: Pass, #2: Fail --> 4', () => {
 		const conditions = [
-			ConditionFactory.getFromSerialized({
-				path: 'video.framerate',
-				operator: OperatorType.GREATER_THAN_OR_EQUAL,
-				value: 25
-			}),
-
-			ConditionFactory.getFromSerialized({
-				path: 'audio.channels',
-				operator: OperatorType.GREATER_THAN_OR_EQUAL,
-				value: 2
-			})
+			new OperatorGreaterThanOrEqual('video.framerate', 25),
+			new OperatorGreaterThanOrEqual('audio.channels', 2)
 		];
 
 		const results = [
-			conditions[0].check('25'),
-			conditions[1].check('1')
+			ConditionChecker.getResultFor(conditions[0], '25'),
+			ConditionChecker.getResultFor(conditions[1], '1')
 		];
 
 		const ruleResult = new RuleResult(results);

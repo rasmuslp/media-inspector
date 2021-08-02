@@ -10,17 +10,17 @@ describe('OperatorLessThan', () => {
 		describe('.check returns ConditionResult', () => {
 			it('is satisfied for 5', () => {
 				const result = operator.check(5);
-				expect(result.isSatisfied).toEqual(true);
+				expect(result).toEqual(true);
 			});
 
 			it('is not satisfied for 7', () => {
 				const result = operator.check(7);
-				expect(result.isSatisfied).toEqual(false);
+				expect(result).toEqual(false);
 			});
 
 			it('is not satisfied for 11', () => {
 				const result = operator.check(11);
-				expect(result.isSatisfied).toEqual(false);
+				expect(result).toEqual(false);
 			});
 		});
 

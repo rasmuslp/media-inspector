@@ -1,5 +1,4 @@
 import { Condition } from '../Condition';
-import { ConditionResult } from '../ConditionResult';
 
 export abstract class Operator<T = unknown> implements Condition {
 	readonly path: string;
@@ -11,7 +10,7 @@ export abstract class Operator<T = unknown> implements Condition {
 		this.value = value;
 	}
 
-	abstract check(inputValue: number | string): ConditionResult;
+	abstract check(inputValue: number | string): boolean;
 
 	abstract toStringForValue(inputValue: number | string): string;
 }

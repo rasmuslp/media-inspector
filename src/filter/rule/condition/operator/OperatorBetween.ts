@@ -1,5 +1,4 @@
 import { ConditionSchema } from '../Condition';
-import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
 import { TNumberRange, NumberRangeSchema } from '../ConditionValues';
 import { Operator } from './Operator';
 
@@ -8,13 +7,9 @@ export const OperatorBetweenSchema = ConditionSchema.extend({
 });
 
 export class OperatorBetween extends Operator<TNumberRange> {
-	check(value: number): ConditionResult {
-		// Check condition
-		if (this.value[0] <= value && value <= this.value[1]) {
-			return new ConditionResult(this, value, ConditionSatisfied.YES);
-		}
-
-		return new ConditionResult(this, value, ConditionSatisfied.NO);
+	check(value: number): boolean {
+		const result = this.value[0] <= value && value <= this.value[1];
+		return result;
 	}
 
 	toStringForValue(inputValue: number): string {

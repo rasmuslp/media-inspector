@@ -10,17 +10,17 @@ describe('OperatorIn', () => {
 		describe('.check returns ConditionResult', () => {
 			it('is satisfied for 5', () => {
 				const result = operator.check(5);
-				expect(result.isSatisfied).toEqual(true);
+				expect(result).toEqual(true);
 			});
 
 			it('is not satisfied for 7', () => {
 				const result = operator.check(7);
-				expect(result.isSatisfied).toEqual(false);
+				expect(result).toEqual(false);
 			});
 
 			it('is satisfied for \'hello there\'', () => {
 				const result = operator.check('hello there');
-				expect(result.isSatisfied).toEqual(true);
+				expect(result).toEqual(true);
 			});
 		});
 
