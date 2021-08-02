@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { Tree, TreeSerialized } from './Tree';
 import { Serializable } from '../serializable/Serializable';
 

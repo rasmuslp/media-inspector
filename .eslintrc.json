@@ -8,9 +8,6 @@
 		"plugin:jest/recommended"
 	],
 	"rules": {
-		"unicorn/no-static-only-class": "off",
-
-		// TODO: Fix these
-		"max-classes-per-file": "off"
+		"unicorn/no-static-only-class": "off"
 	}
 }
