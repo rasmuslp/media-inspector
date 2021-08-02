@@ -36,7 +36,7 @@ export default class Inspect extends BaseCommand {
 
 		read: flags.string({
 			char: 'r',
-			description: 'Path of a directory or a metadata cache file to read', // TODO: Must this be a directory?
+			description: 'Path of a directory or file, or a metadata cache file to read',
 			parse: input => path.resolve(process.cwd(), input),
 			required: true
 		}),
@@ -45,6 +45,8 @@ export default class Inspect extends BaseCommand {
 	};
 
 	static examples = [
+		'$ media-inspector inspect -r ~/Downloads -f ./examples/filter-default.json5',
+		'$ media-inspector inspect -r ~/Downloads/file.ext -f ./examples/filter-default.json5',
 		'$ media-inspector inspect -r downloads.json -f ./examples/filter-default.json5',
 		'$ media-inspector inspect -r downloads.json -f ./examples/filter-default.json5 -i -v'
 	];

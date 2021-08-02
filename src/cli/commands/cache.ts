@@ -13,7 +13,7 @@ export default class Cache extends BaseCommand {
 	static flags = {
 		read: flags.string({
 			char: 'r',
-			description: 'Path of a directory to read',
+			description: 'Path of a directory or file to read',
 			parse: input => path.resolve(process.cwd(), input),
 			required: true
 		}),
@@ -28,6 +28,7 @@ export default class Cache extends BaseCommand {
 
 	static examples = [
 		'$ media-inspector cache -r ~/Downloads -w downloads.json',
+		'$ media-inspector cache -r ~/Downloads/file.ext -w file.json',
 		'$ media-inspector cache -r /Users/username/Downloads -w ~/Desktop/downloads.json'
 	];
 
