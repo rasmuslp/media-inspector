@@ -23,8 +23,8 @@ describe('PathSorters', () => {
 
 	describe('childrenBeforeParents()', () => {
 		it('sorts children before parents', () => {
-			unsortedPaths.sort(PathSorters.childrenBeforeParents.bind(PathSorters));
-			expect(unsortedPaths).toEqual([
+			const sortedPaths = [...unsortedPaths].sort((a, b) => PathSorters.childrenBeforeParents(a, b));
+			expect(sortedPaths).toEqual([
 				'/a/path/aaa.bbb',
 				'/a/path/aFolder/someFile.ext',
 				'/a/path/aFolder/someFileOtherFile',
@@ -45,8 +45,8 @@ describe('PathSorters', () => {
 
 	describe('parentsBeforeChildren()', () => {
 		it('sorts parents before children', () => {
-			unsortedPaths.sort(PathSorters.parentsBeforeChildren.bind(PathSorters));
-			expect(unsortedPaths).toEqual([
+			const sortedPaths = [...unsortedPaths].sort((a, b) => PathSorters.parentsBeforeChildren(a, b));
+			expect(sortedPaths).toEqual([
 				'/',
 				'/a/',
 				'/a/path/',
