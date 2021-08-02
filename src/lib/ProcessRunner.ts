@@ -4,8 +4,8 @@ import { Readable } from 'stream';
 export class ProcessRunner {
 	public readonly process: execa.ExecaChildProcess;
 
-	constructor(file: string, arguments_?: string[]) {
-		this.process = execa(file, arguments_, {
+	constructor(file: string, args?: string[]) {
+		this.process = execa(file, args, {
 			all: true
 		});
 		this.process.stderr.setEncoding('utf8');

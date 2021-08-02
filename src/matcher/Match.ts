@@ -2,10 +2,11 @@ import { FsNode } from '../fs-tree';
 
 export type MatchReasonOptions = {
 	colorized: boolean
-}
+};
 
 export abstract class Match {
 	readonly message: string;
+
 	readonly fsNode: FsNode;
 
 	constructor(message: string, fsNode: FsNode) {
@@ -17,5 +18,5 @@ export abstract class Match {
 		return 0;
 	}
 
-	abstract getMatchReason(options: MatchReasonOptions): string
+	abstract getMatchReason(options: MatchReasonOptions): string;
 }

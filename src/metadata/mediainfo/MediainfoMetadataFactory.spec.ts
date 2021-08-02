@@ -6,8 +6,8 @@ import mediainfoOutput from '../../../test-assets/SampleVideo.mediainfo';
 describe('MediainfoMetadataFactory', () => {
 	const partialPath = 'test-assets/SampleVideo.mov';
 
-	test(`can _readFromFileSystem '${partialPath}'`, async () => {
-		const metadata = await MediainfoMetadataFactory._readFromFileSystem(partialPath);
+	test(`can readFromFileSystem '${partialPath}'`, async () => {
+		const metadata = await MediainfoMetadataFactory.readFromFileSystem(partialPath);
 		expect(metadata).toMatchObject(mediainfoOutput);
 	});
 

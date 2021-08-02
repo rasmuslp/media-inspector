@@ -3,12 +3,12 @@ import { Serializable } from '../serializable/Serializable';
 
 class TestNode extends Serializable<unknown> {
 	public readonly id: string;
+
 	constructor(id: string) {
 		super();
 		this.id = id;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	getDataForSerialization(): void {}
 }
 
@@ -26,7 +26,7 @@ class TestTree extends Tree<TestNode> {
 	}
 }
 
-function getTree(): {tree: TestTree, nodes: Record<string, TestNode>} {
+function getTree(): { tree: TestTree, nodes: Record<string, TestNode> } {
 	const nodes = {
 		// Root node
 		node0: new TestNode('node0'),
@@ -176,7 +176,7 @@ describe('Tree', () => {
 			});
 
 			it('finds all nodes matching \'match1\'', async () => {
-				const result = await tree.find((node) => Promise.resolve(/match1/.test(node.id)));
+				const result = await tree.find(node => Promise.resolve(/match1/.test(node.id)));
 				expect(result).toContain(nodes.node1x1);
 				expect(result).toContain(nodes.node2x1);
 				expect(result).toContain(nodes.node2x2);
@@ -184,7 +184,8 @@ describe('Tree', () => {
 			});
 
 			it('finds all nodes matching \'x1\' from node2x1', async () => {
-				const result = await tree.find((node) => Promise.resolve(/x1/.test(node.id)), nodes.node2x1);
+				// eslint-disable-next-line unicorn/no-array-method-this-argument
+				const result = await tree.find(node => Promise.resolve(/x1/.test(node.id)), nodes.node2x1);
 				expect(result).toContain(nodes.node2x1);
 				expect(result).toContain(nodes.node3x1);
 				expect(result.length).toBe(2);

@@ -11,7 +11,7 @@ import { verbose } from '../flags';
 const debug = createDebug('VideoErrors');
 
 export default class VideoErrors extends BaseCommand {
-	static description = 'Checks video files for errors by decoding them'
+	static description = 'Checks video files for errors by decoding them';
 
 	static args = [
 		{
@@ -20,7 +20,7 @@ export default class VideoErrors extends BaseCommand {
 			description: 'Path to video file or directory of video files',
 			parse: (input: string): string => path.resolve(process.cwd(), input)
 		}
-	]
+	];
 
 	static flags = {
 		ext: flags.build({
@@ -33,9 +33,7 @@ export default class VideoErrors extends BaseCommand {
 
 		parallel: flags.integer({
 			char: 'p',
-			default: () => {
-				return 1;
-			},
+			default: () => 1,
 			description: 'Number of parallel processes to utilise for decoding - default: 1',
 			required: true
 		}),
@@ -46,14 +44,14 @@ export default class VideoErrors extends BaseCommand {
 			description: 'Skip decode and demux only'
 		}),
 
-		verbose: verbose
-	}
+		verbose
+	};
 
 	static examples = [
 		'$ media-inspector video-errors ./path/to/video.ext',
 		'$ media-inspector video-errors ./path/to/directory-with-video-files',
 		'$ media-inspector video-errors ./path/to/directory-with-video-files --ext .ts,.mp4 --parallel 4'
-	]
+	];
 
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	async run() {

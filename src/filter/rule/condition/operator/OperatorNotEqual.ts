@@ -8,7 +8,7 @@ export const OperatorNotEqualSchema = ConditionSchema.extend({
 });
 
 export class OperatorNotEqual extends Operator<TNumberOrString> {
-	check(value: number|string): ConditionResult {
+	check(value: number | string): ConditionResult {
 		if (value !== this.value) {
 			return new ConditionResult(this, value, ConditionSatisfied.YES);
 		}
@@ -16,7 +16,7 @@ export class OperatorNotEqual extends Operator<TNumberOrString> {
 		return new ConditionResult(this, value, ConditionSatisfied.NO);
 	}
 
-	toStringForValue(inputValue: number|string): string {
+	toStringForValue(inputValue: number | string): string {
 		return `${inputValue} != ${this.value}`;
 	}
 }

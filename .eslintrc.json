@@ -3,18 +3,15 @@
 	"parserOptions": {
 		"project": "./tsconfig.eslint.json"
 	},
-	"plugins": ["deprecation"],
 	"extends": [
 		"@rasmuslp",
 		"plugin:jest/recommended"
 	],
 	"rules": {
-		"deprecation/deprecation": "warn",
-		"node/no-extraneous-import": ["error", {
-			"allowModules": ["cli-progress"]
-		}],
-		"node/shebang": "off",
-		"no-console": "off",
-		"no-return-await": "off" // So... Its nice to know if the function is async or not
+		"unicorn/no-static-only-class": "off",
+
+		// TODO: Fix these
+		"import/no-cycle": "off",
+		"max-classes-per-file": "off"
 	}
 }

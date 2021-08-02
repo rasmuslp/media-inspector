@@ -44,7 +44,7 @@ export class RuleResult {
 			const result = this.conditionResults[i];
 			if (result.isSatisfied) {
 				const weigth = this.conditionResults.length - i;
-				const partialScore = Math.pow(weigth, 2);
+				const partialScore = weigth ** 2;
 				score += partialScore;
 			}
 		}

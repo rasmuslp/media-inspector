@@ -3,7 +3,7 @@ export class PathSorters {
 		if (a.startsWith(b)) {
 			return -1;
 		}
-		else if (b.startsWith(a)) {
+		if (b.startsWith(a)) {
 			return 1;
 		}
 

@@ -11,6 +11,7 @@ export class FFmpegVideoErrorDetector {
 	private readonly path: string;
 
 	private ffmpegProcess: ProcessRunner;
+
 	private readonly outputParser = new OutputParser();
 
 	private readonly listeners: Listener[] = [];
@@ -24,24 +25,24 @@ export class FFmpegVideoErrorDetector {
 	// Throws or returns summary
 	start(demuxOnly = false): Promise<ErrorSummary> {
 		if (!this.ffmpegProcess) {
-			const arguments_ = ['-v', 'info'];
-			arguments_.push('-i', this.path);
+			/* eslint-disable unicorn/no-array-push-push */
+			const args = ['-v', 'info'];
+			args.push('-i', this.path);
 			if (demuxOnly) {
-				arguments_.push('-c', 'copy');
+				args.push('-c', 'copy');
 			}
-			arguments_.push('-f', 'null');
-			arguments_.push('-');
+			args.push('-f', 'null');
+			args.push('-');
+			/* eslint-enable unicorn/no-array-push-push */
 
-			this.ffmpegProcess = new ProcessRunner('ffmpeg', arguments_);
+			this.ffmpegProcess = new ProcessRunner('ffmpeg', args);
 
 			this.ffmpegProcess.output.pipe(lineStream()).on('data', (line: string) => {
 				this.handleLine(line);
 			});
 		}
 
-		return this.ffmpegProcess.process.then(() => {
-			return this.outputParser.getErrorSummary();
-		});
+		return this.ffmpegProcess.process.then(() => this.outputParser.getErrorSummary());
 	}
 
 	private handleLine(line: string): void {

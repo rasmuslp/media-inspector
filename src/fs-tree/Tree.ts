@@ -11,7 +11,9 @@ export abstract class Tree<T, U = TreeSerialized> extends Serializable<U> {
 	private readonly keyMapper: (T) => string;
 
 	protected readonly rootNode: T;
+
 	protected readonly nodes = new Map<string, T>();
+
 	protected readonly relations = new Map<string, string[]>();
 
 	constructor(keyMapper: (T) => string, rootNode: T) {

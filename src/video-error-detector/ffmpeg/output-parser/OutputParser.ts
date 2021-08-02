@@ -18,9 +18,13 @@ enum LineType {
 
 export class OutputParser {
 	private readonly corruptDecodedFrameLineParser = new CorruptDecodedFrameLineParser();
+
 	private readonly lastMessageRepeatedLineParser = new LastMessageRepeatedLineParser();
+
 	private readonly metadataParser = new MetadataLineParser();
+
 	private readonly progressLineParser = new ProgressLineParser();
+
 	private readonly streamLineParser = new StreamLineParser();
 
 	private totalDurationMs: number;
@@ -64,13 +68,13 @@ export class OutputParser {
 
 			case LineType.STREAM: {
 				this.streamLineParser.parse(line);
-				this.errorSummary.streams++;
+				this.errorSummary.streams += 1;
 				break;
 			}
 
 			case LineType.CORRUPT_DECODED_FRAME: {
 				this.corruptDecodedFrameLineParser.parse(line);
-				this.errorSummary.corruptDecodedFrames++;
+				this.errorSummary.corruptDecodedFrames += 1;
 				break;
 			}
 

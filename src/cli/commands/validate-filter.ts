@@ -6,7 +6,7 @@ import BaseCommand from '../BaseCommand';
 import { readFilterFromSerialized } from '../helpers/readFilterFromSerialized';
 
 export default class ValidateFilter extends BaseCommand {
-	static description = 'Validate filter'
+	static description = 'Validate filter';
 
 	static args = [
 		{
@@ -15,11 +15,11 @@ export default class ValidateFilter extends BaseCommand {
 			description: 'Path to filter in JSON or JSON5',
 			parse: (input: string): string => path.resolve(process.cwd(), input)
 		}
-	]
+	];
 
 	static examples = [
 		'$ media-inspector validate-filter ./examples/filter-default.json5'
-	]
+	];
 
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	async run() {

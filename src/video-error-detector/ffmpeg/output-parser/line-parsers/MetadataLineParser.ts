@@ -5,7 +5,7 @@ enum MetadataType {
 	FFMPEG = 'FFMPEG',
 	INPUT = 'INPUT',
 	OUTPUT = 'OUTPUT',
-	OTHER = 'OTHER',
+	OTHER = 'OTHER'
 }
 
 const whitespaceFromStartMatcher = /^\s+/;

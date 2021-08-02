@@ -52,7 +52,7 @@ package filter {
 	}
 
 	class ConditionFactory {
-		+ {static} _conditions: Map<string, Condition>();
+		+ {static} conditions: Map<string, Condition>();
 		+ {static} getSharedInstanceFromSerialized(conditionData: ConditionSerialised): Condition
 		+ {static} getFromSerialized(serialized: ConditionSerialised): Condition
 	}

@@ -23,7 +23,7 @@ function lineStreamTester(expectedLines: string[], done: DoneCallback): Transfor
 
 describe('line-stream', () => {
 	describe('handles \\n', () => {
-		it('should handle newline over multiple writes (1)', (done) => {
+		it('should handle newline over multiple writes (1)', done => {
 			const stream = lineStreamTester([
 				'12',
 				'34'
@@ -35,7 +35,7 @@ describe('line-stream', () => {
 			stream.end();
 		});
 
-		it('should handle newline over multiple writes (2)', (done) => {
+		it('should handle newline over multiple writes (2)', done => {
 			const stream = lineStreamTester([
 				'12',
 				'34'
@@ -47,7 +47,7 @@ describe('line-stream', () => {
 			stream.end();
 		});
 
-		it('should handle newline on end', (done) => {
+		it('should handle newline on end', done => {
 			const stream = lineStreamTester([
 				'12',
 				'34'
@@ -58,7 +58,7 @@ describe('line-stream', () => {
 	});
 
 	describe('handles \\r', () => {
-		it('should handle caret return over multiple writes (1)', (done) => {
+		it('should handle caret return over multiple writes (1)', done => {
 			const stream = lineStreamTester([
 				'12',
 				'34'
@@ -70,7 +70,7 @@ describe('line-stream', () => {
 			stream.end();
 		});
 
-		it('should handle caret return over multiple writes (2)', (done) => {
+		it('should handle caret return over multiple writes (2)', done => {
 			const stream = lineStreamTester([
 				'12',
 				'34'
@@ -82,7 +82,7 @@ describe('line-stream', () => {
 			stream.end();
 		});
 
-		it('should handle caret return on end', (done) => {
+		it('should handle caret return on end', done => {
 			const stream = lineStreamTester([
 				'12',
 				'34'
@@ -93,7 +93,7 @@ describe('line-stream', () => {
 	});
 
 	describe('handles \\r\\n', () => {
-		it('should handle caret return and newline over multiple writes (1)', (done) => {
+		it('should handle caret return and newline over multiple writes (1)', done => {
 			const stream = lineStreamTester([
 				'12',
 				'34'
@@ -105,7 +105,7 @@ describe('line-stream', () => {
 			stream.end();
 		});
 
-		it('should handle caret return and newline over multiple writes (2)', (done) => {
+		it('should handle caret return and newline over multiple writes (2)', done => {
 			const stream = lineStreamTester([
 				'12',
 				'34'
@@ -117,7 +117,7 @@ describe('line-stream', () => {
 			stream.end();
 		});
 
-		it('should handle caret return and newline over multiple writes (3)', (done) => {
+		it('should handle caret return and newline over multiple writes (3)', done => {
 			const stream = lineStreamTester([
 				'12',
 				'',
@@ -130,7 +130,7 @@ describe('line-stream', () => {
 			stream.end();
 		});
 
-		it('should handle caret return and newline on end', (done) => {
+		it('should handle caret return and newline on end', done => {
 			const stream = lineStreamTester([
 				'12',
 				'34'

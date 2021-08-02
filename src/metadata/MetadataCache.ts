@@ -13,6 +13,7 @@ type MetadataCacheSerialized = z.infer<typeof MetadataCacheSchema>;
 
 export class MetadataCache extends Serializable<MetadataCacheSerialized> {
 	public readonly tree: FsTree;
+
 	private readonly metadata: Map<string, MediainfoMetadata>;
 
 	constructor(tree: FsTree, metadata: Map<string, MediainfoMetadata>) {
@@ -23,9 +24,9 @@ export class MetadataCache extends Serializable<MetadataCacheSerialized> {
 
 	getDataForSerialization(): MetadataCacheSerialized {
 		const serializedMetadata: MetadataCacheSerialized = {};
-		this.metadata.forEach((metadata, path) => {
+		for (const [path, metadata] of this.metadata.entries()) {
 			serializedMetadata[path] = metadata.serialize();
-		});
+		}
 
 		return {
 			tree: this.tree.serialize(),
@@ -33,7 +34,7 @@ export class MetadataCache extends Serializable<MetadataCacheSerialized> {
 		};
 	}
 
-	getMetadata(path: string): Metadata|undefined {
+	getMetadata(path: string): Metadata | undefined {
 		return this.metadata.get(path);
 	}
 }

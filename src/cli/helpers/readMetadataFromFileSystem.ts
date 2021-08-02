@@ -12,7 +12,7 @@ const debug = createDebug('readMetadataFromFileSystem');
 export async function readMetadataFromFileSystem(path: string, verbose: boolean): Promise<MetadataCache> {
 	const { fsTree, videoFiles } = await readTreeAndVideos(path, verbose);
 
-	let metadataProgressBar: SingleBar|undefined;
+	let metadataProgressBar: SingleBar | undefined;
 	if (verbose) {
 		metadataProgressBar = new SingleBar({
 			noTTYOutput: Boolean(process.env.TERM === 'dumb' || !process.stdin.isTTY),

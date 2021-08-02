@@ -5,7 +5,7 @@ export interface ParsedLastMessageRepeatedLine {
 }
 
 export class LastMessageRepeatedLineParser implements LineParser<ParsedLastMessageRepeatedLine> {
-	static lineMatcher = /Last message repeated (?<count>\d+) time/
+	static lineMatcher = /Last message repeated (?<count>\d+) time/;
 
 	canParse(line: string): boolean {
 		return LastMessageRepeatedLineParser.lineMatcher.test(line);
@@ -14,7 +14,7 @@ export class LastMessageRepeatedLineParser implements LineParser<ParsedLastMessa
 	parse(line: string): ParsedLastMessageRepeatedLine {
 		const result = LastMessageRepeatedLineParser.lineMatcher.exec(line);
 		return {
-			count: Number.parseInt(result?.groups.count)
+			count: Number.parseInt(result?.groups.count, 10)
 		};
 	}
 }

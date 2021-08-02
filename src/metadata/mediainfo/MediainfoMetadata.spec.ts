@@ -9,6 +9,7 @@ describe('MediainfoMetadata', () => {
 
 	it('.getTrack() returns the first matching track', () => {
 		const result = mediainfoMetadata.getTrack('video');
+		// eslint-disable-next-line no-underscore-dangle
 		expect(result._type).toEqual('Video');
 	});
 
@@ -24,7 +25,7 @@ describe('MediainfoMetadata', () => {
 
 	it('.get() returns bitrate of video', () => {
 		const result = mediainfoMetadata.get('video.bitrate');
-		expect(result).toBe(23855);
+		expect(result).toBe(23_855);
 	});
 
 	it('.getDataForSerialization() returns MediainfoMetadataSerialized', () => {

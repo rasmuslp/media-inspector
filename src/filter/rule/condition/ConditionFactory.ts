@@ -10,18 +10,18 @@ import { Condition, ConditionSerialised } from './Condition';
 import { OperatorType } from './OperatorType';
 
 export class ConditionFactory {
-	static _conditions = new Map<string, Condition>();
+	private static conditions = new Map<string, Condition>();
 
 	static getSharedInstanceFromSerialized(conditionData: ConditionSerialised): Condition {
 		// Calculate hash of input
 		const hash = crypto.createHash('md5').update(JSON.stringify(conditionData)).digest('hex');
 
 		// Check if already available
-		let condition = ConditionFactory._conditions.get(hash);
+		let condition = ConditionFactory.conditions.get(hash);
 		if (!condition) {
 			// Otherwise create and store for future reuse
 			condition = ConditionFactory.getFromSerialized(conditionData);
-			ConditionFactory._conditions.set(hash, condition);
+			ConditionFactory.conditions.set(hash, condition);
 		}
 
 		return condition;

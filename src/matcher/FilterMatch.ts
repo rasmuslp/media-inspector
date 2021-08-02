@@ -5,12 +5,12 @@ import { RuleResult } from '../filter/rule/RuleResult';
 import { FsNode } from '../fs-tree';
 
 export class FilterMatch extends Match {
-	_ruleResults: RuleResult[];
+	private ruleResults: RuleResult[];
 
 	constructor(message: string, fsNode: FsNode, ruleResults: RuleResult[] = []) {
 		super(message, fsNode);
 
-		this._ruleResults = ruleResults;
+		this.ruleResults = ruleResults;
 	}
 
 	get score(): number {
@@ -20,7 +20,7 @@ export class FilterMatch extends Match {
 	getResultsAsStrings({ colorized = false } = {}): string[] {
 		// Filter to remove any 'passed' entries, as they are stored as null
 		const ruleMessages: string[] = [];
-		const ruleResultsSorted = [...this._ruleResults].sort((a, b) => a.getWeightedScore() - b.getWeightedScore()).reverse();
+		const ruleResultsSorted = [...this.ruleResults].sort((a, b) => a.getWeightedScore() - b.getWeightedScore()).reverse();
 		for (const ruleResult of ruleResultsSorted) {
 			let ruleMessage = `${ruleResult.satisfied ? 'MATCHED' : 'failed'}: ${ruleResult.getResultsAsStrings().join(', ')}`;
 			if (colorized) {
@@ -37,6 +37,6 @@ export class FilterMatch extends Match {
 
 	getMatchReason(options: MatchReasonOptions): string {
 		const colorized = options.colorized ?? false;
-		return `[Filter Matched]:\n${this.getResultsAsStrings({ colorized }).map(message => '\t\t' + message).join('\n')}`;
+		return `[Filter Matched]:\n${this.getResultsAsStrings({ colorized }).map(message => `\t\t${message}`).join('\n')}`;
 	}
 }

@@ -33,7 +33,7 @@ export class MediainfoMetadata extends Serializable<MediainfoMetadataSerialized>
 		this.metadata = metadata;
 	}
 
-	get(path: string): number|string {
+	get(path: string): number | string {
 		const [trackType, propertyName] = path.split('.');
 		const property = this.getProperty(trackType, propertyName);
 		const convertedPropertyValue = stringToStringOrNumber(property);
@@ -65,6 +65,7 @@ export class MediainfoMetadata extends Serializable<MediainfoMetadataSerialized>
 
 	getTrack(trackType: string): MediainfoTrack {
 		for (const track of this.metadata.media.track) {
+			// eslint-disable-next-line no-underscore-dangle
 			if (trackType.toLocaleLowerCase() === track._type.toLocaleLowerCase()) {
 				return track;
 			}

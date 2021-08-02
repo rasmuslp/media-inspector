@@ -18,7 +18,7 @@ import BaseCommand from '../BaseCommand';
 import { verbose } from '../flags';
 
 export default class Inspect extends BaseCommand {
-	static description = 'Inspect input with filter'
+	static description = 'Inspect input with filter';
 
 	static flags = {
 		filter: flags.string({
@@ -41,13 +41,13 @@ export default class Inspect extends BaseCommand {
 			required: true
 		}),
 
-		verbose: verbose
-	}
+		verbose
+	};
 
 	static examples = [
 		'$ media-inspector inspect -r downloads.json -f ./examples/filter-default.json5',
 		'$ media-inspector inspect -r downloads.json -f ./examples/filter-default.json5 -i -v'
-	]
+	];
 
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	async run() {
@@ -132,7 +132,7 @@ export default class Inspect extends BaseCommand {
 			const size = await metadataCache.tree.getSize();
 			this.log('Total Size:\t', size);
 
-			const reduction = spaceFreeable / size * 100;
+			const reduction = (spaceFreeable / size) * 100;
 			this.log(`Reduction: ${reduction.toFixed(2)}%`);
 		}
 	}
@@ -169,5 +169,5 @@ function getLogMessageOfMatch(match: Match, { colorized = false } = {}): string 
 			message += `${match.message ? match.message : 'Error'}: ${JSON.stringify(match)}`;
 	}
 
-	return message + '\n';
+	return `${message}\n`;
 }

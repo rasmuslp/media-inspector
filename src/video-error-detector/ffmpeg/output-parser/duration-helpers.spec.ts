@@ -4,24 +4,24 @@ describe('duration-helpers', () => {
 	describe('stringToDuration', () => {
 		it('correctly converts \'00:02:54.31\'', () => {
 			const result = stringToDuration('00:02:54.31');
-			expect(result.toMillis()).toEqual(174310);
+			expect(result.toMillis()).toEqual(174_310);
 		});
 
 		it('correctly converts \'00:29:00.08\'', () => {
 			const result = stringToDuration('00:29:00.08');
-			expect(result.toMillis()).toEqual(1740080);
+			expect(result.toMillis()).toEqual(1_740_080);
 		});
 	});
 
 	describe('stringToDurationInMillis', () => {
 		it('correctly converts \'00:02:54.31\'', () => {
 			const result = stringToDurationInMillis('00:02:54.31');
-			expect(result).toEqual(174310);
+			expect(result).toEqual(174_310);
 		});
 
 		it('correctly converts \'00:29:00.08\'', () => {
 			const result = stringToDurationInMillis('00:29:00.08');
-			expect(result).toEqual(1740080);
+			expect(result).toEqual(1_740_080);
 		});
 	});
 
@@ -42,7 +42,7 @@ describe('duration-helpers', () => {
 		});
 
 		it('returns 67.9', () => {
-			const result = getPercentageCompleted(678999, 1000000);
+			const result = getPercentageCompleted(678_999, 1_000_000);
 			expect(result).toEqual(67.9);
 		});
 

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-console,@typescript-eslint/no-var-requires */
 const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
@@ -16,7 +16,7 @@ async function run() {
 
 	if (!searchPattern.test(content)) {
 		console.log(`Search pattern (${searchPattern.toString()}) not found!`);
-		// eslint-disable-next-line no-process-exit,unicorn/no-process-exit
+		// eslint-disable-next-line unicorn/no-process-exit
 		process.exit(-1);
 	}
 

@@ -32,6 +32,7 @@ export type RuleSerialized = z.infer<typeof RuleSchema>;
 
 export class Rule {
 	public readonly mimeType: string;
+
 	protected conditions: Condition[];
 
 	constructor(mimeType: string, conditions: Condition[] = []) {
@@ -39,7 +40,7 @@ export class Rule {
 		this.conditions = conditions;
 	}
 
-	checkRuleWithPathGetter(pathGetterFn: (path: string) => number|string): RuleResult|undefined {
+	checkRuleWithPathGetter(pathGetterFn: (path: string) => number | string): RuleResult | undefined {
 		// All conditions must be met
 		const conditionResults = [];
 		for (const condition of this.conditions) {
@@ -63,5 +64,7 @@ export class Rule {
 		if (conditionResults.length > 0) {
 			return new RuleResult(conditionResults);
 		}
+
+		return undefined;
 	}
 }

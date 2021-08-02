@@ -10,7 +10,7 @@ class TestFsTreeFactory extends FsTreeFactory {
 		return super.getFsNodesFromFileSystem(nodePath);
 	}
 
-	static async getFsNodeFromFileSystem(nodePath: string): Promise<[File|Directory, string[]]> {
+	static async getFsNodeFromFileSystem(nodePath: string): Promise<[File | Directory, string[]]> {
 		return super.getFsNodeFromFileSystem(nodePath);
 	}
 

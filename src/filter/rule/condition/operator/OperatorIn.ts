@@ -9,7 +9,7 @@ export const OperatorInSchema = ConditionSchema.extend({
 });
 
 export class OperatorIn extends Operator<TNumberOrStringArray> {
-	check(value: number|string): ConditionResult {
+	check(value: number | string): ConditionResult {
 		const match = !!this.value.some(expected => stringToStringOrNumber(expected as string) === value);
 		if (match) {
 			return new ConditionResult(this, value, ConditionSatisfied.YES);
@@ -18,7 +18,7 @@ export class OperatorIn extends Operator<TNumberOrStringArray> {
 		return new ConditionResult(this, value, ConditionSatisfied.NO);
 	}
 
-	toStringForValue(inputValue: number|string): string {
+	toStringForValue(inputValue: number | string): string {
 		return `'${inputValue}' in [${this.value.join(', ')}]`;
 	}
 }

@@ -1,7 +1,7 @@
 import { TestFsNode } from './FsNode.spec';
 import { FsTree } from './FsTree';
 
-function getFsTree(): {tree: FsTree, nodes: Record<string, TestFsNode>} {
+function getFsTree(): { tree: FsTree, nodes: Record<string, TestFsNode> } {
 	const nodes = {
 		node0: new TestFsNode('/', {
 			size: 10

@@ -38,7 +38,7 @@ export class FsTreeFactory {
 		return fsNodes;
 	}
 
-	protected static async getFsNodeFromFileSystem(nodePath: string): Promise<[File|Directory, string[]]> {
+	protected static async getFsNodeFromFileSystem(nodePath: string): Promise<[File | Directory, string[]]> {
 		const stats = await statAsync(nodePath);
 
 		if (stats.isDirectory()) {
@@ -79,7 +79,7 @@ export class FsTreeFactory {
 		return nodes;
 	}
 
-	protected static getFsNodeFromSerialized(serialized: SerializableSerialized): File|Directory {
+	protected static getFsNodeFromSerialized(serialized: SerializableSerialized): File | Directory {
 		if (serialized.type === 'Directory') {
 			const parsed = DirectorySchema.parse(serialized.data);
 			const directory = new Directory(parsed.path, parsed.stats);

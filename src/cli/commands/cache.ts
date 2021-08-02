@@ -8,7 +8,7 @@ import { readMetadataFromFileSystem } from '../helpers/readMetadataFromFileSyste
 import { SerializableIO } from '../../serializable/SerializableIO';
 
 export default class Cache extends BaseCommand {
-	static description = 'Cache metadata for a directory structure as JSON'
+	static description = 'Cache metadata for a directory structure as JSON';
 
 	static flags = {
 		read: flags.string({
@@ -24,12 +24,12 @@ export default class Cache extends BaseCommand {
 			parse: input => path.resolve(process.cwd(), input),
 			required: true
 		})
-	}
+	};
 
 	static examples = [
 		'$ media-inspector cache -r ~/Downloads -w downloads.json',
 		'$ media-inspector cache -r /Users/username/Downloads -w ~/Desktop/downloads.json'
-	]
+	];
 
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	async run() {

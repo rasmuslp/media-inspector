@@ -27,7 +27,7 @@ describe('FilterFactory', () => {
 		});
 
 		it(`can #read('${filterPath}')`, async () => {
-			expect(async () => await FilterFactory.read(filterPath)).not.toThrow();
+			expect(async () => FilterFactory.read(filterPath)).not.toThrow();
 		});
 
 		it('can #parse()', async () => {

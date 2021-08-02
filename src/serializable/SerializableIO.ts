@@ -20,12 +20,12 @@ export class SerializableIO {
 		};
 		const json = JSON.stringify(serialized, undefined, 4);
 
-		return await writeFile(writePath, json, 'utf8');
+		return writeFile(writePath, json, 'utf8');
 	}
 
 	static async read(serializedPath: string): Promise<SerializableSerialized> {
 		const fileContent = await readFile(serializedPath, 'utf8');
-		const fileParsed = JSON.parse(fileContent) as {data: unknown};
+		const fileParsed = JSON.parse(fileContent) as { data: unknown };
 		const parsed = SerializableSchema.parse(fileParsed.data);
 		return parsed;
 	}
