@@ -12,42 +12,42 @@ package filter {
 	interface Condition<T> {
 		+ path: string
 		+ value: T
-		+ check(inputValue: number|string): ConditionResult
+		+ check(inputValue: number|string): boolean
 		+ toStringForValue(inputValue: number|string): string
 	}
 
 	abstract class Operator<T> implements Condition {
-		+ {abstract} check(inputValue: number|string): ConditionResult
+		+ {abstract} check(inputValue: number|string): boolean
 		+ {abstract} toStringForValue(inputValue: number|string): string
 	}
 
 	class OperatorBetween extends Operator {
-		+ check(inputValue: number): ConditionResult
+		+ check(inputValue: number): boolean
 		+ toStringForValue(inputValue: number): string
 	}
 
 	class OperatorGreaterThanOrEqual extends Operator {
-		+ check(inputValue: number): ConditionResult
+		+ check(inputValue: number): boolean
 		+ toStringForValue(inputValue: number): string
 	}
 
 	class OperatorLessThan extends Operator {
-		+ check(inputValue: number): ConditionResult
+		+ check(inputValue: number): boolean
 		+ toStringForValue(inputValue: number): string
 	}
 
 	class OperatorEqual extends Operator {
-		+ check(inputValue: number|string): ConditionResult
+		+ check(inputValue: number|string): boolean
 		+ toStringForValue(inputValue: number|string): string
 	}
 
 	class OperatorNotEqual extends Operator {
-		+ check(inputValue: number|string): ConditionResult
+		+ check(inputValue: number|string): boolean
 		+ toStringForValue(inputValue: number|string): string
 	}
 
 	class OperatorIn extends Operator {
-		+ check(inputValue: number|string): ConditionResult
+		+ check(inputValue: number|string): boolean
 		+ toStringForValue(inputValue: number|string): string
 	}
 
@@ -81,6 +81,13 @@ package filter {
 		+ isSatisfied: boolean;
 		+ toString(): string
 	}
+
+	class ConditionChecker {
+		+ {static} getResultFor(condition: Condition, value: number | string): ConditionResult
+	}
+
+	ConditionChecker --> Condition
+	ConditionChecker --> ConditionResult
 
 	class Rule {
 		+ readonly mimeType: string;
