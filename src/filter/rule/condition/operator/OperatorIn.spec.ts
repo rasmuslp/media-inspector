@@ -27,8 +27,7 @@ describe('OperatorIn', () => {
 		describe('.toStringForValue returns input value applied to operator stringified', () => {
 			it('handles \'hello there\'', () => {
 				const result = operator.toStringForValue('hello there');
-				// TODO: Unquote number?, quote string in the array?
-				expect(result).toEqual('\'hello there\' in [10, hello there, 5]');
+				expect(result).toEqual("'hello there' in [10, 'hello there', 5]");
 			});
 		});
 	});

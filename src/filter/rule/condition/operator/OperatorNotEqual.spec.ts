@@ -53,8 +53,7 @@ describe('OperatorNotEqual', () => {
 		describe('.toStringForValue returns input value applied to operator stringified', () => {
 			it('handles \'match me\'', () => {
 				const result = operator.toStringForValue('match me');
-				// TODO: Quote strings
-				expect(result).toEqual('match me != match me');
+				expect(result).toEqual("'match me' != 'match me'");
 			});
 		});
 	});

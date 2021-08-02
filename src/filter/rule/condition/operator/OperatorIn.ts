@@ -1,3 +1,4 @@
+import { quoteIfNotNumber } from '../../../../utils/quoteIfNotNumber';
 import { stringToStringOrNumber } from '../../../../utils/stringToStringOrNumber';
 import { ConditionSchema } from '../Condition';
 import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
@@ -19,6 +20,6 @@ export class OperatorIn extends Operator<TNumberOrStringArray> {
 	}
 
 	toStringForValue(inputValue: number | string): string {
-		return `'${inputValue}' in [${this.value.join(', ')}]`;
+		return `${quoteIfNotNumber(inputValue)} in [${this.value.map(i => quoteIfNotNumber(i)).join(', ')}]`;
 	}
 }

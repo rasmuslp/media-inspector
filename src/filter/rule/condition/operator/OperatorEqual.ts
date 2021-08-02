@@ -1,3 +1,4 @@
+import { quoteIfNotNumber } from '../../../../utils/quoteIfNotNumber';
 import { ConditionSchema } from '../Condition';
 import { ConditionResult, ConditionSatisfied } from '../ConditionResult';
 import { TNumberOrString, NumberOrStringSchema } from '../ConditionValues';
@@ -17,6 +18,6 @@ export class OperatorEqual extends Operator<TNumberOrString> {
 	}
 
 	toStringForValue(inputValue: number | string): string {
-		return `${inputValue} = ${this.value}`;
+		return `${quoteIfNotNumber(inputValue)} = ${quoteIfNotNumber(this.value)}`;
 	}
 }
