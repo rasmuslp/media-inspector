@@ -37,7 +37,7 @@ $ npm install -g media-inspector
 $ media-inspector COMMAND
 running command...
 $ media-inspector (-v|--version|version)
-media-inspector/0.4.2 darwin-x64 node-v14.14.0
+media-inspector/0.4.2 darwin-x64 node-v14.17.3
 $ media-inspector --help [COMMAND]
 USAGE
   $ media-inspector COMMAND
@@ -52,6 +52,7 @@ USAGE
 * [`media-inspector help [COMMAND]`](#media-inspector-help-command)
 * [`media-inspector inspect`](#media-inspector-inspect)
 * [`media-inspector validate-filter FILTERPATH`](#media-inspector-validate-filter-filterpath)
+* [`media-inspector video-errors VIDEOPATH`](#media-inspector-video-errors-videopath)
 
 ## `media-inspector autocomplete [SHELL]`
 
@@ -78,19 +79,20 @@ _See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomp
 
 ## `media-inspector cache`
 
-Cache a directory structure as JSON
+Cache metadata for a directory structure as JSON
 
 ```
 USAGE
   $ media-inspector cache
 
 OPTIONS
-  -r, --read=read    (required) Path of a directory to read
-  -w, --write=write  (required) Path of where to write the cache as JSON
+  -r, --read=read    (required) Path of a directory or file to read
+  -w, --write=write  (required) Path of where to write the metadata cache as JSON
 
 EXAMPLES
-  $ media-inspector cache ~/Downloads downloads.json
-  $ media-inspector cache /Users/username/Downloads ~/Desktop/downloads.json
+  $ media-inspector cache -r ~/Downloads -w downloads.json
+  $ media-inspector cache -r ~/Downloads/file.ext -w file.json
+  $ media-inspector cache -r /Users/username/Downloads -w ~/Desktop/downloads.json
 ```
 
 _See code: [src/cli/commands/cache.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.2/src/cli/commands/cache.ts)_
@@ -110,7 +112,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.1/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
 
 ## `media-inspector inspect`
 
@@ -123,10 +125,14 @@ USAGE
 OPTIONS
   -f, --filter=filter     (required) Path of the filter to apply in JSON or JSON5
   -i, --includeAuxiliary  Will also include empty directories and 'container' directories
-  -r, --read=read         (required) Path of a directory or cache file to read
+  -r, --read=read         (required) Path of a directory or file, or a metadata cache file to read
+  -v, --verbose           Enable to get detailed information and progress
 
-  -v, --verbose           Enable to get progress and detailed information on matches. By default only matched absolute
-                          paths are logged, so the output can be piped
+EXAMPLES
+  $ media-inspector inspect -r ~/Downloads -f ./examples/filter-default.json5
+  $ media-inspector inspect -r ~/Downloads/file.ext -f ./examples/filter-default.json5
+  $ media-inspector inspect -r downloads.json -f ./examples/filter-default.json5
+  $ media-inspector inspect -r downloads.json -f ./examples/filter-default.json5 -i -v
 ```
 
 _See code: [src/cli/commands/inspect.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.2/src/cli/commands/inspect.ts)_
@@ -147,6 +153,31 @@ EXAMPLE
 ```
 
 _See code: [src/cli/commands/validate-filter.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.2/src/cli/commands/validate-filter.ts)_
+
+## `media-inspector video-errors VIDEOPATH`
+
+Checks video files for errors by decoding them
+
+```
+USAGE
+  $ media-inspector video-errors VIDEOPATH
+
+ARGUMENTS
+  VIDEOPATH  Path to video file or directory of video files
+
+OPTIONS
+  -d, --demux-only         Skip decode and demux only
+  -e, --ext=ext            File extensions to match - default: all
+  -p, --parallel=parallel  (required) [default: 1] Number of parallel processes to utilise for decoding - default: 1
+  -v, --verbose            Enable to get detailed information and progress
+
+EXAMPLES
+  $ media-inspector video-errors ./path/to/video.ext
+  $ media-inspector video-errors ./path/to/directory-with-video-files
+  $ media-inspector video-errors ./path/to/directory-with-video-files --ext .ts,.mp4 --parallel 4
+```
+
+_See code: [src/cli/commands/video-errors.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.2/src/cli/commands/video-errors.ts)_
 <!-- commandsstop -->
 
 # How filters work
