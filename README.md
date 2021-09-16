@@ -20,7 +20,8 @@ media-inspector
 <!-- tocstop -->
 
 # Requirements
-* Node 10 or newer
+* Node 12 or newer
+* [ffmpeg](https://ffmpeg.org) executable in `$PATH`
 * [mediainfo](https://mediaarea.net/en/MediaInfo) executable in `$PATH`
 
 # Supported media mime-types

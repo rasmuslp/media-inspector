@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [10, 12, 14]
+        node: [12, 14, 16]
 
     steps:
       - uses: actions/checkout@v2
@@ -41,12 +41,12 @@ jobs:
         with:
           name: test-report
           path: reports/junit/results.xml
-      - name: Upload codecoverage to Codacy (Node 12 only)
+      - name: Upload codecoverage to Codacy (Node 14 only)
         run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r ./coverage/lcov.info
-        if: matrix.node == 12
+        if: matrix.node == 14
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-      - name: Upload codecoverage to Codecov (Node 12 only)
+      - name: Upload codecoverage to Codecov (Node 14 only)
         run: |
           curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --import # One-time step
           curl -Os https://uploader.codecov.io/latest/linux/codecov
@@ -56,7 +56,7 @@ jobs:
           shasum -a 256 -c codecov.SHA256SUM
           chmod +x codecov
           ./codecov -t ${CODECOV_TOKEN}
-        if: matrix.node == 12
+        if: matrix.node == 14
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 

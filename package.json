@@ -47,17 +47,17 @@
     "@oclif/command": "^1.8.0",
     "@oclif/plugin-autocomplete": "~0.3.0",
     "chalk": "^4.1.2",
-    "cli-progress": "^3.9.0",
+    "cli-progress": "^3.9.1",
     "cli-ux": "^5.6.3",
     "debug": "^4.3.2",
     "execa": "^5.1.1",
     "json5": "^2.2.0",
-    "luxon": "^1.28.0",
+    "luxon": "^2.0.2",
     "mediainfo-parser": "^1.1.5",
     "mime-types": "^2.1.32",
     "p-limit": "^3.1.0",
     "split2": "^3.2.2",
-    "zod": "^3.7.1"
+    "zod": "^3.8.2"
   },
   "devDependencies": {
     "@oclif/dev-cli": "1.26.0",
@@ -65,7 +65,7 @@
     "@types/cli-progress": "3.9.2",
     "@types/debug": "4.1.7",
     "@types/jest": "27.0.1",
-    "@types/luxon": "1.27.1",
+    "@types/luxon": "2.0.4",
     "@types/mime-types": "2.1.1",
     "@types/node": "16.9.1",
     "@types/split2": "3.2.1",
@@ -78,7 +78,7 @@
     "typescript": "4.4.3"
   },
   "engines": {
-    "node": ">=10.13.0"
+    "node": ">=12.13.0"
   },
   "oclif": {
     "bin": "media-inspector",
