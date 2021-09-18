@@ -21,9 +21,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Upgrade NPM
+        run: |
+          sudo npm install -g npm
       - name: Node and NPM versions
         run: |
           node --version
@@ -75,10 +78,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
+      - name: Upgrade NPM
+        run: |
+          sudo npm install -g npm
       - name: Node and NPM versions
         run: |
           node --version

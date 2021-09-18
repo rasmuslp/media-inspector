@@ -21,6 +21,7 @@ media-inspector
 
 # Requirements
 * Node 12 or newer
+* NPM 7 series (for development) - automatically installs peer dependencies
 * [ffmpeg](https://ffmpeg.org) executable in `$PATH`
 * [mediainfo](https://mediaarea.net/en/MediaInfo) executable in `$PATH`
 
