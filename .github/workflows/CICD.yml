@@ -26,7 +26,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: Upgrade NPM
         run: |
-          sudo npm install -g npm
+          npm install -g npm
       - name: Node and NPM versions
         run: |
           node --version
@@ -84,7 +84,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Upgrade NPM
         run: |
-          sudo npm install -g npm
+          npm install -g npm
       - name: Node and NPM versions
         run: |
           node --version
