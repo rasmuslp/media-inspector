@@ -22,7 +22,7 @@ export class ConditionResult {
 		return this.satisfied === ConditionSatisfied.YES;
 	}
 
-	toString(): string {
+	getResultAsStrings(): string {
 		const message = `${this.condition.path} ${this.isSatisfied ? 'satisfied' : 'failed'}: ${this.condition.toStringForValue(this.value)}`;
 
 		return message;

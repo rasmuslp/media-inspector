@@ -8,6 +8,7 @@ import { OperatorInSchema } from './condition/operator/OperatorIn';
 import { OperatorLessThanSchema } from './condition/operator/OperatorLessThan';
 import { OperatorNotEqualSchema } from './condition/operator/OperatorNotEqual';
 import { Condition } from './condition/Condition';
+import { ConditionChecker } from './condition/ConditionChecker';
 import { RuleResult } from './RuleResult';
 import { RuleTypeSchema } from './RuleType';
 
@@ -57,7 +58,7 @@ export class Rule {
 			}
 
 			// Check and store
-			const conditionResult = condition.check(value);
+			const conditionResult = ConditionChecker.getResultFor(condition, value);
 			conditionResults.push(conditionResult);
 		}
 
