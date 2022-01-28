@@ -1,15 +1,7 @@
-import { FsTree } from './FsTree';
-import { FsTreeFactory } from './FsTreeFactory';
-import { FsNode } from './FsNode';
-import { Directory } from './Directory';
-import { File } from './File';
-import { PathSorters } from './PathSorters';
+export { FsTree } from './FsTree';
+export { FsNode } from './FsNode';
+export { FsTreeFactory } from './FsTreeFactory';
+export { File } from './File';
+export { Directory } from './Directory';
 
-export {
-	FsTree,
-	FsTreeFactory,
-	FsNode,
-	Directory,
-	File,
-	PathSorters
-};
+export { PathSorters } from './PathSorters';

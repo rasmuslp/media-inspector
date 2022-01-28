@@ -21,7 +21,6 @@ export default class ValidateFilter extends BaseCommand {
 		'$ media-inspector validate-filter ./examples/filter-default.json5'
 	];
 
-	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	async run() {
 		const { args } = this.parse(ValidateFilter);
 

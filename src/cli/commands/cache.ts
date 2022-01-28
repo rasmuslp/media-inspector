@@ -32,7 +32,6 @@ export default class Cache extends BaseCommand {
 		'$ media-inspector cache -r /Users/username/Downloads -w ~/Desktop/downloads.json'
 	];
 
-	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	async run() {
 		const { flags } = this.parse(Cache);
 

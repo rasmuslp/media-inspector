@@ -9,6 +9,7 @@ import { OperatorLessThanSchema } from './condition/operator/OperatorLessThan';
 import { OperatorNotEqualSchema } from './condition/operator/OperatorNotEqual';
 import { Condition } from './condition/Condition';
 import { ConditionChecker } from './condition/ConditionChecker';
+import { ConditionResult } from './condition/ConditionResult';
 import { RuleResult } from './RuleResult';
 import { RuleTypeSchema } from './RuleType';
 
@@ -43,10 +44,10 @@ export class Rule {
 
 	checkRuleWithPathGetter(pathGetterFn: (path: string) => number | string): RuleResult | undefined {
 		// All conditions must be met
-		const conditionResults = [];
+		const conditionResults: ConditionResult[] = [];
 		for (const condition of this.conditions) {
 			// Try to read value
-			let value;
+			let value: number | string;
 			try {
 				value = pathGetterFn(condition.path);
 			}

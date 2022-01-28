@@ -12,7 +12,7 @@ import { SerializableSerialized } from '../../serializable/Serializable';
 
 const exec = promisify(childProcess.exec);
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
 const mediainfoParse = promisify(mediainfoParser.parse);
 
 const mediainfoPath = 'mediainfo';

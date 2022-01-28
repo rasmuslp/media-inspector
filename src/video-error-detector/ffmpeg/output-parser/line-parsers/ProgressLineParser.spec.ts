@@ -14,7 +14,7 @@ describe('ProgressLineParser', () => {
 	});
 
 	describe('.parse', () => {
-		let line;
+		let line: string;
 		beforeEach(() => {
 			line = 'frame= 3697 fps=1225 q=-0.0 size=N/A time=00:02:28.16 bitrate=N/A speed=  49.1x    ';
 		});

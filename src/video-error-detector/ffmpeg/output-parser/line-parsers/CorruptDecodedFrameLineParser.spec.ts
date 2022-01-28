@@ -14,7 +14,7 @@ describe('CorruptDecodedFrameLineParser', () => {
 	});
 
 	describe('.parse', () => {
-		let line;
+		let line: string;
 		beforeEach(() => {
 			line = './local-test-files/fail2.ts2: corrupt decoded frame in stream 0';
 		});

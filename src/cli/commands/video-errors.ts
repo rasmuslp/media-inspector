@@ -53,7 +53,6 @@ export default class VideoErrors extends BaseCommand {
 		'$ media-inspector video-errors ./path/to/directory-with-video-files --ext .ts,.mp4 --parallel 4'
 	];
 
-	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	async run() {
 		const { args, flags } = this.parse(VideoErrors);
 

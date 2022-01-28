@@ -14,7 +14,7 @@ describe('StreamLineParser', () => {
 	});
 
 	describe('parse', () => {
-		let line;
+		let line: string;
 		beforeEach(() => {
 			line = '[h264 @ 0x7fa5e4833c00] concealing 3089 DC, 3089 AC, 3089 MV errors in I frame';
 		});

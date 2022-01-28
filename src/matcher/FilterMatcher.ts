@@ -16,6 +16,7 @@ export class FilterMatcher {
 				const fileMatchesMimeType = node instanceof File && node.mimeType.startsWith(rule.mimeType);
 				const metadata = metadataCache.getMetadata(node.path);
 				if (fileMatchesMimeType && metadata) {
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 					const ruleResult = rule.checkRuleWithPathGetter(metadata.get.bind(metadata));
 					if (ruleResult) {
 						ruleResults.push(ruleResult);

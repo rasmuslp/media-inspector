@@ -51,7 +51,6 @@ export default class Inspect extends BaseCommand {
 		'$ media-inspector inspect -r downloads.json -f ./examples/filter-default.json5 -i -v'
 	];
 
-	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	async run() {
 		const { flags } = this.parse(Inspect);
 
