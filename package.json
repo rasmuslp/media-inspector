@@ -61,7 +61,7 @@
     "zod": "^3.9.8"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "1.26.0",
+    "@oclif/dev-cli": "1.26.10",
     "@rasmuslp/eslint-config": "4.0.1",
     "@types/cli-progress": "3.9.2",
     "@types/debug": "4.1.7",
