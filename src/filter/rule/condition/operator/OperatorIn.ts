@@ -1,12 +1,7 @@
 import { quoteIfNotNumber } from '../../../../utils/quoteIfNotNumber';
 import { stringToStringOrNumber } from '../../../../utils/stringToStringOrNumber';
-import { ConditionSchema } from '../Condition';
-import { TNumberOrStringArray, NumberOrStringArraySchema } from '../ConditionValues';
+import { TNumberOrStringArray } from '../ConditionValues';
 import { Operator } from './Operator';
-
-export const OperatorInSchema = ConditionSchema.extend({
-	value: NumberOrStringArraySchema
-});
 
 export class OperatorIn extends Operator<TNumberOrStringArray> {
 	check(value: number | string): boolean {

@@ -1,11 +1,6 @@
 import { quoteIfNotNumber } from '../../../../utils/quoteIfNotNumber';
-import { ConditionSchema } from '../Condition';
-import { TNumberOrString, NumberOrStringSchema } from '../ConditionValues';
+import { TNumberOrString } from '../ConditionValues';
 import { Operator } from './Operator';
-
-export const OperatorNotEqualSchema = ConditionSchema.extend({
-	value: NumberOrStringSchema
-});
 
 export class OperatorNotEqual extends Operator<TNumberOrString> {
 	check(value: number | string): boolean {

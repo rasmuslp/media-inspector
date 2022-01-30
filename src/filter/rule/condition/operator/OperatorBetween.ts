@@ -1,10 +1,5 @@
-import { ConditionSchema } from '../Condition';
-import { TNumberRange, NumberRangeSchema } from '../ConditionValues';
+import { TNumberRange } from '../ConditionValues';
 import { Operator } from './Operator';
-
-export const OperatorBetweenSchema = ConditionSchema.extend({
-	value: NumberRangeSchema
-});
 
 export class OperatorBetween extends Operator<TNumberRange> {
 	check(value: number): boolean {

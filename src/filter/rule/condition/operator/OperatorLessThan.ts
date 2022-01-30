@@ -1,10 +1,5 @@
-import { ConditionSchema } from '../Condition';
-import { TNumber, NumberSchema } from '../ConditionValues';
+import { TNumber } from '../ConditionValues';
 import { Operator } from './Operator';
-
-export const OperatorLessThanSchema = ConditionSchema.extend({
-	value: NumberSchema
-});
 
 export class OperatorLessThan extends Operator<TNumber> {
 	check(value: number): boolean {
