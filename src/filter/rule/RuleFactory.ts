@@ -15,7 +15,7 @@ export class RuleFactory {
 		}
 
 		switch (parsed.type) {
-			case RuleType.DEFAULT:
+			case RuleType.ERROR:
 			case RuleType.METADATA:
 			default: {
 				return new Rule(parsed.mimeType, conditions);

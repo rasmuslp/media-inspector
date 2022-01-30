@@ -1,0 +1,61 @@
+{
+	// The mime-type. This defines what other configuration properties are available.
+	video: {
+		rules: [
+			{
+				name: 'Stereo or better',
+				type: 'metadata',
+				conditions: [
+					{
+						path: 'audio.channels',
+						operator: '>=',
+						value: 2
+					}
+				]
+			},
+			{
+				name: 'No errors in recorded TV',
+				match: {
+					fileExtension: 'ts'
+				},
+				type: 'error',
+				conditions: [
+					{
+						path: 'summary',
+						operator: '=',
+						value: 0
+					}
+				]
+			},
+			{
+				name: 'h265',
+				match: {
+					metadata: [{
+						path: 'video.format',
+						operator: '=',
+						value: 'hevc'
+					}]
+				},
+				type: 'metadata',
+				conditions: [
+					{
+						path: 'video.width',
+						operator: '>=',
+						value: 1280
+					},
+					{
+						path: 'general.bitrate',
+						operator: '>=',
+						value: 1200000
+					}
+				]
+			},
+		],
+
+		// Error detector configuration
+		'error-detector': {
+			// Defaults to false
+			'demux-only': false
+		}
+	}
+}

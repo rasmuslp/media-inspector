@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export enum RuleType {
-	DEFAULT = 'default',
+	ERROR = 'error',
 	METADATA = 'metadata',
 	SEASON_SIZE_DISCREPANCY = 'season-size-discrepancy'
 }
