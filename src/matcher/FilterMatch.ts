@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 
+import { RuleResult } from '../standard/rule/RuleResult';
 import { Match, MatchReasonOptions } from './Match';
-import { RuleResult } from '../filter/rule/RuleResult';
 import { FsNode } from '../fs-tree';
 
 export class FilterMatch extends Match {

@@ -1,7 +1,7 @@
-import { ConditionResult } from './condition/ConditionResult';
-import { Equal } from './condition/types/Equal';
-import { GreaterThanOrEqual } from './condition/types/GreaterThanOrEqual';
-import { ConditionChecker } from './condition/ConditionChecker';
+import { ConditionResult } from '../condition/ConditionResult';
+import { Equal } from '../condition/types/Equal';
+import { GreaterThanOrEqual } from '../condition/types/GreaterThanOrEqual';
+import { ConditionChecker } from '../condition/ConditionChecker';
 import { RuleResult } from './RuleResult';
 
 describe('#satisfied', () => {

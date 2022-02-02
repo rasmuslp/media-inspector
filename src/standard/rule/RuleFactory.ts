@@ -1,5 +1,5 @@
-import { ICondition } from './condition/ICondition';
-import { ConditionFactory } from './condition/ConditionFactory';
+import { ICondition } from '../condition/ICondition';
+import { ConditionFactory } from '../condition/ConditionFactory';
 
 import { Rule, RuleSchema, RuleSerialized } from './Rule';
 import { RuleType } from './RuleType';
@@ -18,6 +18,7 @@ export class RuleFactory {
 			case RuleType.ERROR:
 			case RuleType.METADATA:
 			default: {
+				// TODO: Store the type, or specialise on it?
 				return new Rule(parsed.mimeType, conditions);
 			}
 		}

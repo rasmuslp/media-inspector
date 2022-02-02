@@ -1,7 +1,7 @@
 import cli from 'cli-ux';
 
 import { FilterFactory } from '../../filter';
-import { Rule } from '../../filter/rule/Rule';
+import { Rule } from '../../standard/rule/Rule';
 
 export async function readFilterFromSerialized(path: string, verbose = false): Promise<Rule[]> {
 	if (verbose) {

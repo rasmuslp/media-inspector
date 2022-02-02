@@ -1,4 +1,4 @@
-import { ConditionResult } from './condition/ConditionResult';
+import { ConditionResult } from '../condition/ConditionResult';
 
 export class RuleResult {
 	private readonly conditionResults: ConditionResult[];

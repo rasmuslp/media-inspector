@@ -4,8 +4,8 @@ import { promisify } from 'util';
 import JSON5 from 'json5';
 import { z } from 'zod';
 
-import { Rule, RuleSchema } from './rule/Rule';
-import { RuleFactory } from './rule/RuleFactory';
+import { Rule, RuleSchema } from '../standard/rule/Rule';
+import { RuleFactory } from '../standard/rule/RuleFactory';
 
 const readFile = promisify(fs.readFile);
 

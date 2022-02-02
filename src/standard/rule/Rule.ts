@@ -1,10 +1,10 @@
 import createDebug from 'debug';
 import { z } from 'zod';
 
-import { ICondition } from './condition/ICondition';
-import { ConditionChecker } from './condition/ConditionChecker';
-import { ConditionResult } from './condition/ConditionResult';
-import { AllConditionsSchema } from './condition/conditions-schema';
+import { ICondition } from '../condition/ICondition';
+import { ConditionChecker } from '../condition/ConditionChecker';
+import { ConditionResult } from '../condition/ConditionResult';
+import { AllConditionsSchema } from '../condition/conditions-schema';
 import { RuleResult } from './RuleResult';
 import { RuleTypeSchema } from './RuleType';
 
@@ -28,6 +28,7 @@ export class Rule {
 		this.conditions = conditions;
 	}
 
+	// Extract the checking to seperate entity?
 	checkRuleWithPathGetter(pathGetterFn: (path: string) => number | string): RuleResult | undefined {
 		// All conditions must be met
 		const conditionResults: ConditionResult[] = [];

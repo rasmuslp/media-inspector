@@ -1,4 +1,4 @@
-import { quoteIfNotNumber } from '../../../../utils/quoteIfNotNumber';
+import { quoteIfNotNumber } from '../../../utils/quoteIfNotNumber';
 import { AbstractCondition } from '../AbstractCondition';
 import { TNumberOrString } from '../ConditionValues';
 

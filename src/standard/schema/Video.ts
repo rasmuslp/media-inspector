@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-import { RuleType } from '../../filter/rule/RuleType';
-import { AllConditionsSchema } from '../../filter/rule/condition/conditions-schema';
+import { RuleType } from '../rule/RuleType';
+import { AllConditionsSchema } from '../condition/conditions-schema';
 
 const VideoErrorDetectorSchema = z.object({
 	'demux-only': z.boolean().default(false)

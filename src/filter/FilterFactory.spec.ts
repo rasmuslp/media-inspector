@@ -1,7 +1,7 @@
-import { Operator } from './rule/condition/Operator';
+import { Operator } from '../standard/condition/Operator';
+import { Rule } from '../standard/rule/Rule';
+import { RuleType } from '../standard/rule/RuleType';
 import { FilterFactory, FilterSerialized } from './FilterFactory';
-import { Rule } from './rule/Rule';
-import { RuleType } from './rule/RuleType';
 
 describe('FilterFactory', () => {
 	describe('with filter-simple.json5', () => {

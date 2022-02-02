@@ -1,8 +1,8 @@
 import { File } from '../fs-tree';
-import { FilterMatch } from './FilterMatch';
-import { Rule } from '../filter/rule/Rule';
-import { RuleResult } from '../filter/rule/RuleResult';
 import { MetadataCache } from '../metadata/MetadataCache';
+import { Rule } from '../standard/rule/Rule';
+import { RuleResult } from '../standard/rule/RuleResult';
+import { FilterMatch } from './FilterMatch';
 import { Match } from './Match';
 
 export class FilterMatcher {

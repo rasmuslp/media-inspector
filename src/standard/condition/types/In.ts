@@ -1,5 +1,5 @@
-import { quoteIfNotNumber } from '../../../../utils/quoteIfNotNumber';
-import { stringToStringOrNumber } from '../../../../utils/stringToStringOrNumber';
+import { quoteIfNotNumber } from '../../../utils/quoteIfNotNumber';
+import { stringToStringOrNumber } from '../../../utils/stringToStringOrNumber';
 import { AbstractCondition } from '../AbstractCondition';
 import { TNumberOrStringArray } from '../ConditionValues';
 
