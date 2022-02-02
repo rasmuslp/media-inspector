@@ -1,4 +1,4 @@
-import { Condition } from './Condition';
+import { ICondition } from './ICondition';
 
 export enum ConditionSatisfied {
 	YES,
@@ -6,13 +6,13 @@ export enum ConditionSatisfied {
 }
 
 export class ConditionResult {
-	private readonly condition: Condition;
+	private readonly condition: ICondition;
 
 	private readonly value: number | string;
 
 	private readonly satisfied: ConditionSatisfied;
 
-	constructor(condition: Condition, value: number | string, satisfied: ConditionSatisfied) {
+	constructor(condition: ICondition, value: number | string, satisfied: ConditionSatisfied) {
 		this.condition = condition;
 		this.value = value;
 		this.satisfied = satisfied;

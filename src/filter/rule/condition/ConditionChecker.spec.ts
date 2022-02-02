@@ -1,11 +1,11 @@
-import { OperatorLessThan } from './operator/OperatorLessThan';
+import { LessThan } from './types/LessThan';
 import { ConditionChecker } from './ConditionChecker';
 
 describe('ConditionChecker', () => {
-	describe('#getResultFor with OperatorLessThan', () => {
-		let condition: OperatorLessThan;
+	describe('#getResultFor with LessThan', () => {
+		let condition: LessThan;
 		beforeEach(() => {
-			condition = new OperatorLessThan('path', 10);
+			condition = new LessThan('path', 10);
 		});
 
 		it('returns a satisfied ConditionResult for 5', () => {

@@ -1,4 +1,4 @@
-export interface Condition<T = unknown> {
+export interface ICondition<T = unknown> {
 	path: string;
 	value: T;
 

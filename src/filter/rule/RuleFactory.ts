@@ -1,4 +1,4 @@
-import { Condition } from './condition/Condition';
+import { ICondition } from './condition/ICondition';
 import { ConditionFactory } from './condition/ConditionFactory';
 
 import { Rule, RuleSchema, RuleSerialized } from './Rule';
@@ -8,7 +8,7 @@ export class RuleFactory {
 	static getFromSerialized(serialized: RuleSerialized): Rule {
 		const parsed = RuleSchema.parse(serialized);
 
-		let conditions: Condition[] = [];
+		let conditions: ICondition[] = [];
 		if (parsed.conditions) {
 			conditions = parsed.conditions
 				.map(condition => ConditionFactory.getSharedInstanceFromSerialized(condition));

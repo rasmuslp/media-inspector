@@ -1,7 +1,7 @@
+import { AbstractCondition } from '../AbstractCondition';
 import { TNumber } from '../ConditionValues';
-import { Operator } from './Operator';
 
-export class OperatorLessThan extends Operator<TNumber> {
+export class LessThan extends AbstractCondition<TNumber> {
 	check(value: number): boolean {
 		const result = value < this.value;
 		return result;

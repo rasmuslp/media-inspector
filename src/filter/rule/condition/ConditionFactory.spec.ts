@@ -1,23 +1,23 @@
-import { OperatorGreaterThanOrEqual } from './operator/OperatorGreaterThanOrEqual';
-import { OperatorBetween } from './operator/OperatorBetween';
-import { OperatorEqual } from './operator/OperatorEqual';
-import { OperatorIn } from './operator/OperatorIn';
-import { OperatorLessThan } from './operator/OperatorLessThan';
-import { OperatorNotEqual } from './operator/OperatorNotEqual';
+import { Between } from './types/Between';
+import { Equal } from './types/Equal';
+import { GreaterThanOrEqual } from './types/GreaterThanOrEqual';
+import { In } from './types/In';
+import { LessThan } from './types/LessThan';
+import { NotEqual } from './types/NotEqual';
 import { ConditionFactory } from './ConditionFactory';
-import { OperatorType } from './OperatorType';
+import { Operator } from './Operator';
 
 describe('#getSharedInstanceFromSerialized', () => {
-	test('identical conditions share the same Condition', () => {
+	test('identical conditions share the same ICondition', () => {
 		// Conditions
 		const conditionData1 = {
 			path: 'p1',
-			operator: OperatorType.GREATER_THAN_OR_EQUAL,
+			operator: Operator.GREATER_THAN_OR_EQUAL,
 			value: 1
 		};
 		const conditionData2 = {
 			path: 'p1',
-			operator: OperatorType.GREATER_THAN_OR_EQUAL,
+			operator: Operator.GREATER_THAN_OR_EQUAL,
 			value: 1
 		};
 
@@ -25,69 +25,69 @@ describe('#getSharedInstanceFromSerialized', () => {
 		const condition1 = ConditionFactory.getSharedInstanceFromSerialized(conditionData1);
 		const condition2 = ConditionFactory.getSharedInstanceFromSerialized(conditionData2);
 
-		expect(condition1).toBeInstanceOf(OperatorGreaterThanOrEqual);
-		expect(condition2).toBeInstanceOf(OperatorGreaterThanOrEqual);
+		expect(condition1).toBeInstanceOf(GreaterThanOrEqual);
+		expect(condition2).toBeInstanceOf(GreaterThanOrEqual);
 
 		expect(condition1).toBe(condition2);
 	});
 });
 
 describe('#getFromSerialized', () => {
-	it('returns OperatorBetween', () => {
+	it('returns Between', () => {
 		const result = ConditionFactory.getFromSerialized({
 			path: 'video.width',
-			operator: OperatorType.BETWEEN,
+			operator: Operator.BETWEEN,
 			value: [640, 1279]
 		});
-		expect(result).toBeInstanceOf(OperatorBetween);
+		expect(result).toBeInstanceOf(Between);
 	});
 
-	it('returns OperatorEqual', () => {
+	it('returns Equal', () => {
 		const result = ConditionFactory.getFromSerialized({
 			path: 'video.format',
-			operator: OperatorType.EQUAL,
+			operator: Operator.EQUAL,
 			value: 'mpeg-4 visual'
 		});
-		expect(result).toBeInstanceOf(OperatorEqual);
+		expect(result).toBeInstanceOf(Equal);
 	});
 
-	it('returns OperatorGreaterThanOrEqual', () => {
+	it('returns GreaterThanOrEqual', () => {
 		const result = ConditionFactory.getFromSerialized({
 			path: 'video.width',
-			operator: OperatorType.GREATER_THAN_OR_EQUAL,
+			operator: Operator.GREATER_THAN_OR_EQUAL,
 			value: 1280
 		});
-		expect(result).toBeInstanceOf(OperatorGreaterThanOrEqual);
+		expect(result).toBeInstanceOf(GreaterThanOrEqual);
 	});
 
-	it('returns OperatorIn', () => {
+	it('returns In', () => {
 		const result = ConditionFactory.getFromSerialized({
 			path: 'video.format',
-			operator: OperatorType.IN,
+			operator: Operator.IN,
 			value: [
 				'hevc',
 				'avc',
 				'vc-1'
 			]
 		});
-		expect(result).toBeInstanceOf(OperatorIn);
+		expect(result).toBeInstanceOf(In);
 	});
 
-	it('returns OperatorLessThan', () => {
+	it('returns LessThan', () => {
 		const result = ConditionFactory.getFromSerialized({
 			path: 'general.bitrate',
-			operator: OperatorType.LESS_THAN,
+			operator: Operator.LESS_THAN,
 			value: 1_000_000
 		});
-		expect(result).toBeInstanceOf(OperatorLessThan);
+		expect(result).toBeInstanceOf(LessThan);
 	});
 
-	it('returns OperatorNotEqual', () => {
+	it('returns NotEqual', () => {
 		const result = ConditionFactory.getFromSerialized({
 			path: 'video.scantype',
-			operator: OperatorType.NOT_EQUAL,
+			operator: Operator.NOT_EQUAL,
 			value: 'progressive'
 		});
-		expect(result).toBeInstanceOf(OperatorNotEqual);
+		expect(result).toBeInstanceOf(NotEqual);
 	});
 });

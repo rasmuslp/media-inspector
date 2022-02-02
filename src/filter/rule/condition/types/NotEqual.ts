@@ -1,8 +1,8 @@
 import { quoteIfNotNumber } from '../../../../utils/quoteIfNotNumber';
+import { AbstractCondition } from '../AbstractCondition';
 import { TNumberOrString } from '../ConditionValues';
-import { Operator } from './Operator';
 
-export class OperatorNotEqual extends Operator<TNumberOrString> {
+export class NotEqual extends AbstractCondition<TNumberOrString> {
 	check(value: number | string): boolean {
 		const result = value !== this.value;
 		return result;

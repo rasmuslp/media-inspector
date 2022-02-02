@@ -1,4 +1,4 @@
-export enum OperatorType {
+export enum Operator {
 	BETWEEN = 'between',
 	IN = 'in',
 	EQUAL = '=',

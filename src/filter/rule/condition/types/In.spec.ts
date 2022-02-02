@@ -1,32 +1,32 @@
-import { OperatorIn } from './OperatorIn';
+import { In } from './In';
 
-describe('OperatorIn', () => {
+describe('In', () => {
 	describe('path = \'the.path\', value = [10, \'hello there\', 5]', () => {
-		let operator: OperatorIn;
+		let condition: In;
 		beforeAll(() => {
-			operator = new OperatorIn('the.path', [10, 'hello there', 5]);
+			condition = new In('the.path', [10, 'hello there', 5]);
 		});
 
 		describe('.check returns ConditionResult', () => {
 			it('is satisfied for 5', () => {
-				const result = operator.check(5);
+				const result = condition.check(5);
 				expect(result).toEqual(true);
 			});
 
 			it('is not satisfied for 7', () => {
-				const result = operator.check(7);
+				const result = condition.check(7);
 				expect(result).toEqual(false);
 			});
 
 			it('is satisfied for \'hello there\'', () => {
-				const result = operator.check('hello there');
+				const result = condition.check('hello there');
 				expect(result).toEqual(true);
 			});
 		});
 
-		describe('.toStringForValue returns input value applied to operator stringified', () => {
+		describe('.toStringForValue returns input value applied to types stringified', () => {
 			it('handles \'hello there\'', () => {
-				const result = operator.toStringForValue('hello there');
+				const result = condition.toStringForValue('hello there');
 				expect(result).toEqual("'hello there' in [10, 'hello there', 5]");
 			});
 		});

@@ -1,13 +1,13 @@
 import crypto from 'crypto';
 
-import { OperatorBetween } from './operator/OperatorBetween';
-import { OperatorEqual } from './operator/OperatorEqual';
-import { OperatorGreaterThanOrEqual } from './operator/OperatorGreaterThanOrEqual';
-import { OperatorIn } from './operator/OperatorIn';
-import { OperatorLessThan } from './operator/OperatorLessThan';
-import { OperatorNotEqual } from './operator/OperatorNotEqual';
-import { Condition } from './Condition';
-import { OperatorType } from './OperatorType';
+import { Between } from './types/Between';
+import { Equal } from './types/Equal';
+import { GreaterThanOrEqual } from './types/GreaterThanOrEqual';
+import { In } from './types/In';
+import { LessThan } from './types/LessThan';
+import { NotEqual } from './types/NotEqual';
+import { ICondition } from './ICondition';
+import { Operator } from './Operator';
 import {
 	ConditionBetweenSchema,
 	ConditionEqualSchema,
@@ -16,9 +16,9 @@ import {
 } from './conditions-schema';
 
 export class ConditionFactory {
-	private static conditions = new Map<string, Condition>();
+	private static conditions = new Map<string, ICondition>();
 
-	static getSharedInstanceFromSerialized(conditionData: ConditionSerialised): Condition {
+	static getSharedInstanceFromSerialized(conditionData: ConditionSerialised): ICondition {
 		// Calculate hash of input
 		const hash = crypto.createHash('md5').update(JSON.stringify(conditionData)).digest('hex');
 
@@ -33,42 +33,42 @@ export class ConditionFactory {
 		return condition;
 	}
 
-	static getFromSerialized(serialized: ConditionSerialised): Condition {
+	static getFromSerialized(serialized: ConditionSerialised): ICondition {
 		// Create and return
 		switch (serialized.operator) {
-			case OperatorType.BETWEEN: {
+			case Operator.BETWEEN: {
 				const parsed = ConditionBetweenSchema.parse(serialized);
-				const condition = new OperatorBetween(parsed.path, parsed.value);
+				const condition = new Between(parsed.path, parsed.value);
 				return condition;
 			}
 
-			case OperatorType.EQUAL: {
+			case Operator.EQUAL: {
 				const parsed = ConditionEqualSchema.parse(serialized);
-				const condition = new OperatorEqual(parsed.path, parsed.value);
+				const condition = new Equal(parsed.path, parsed.value);
 				return condition;
 			}
 
-			case OperatorType.GREATER_THAN_OR_EQUAL: {
+			case Operator.GREATER_THAN_OR_EQUAL: {
 				const parsed = ConditionGreaterThanOrEqualSchema.parse(serialized);
-				const condition = new OperatorGreaterThanOrEqual(parsed.path, parsed.value);
+				const condition = new GreaterThanOrEqual(parsed.path, parsed.value);
 				return condition;
 			}
 
-			case OperatorType.IN: {
+			case Operator.IN: {
 				const parsed = ConditionInSchema.parse(serialized);
-				const condition = new OperatorIn(parsed.path, parsed.value);
+				const condition = new In(parsed.path, parsed.value);
 				return condition;
 			}
 
-			case OperatorType.LESS_THAN: {
+			case Operator.LESS_THAN: {
 				const parsed = ConditionLessThanSchema.parse(serialized);
-				const condition = new OperatorLessThan(parsed.path, parsed.value);
+				const condition = new LessThan(parsed.path, parsed.value);
 				return condition;
 			}
 
-			case OperatorType.NOT_EQUAL: {
+			case Operator.NOT_EQUAL: {
 				const parsed = ConditionNotEqualSchema.parse(serialized);
-				const condition = new OperatorNotEqual(parsed.path, parsed.value);
+				const condition = new NotEqual(parsed.path, parsed.value);
 				return condition;
 			}
 

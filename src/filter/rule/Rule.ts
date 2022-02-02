@@ -1,7 +1,7 @@
 import createDebug from 'debug';
 import { z } from 'zod';
 
-import { Condition } from './condition/Condition';
+import { ICondition } from './condition/ICondition';
 import { ConditionChecker } from './condition/ConditionChecker';
 import { ConditionResult } from './condition/ConditionResult';
 import { AllConditionsSchema } from './condition/conditions-schema';
@@ -21,9 +21,9 @@ export type RuleSerialized = z.infer<typeof RuleSchema>;
 export class Rule {
 	public readonly mimeType: string;
 
-	protected conditions: Condition[];
+	protected conditions: ICondition[];
 
-	constructor(mimeType: string, conditions: Condition[] = []) {
+	constructor(mimeType: string, conditions: ICondition[] = []) {
 		this.mimeType = mimeType;
 		this.conditions = conditions;
 	}

@@ -1,9 +1,9 @@
 import { quoteIfNotNumber } from '../../../../utils/quoteIfNotNumber';
 import { stringToStringOrNumber } from '../../../../utils/stringToStringOrNumber';
+import { AbstractCondition } from '../AbstractCondition';
 import { TNumberOrStringArray } from '../ConditionValues';
-import { Operator } from './Operator';
 
-export class OperatorIn extends Operator<TNumberOrStringArray> {
+export class In extends AbstractCondition<TNumberOrStringArray> {
 	check(value: number | string): boolean {
 		const result = !!this.value.some(expected => stringToStringOrNumber(expected as string) === value);
 		return result;

@@ -1,7 +1,7 @@
+import { AbstractCondition } from '../AbstractCondition';
 import { TNumberRange } from '../ConditionValues';
-import { Operator } from './Operator';
 
-export class OperatorBetween extends Operator<TNumberRange> {
+export class Between extends AbstractCondition<TNumberRange> {
 	check(value: number): boolean {
 		const result = this.value[0] <= value && value <= this.value[1];
 		return result;

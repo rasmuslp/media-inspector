@@ -1,6 +1,6 @@
-import { Condition } from '../Condition';
+import { ICondition } from './ICondition';
 
-export abstract class Operator<T = unknown> implements Condition {
+export abstract class AbstractCondition<T = unknown> implements ICondition {
 	readonly path: string;
 
 	readonly value: T;

@@ -1,6 +1,6 @@
 import { ConditionResult } from './condition/ConditionResult';
-import { OperatorEqual } from './condition/operator/OperatorEqual';
-import { OperatorGreaterThanOrEqual } from './condition/operator/OperatorGreaterThanOrEqual';
+import { Equal } from './condition/types/Equal';
+import { GreaterThanOrEqual } from './condition/types/GreaterThanOrEqual';
 import { ConditionChecker } from './condition/ConditionChecker';
 import { RuleResult } from './RuleResult';
 
@@ -10,7 +10,7 @@ describe('#satisfied', () => {
 	let satisfied1: ConditionResult;
 	let satisfied2: ConditionResult;
 	beforeEach(() => {
-		const condition = new OperatorEqual('dummy', 'yesyes');
+		const condition = new Equal('dummy', 'yesyes');
 		failed1 = ConditionChecker.getResultFor(condition, 'nono');
 		failed2 = ConditionChecker.getResultFor(condition, 'nono');
 		satisfied1 = ConditionChecker.getResultFor(condition, 'yesyes');
@@ -37,7 +37,7 @@ describe('#satisfied', () => {
 
 describe('#getResultsAsStrings', () => {
 	test('that string reports as satisfied for passed checks', () => {
-		const condition = new OperatorGreaterThanOrEqual('video.framerate', 25);
+		const condition = new GreaterThanOrEqual('video.framerate', 25);
 		const result = ConditionChecker.getResultFor(condition, '25');
 
 		const ruleResult = new RuleResult([result]);
@@ -49,7 +49,7 @@ describe('#getResultsAsStrings', () => {
 	});
 
 	test('that string reports as failed for failed checks', () => {
-		const condition = new OperatorGreaterThanOrEqual('audio.channels', 2);
+		const condition = new GreaterThanOrEqual('audio.channels', 2);
 		const result = ConditionChecker.getResultFor(condition, '1');
 
 		const ruleResult = new RuleResult([result]);
@@ -64,8 +64,8 @@ describe('#getResultsAsStrings', () => {
 describe('#getWeightedScore', () => {
 	test('#1: Fail, #2: Pass --> 1', () => {
 		const conditions = [
-			new OperatorGreaterThanOrEqual('video.framerate', 25),
-			new OperatorGreaterThanOrEqual('audio.channels', 2)
+			new GreaterThanOrEqual('video.framerate', 25),
+			new GreaterThanOrEqual('audio.channels', 2)
 		];
 
 		const results = [
@@ -80,8 +80,8 @@ describe('#getWeightedScore', () => {
 
 	test('#1: Pass, #2: Fail --> 4', () => {
 		const conditions = [
-			new OperatorGreaterThanOrEqual('video.framerate', 25),
-			new OperatorGreaterThanOrEqual('audio.channels', 2)
+			new GreaterThanOrEqual('video.framerate', 25),
+			new GreaterThanOrEqual('audio.channels', 2)
 		];
 
 		const results = [

@@ -1,32 +1,32 @@
-import { OperatorLessThan } from './OperatorLessThan';
+import { LessThan } from './LessThan';
 
-describe('OperatorLessThan', () => {
+describe('LessThan', () => {
 	describe('path = \'the.path\', value = 7', () => {
-		let operator: OperatorLessThan;
+		let condition: LessThan;
 		beforeAll(() => {
-			operator = new OperatorLessThan('the.path', 7);
+			condition = new LessThan('the.path', 7);
 		});
 
 		describe('.check returns ConditionResult', () => {
 			it('is satisfied for 5', () => {
-				const result = operator.check(5);
+				const result = condition.check(5);
 				expect(result).toEqual(true);
 			});
 
 			it('is not satisfied for 7', () => {
-				const result = operator.check(7);
+				const result = condition.check(7);
 				expect(result).toEqual(false);
 			});
 
 			it('is not satisfied for 11', () => {
-				const result = operator.check(11);
+				const result = condition.check(11);
 				expect(result).toEqual(false);
 			});
 		});
 
-		describe('.toStringForValue returns input value applied to operator stringified', () => {
+		describe('.toStringForValue returns input value applied to types stringified', () => {
 			it('handles 5', () => {
-				const result = operator.toStringForValue(5);
+				const result = condition.toStringForValue(5);
 				expect(result).toEqual('5 < 7');
 			});
 		});
