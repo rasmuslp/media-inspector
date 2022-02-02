@@ -1,17 +1,24 @@
 import { ICondition } from '../condition/ICondition';
-import { ConditionFactory } from '../condition/ConditionFactory';
+import { IConditionFactory } from '../condition/IConditionFactory';
 
 import { Rule, RuleSchema, RuleSerialized } from './Rule';
+import { IRuleFactory } from './IRuleFactory';
 import { RuleType } from './RuleType';
 
-export class RuleFactory {
-	static getFromSerialized(serialized: RuleSerialized): Rule {
+export class RuleFactory implements IRuleFactory {
+	private readonly conditionFactory: IConditionFactory;
+
+	constructor(conditionFactory: IConditionFactory) {
+		this.conditionFactory = conditionFactory;
+	}
+
+	create(serialized: RuleSerialized): Rule {
 		const parsed = RuleSchema.parse(serialized);
 
 		let conditions: ICondition[] = [];
 		if (parsed.conditions) {
 			conditions = parsed.conditions
-				.map(condition => ConditionFactory.getSharedInstanceFromSerialized(condition));
+				.map(condition => this.conditionFactory.create(condition));
 		}
 
 		switch (parsed.type) {

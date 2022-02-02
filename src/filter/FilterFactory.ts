@@ -4,6 +4,8 @@ import { promisify } from 'util';
 import JSON5 from 'json5';
 import { z } from 'zod';
 
+import { CachingConditionFactory } from '../standard/condition/CachingConditionFactory';
+import { ConditionFactory } from '../standard/condition/ConditionFactory';
 import { Rule, RuleSchema } from '../standard/rule/Rule';
 import { RuleFactory } from '../standard/rule/RuleFactory';
 
@@ -13,6 +15,8 @@ const FilterSchema = z.array(RuleSchema);
 export type FilterSerialized = z.infer<typeof FilterSchema>;
 
 export class FilterFactory {
+	private static readonly ruleFactory = new RuleFactory(new CachingConditionFactory(new ConditionFactory()));
+
 	static async read(serializedPath: string): Promise<string> {
 		try {
 			const fileContent = await readFile(serializedPath, 'utf8');
@@ -36,7 +40,7 @@ export class FilterFactory {
 	static getFromSerialized(serialized: FilterSerialized): Rule[] {
 		const rules: Rule[] = [];
 		for (const ruleSerialized of serialized) {
-			const rule = RuleFactory.getFromSerialized(ruleSerialized);
+			const rule = FilterFactory.ruleFactory.create(ruleSerialized);
 			rules.push(rule);
 		}
 
