@@ -1,8 +1,9 @@
 import { StandardDefinition, StandardSchema } from './schema/Standard';
+import { ISchemaParser } from './ISchemaParser';
 
-export class SchemaParser {
-	validate(data: unknown): StandardDefinition {
-		const validated = StandardSchema.parse(data);
-		return validated;
+export class SchemaParser implements ISchemaParser {
+	parse(data: unknown): StandardDefinition {
+		const parsed = StandardSchema.parse(data);
+		return parsed;
 	}
 }

@@ -5,7 +5,7 @@ import { JSON5Parser } from './JSON5Parser';
 import { SchemaParser } from './SchemaParser';
 
 describe('SchemaParser', () => {
-	describe('.validate - for examples/standard-default.json5', () => {
+	describe('.parse - for examples/standard-default.json5', () => {
 		let content : unknown;
 		beforeEach(async () => {
 			const fsFileReader = new FsFileReader();
@@ -15,9 +15,9 @@ describe('SchemaParser', () => {
 			content = json5Parser.parse(fileContent);
 		});
 
-		it('should validate', async () => {
+		it('should parse', async () => {
 			const schemaParser = new SchemaParser();
-			const result = schemaParser.validate(content);
+			const result = schemaParser.parse(content);
 			expect(result).toBeDefined();
 		});
 	});
