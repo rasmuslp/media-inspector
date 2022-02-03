@@ -2,46 +2,45 @@ import { z } from 'zod';
 
 import { Operator } from './Operator';
 import {
-	AllConditionsValuesSchema,
 	NumberOrStringArraySchema,
 	NumberOrStringSchema,
 	NumberRangeSchema,
 	NumberSchema
 } from './ConditionValues';
 
-const OperatorSchema = z.nativeEnum(Operator);
-
 const ConditionCommonSchema = z.object({
-	path: z.string(),
-	operator: OperatorSchema,
-	value: AllConditionsValuesSchema
+	path: z.string()
 }).strict();
-
-export type ConditionSerialised = z.infer<typeof ConditionCommonSchema>;
 
 export const ConditionBetweenSchema = ConditionCommonSchema.extend({
+	operator: z.literal(Operator.BETWEEN),
 	value: NumberRangeSchema
-}).strict();
+});
 
 export const ConditionEqualSchema = ConditionCommonSchema.extend({
+	operator: z.literal(Operator.EQUAL),
 	value: NumberOrStringSchema
-}).strict();
+});
 
 export const ConditionGreaterThanOrEqualSchema = ConditionCommonSchema.extend({
+	operator: z.literal(Operator.GREATER_THAN_OR_EQUAL),
 	value: NumberSchema
-}).strict();
+});
 
 export const ConditionInSchema = ConditionCommonSchema.extend({
+	operator: z.literal(Operator.IN),
 	value: NumberOrStringArraySchema
-}).strict();
+});
 
 export const ConditionLessThanSchema = ConditionCommonSchema.extend({
+	operator: z.literal(Operator.LESS_THAN),
 	value: NumberSchema
-}).strict();
+});
 
 export const ConditionNotEqualSchema = ConditionCommonSchema.extend({
+	operator: z.literal(Operator.NOT_EQUAL),
 	value: NumberOrStringSchema
-}).strict();
+});
 
 export const AllConditionsSchema = z.union([
 	ConditionBetweenSchema,
@@ -51,3 +50,5 @@ export const AllConditionsSchema = z.union([
 	ConditionLessThanSchema,
 	ConditionNotEqualSchema
 ]);
+
+export type ConditionSerialised = z.infer<typeof AllConditionsSchema>;

@@ -5,7 +5,7 @@ import { AllConditionsSchema } from '../condition/conditions-schema';
 
 const VideoErrorDetectorSchema = z.object({
 	'demux-only': z.boolean().default(false)
-});
+}).strict();
 
 const VideoRuleSchema = z.object({
 	name: z.string(),
@@ -16,9 +16,9 @@ const VideoRuleSchema = z.object({
 	}).optional(),
 	type: z.nativeEnum(RuleType),
 	conditions: z.array(AllConditionsSchema)
-});
+}).strict();
 
 export const VideoSchema = z.object({
 	'error-detector': VideoErrorDetectorSchema.optional(),
 	rules: z.array(VideoRuleSchema).optional()
-});
+}).strict();

@@ -3,6 +3,7 @@ import { CachingConditionFactory } from './CachingConditionFactory';
 import { IConditionFactory } from './IConditionFactory';
 import { Operator } from './Operator';
 import { ConditionFactory } from './ConditionFactory';
+import { ConditionSerialised } from './conditions-schema';
 
 describe('CachingConditionFactory', () => {
 	let cachingConditionFactory: IConditionFactory;
@@ -13,12 +14,12 @@ describe('CachingConditionFactory', () => {
 	describe('create', () => {
 		it('should return the same Condition object for identical definitions of conditions', () => {
 			// Conditions
-			const conditionData1 = {
+			const conditionData1: ConditionSerialised = {
 				path: 'p1',
 				operator: Operator.GREATER_THAN_OR_EQUAL,
 				value: 1
 			};
-			const conditionData2 = {
+			const conditionData2: ConditionSerialised = {
 				path: 'p1',
 				operator: Operator.GREATER_THAN_OR_EQUAL,
 				value: 1

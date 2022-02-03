@@ -11,10 +11,3 @@ export type TNumberRange = z.infer<typeof NumberRangeSchema>;
 
 export const NumberOrStringArraySchema = z.array(z.union([z.number(), z.string()]));
 export type TNumberOrStringArray = z.infer<typeof NumberOrStringArraySchema>;
-
-export const AllConditionsValuesSchema = z.union([
-	NumberSchema,
-	NumberOrStringSchema,
-	NumberRangeSchema,
-	NumberOrStringArraySchema
-]);
