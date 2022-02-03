@@ -1,28 +1,19 @@
-import cli from 'cli-ux';
-
-import { FilterFactory } from '../../filter';
 import { Rule } from '../../standard/rule/Rule';
+import { StandardReader } from './StandardReader';
+import { FsFileReader } from '../../standard/FsFileReader';
+import { JSON5Parser } from '../../standard/JSON5Parser';
+import { SchemaParser } from '../../standard/SchemaParser';
 
+// TODO: Temporary translation layer
 export async function readFilterFromSerialized(path: string, verbose = false): Promise<Rule[]> {
-	if (verbose) {
-		cli.action.start(`Reading filter rules from ${path}`);
-	}
-	const fileContent = await FilterFactory.read(path);
+	const standardReader = new StandardReader(
+		new FsFileReader(),
+		new JSON5Parser(),
+		new SchemaParser()
+	);
 
-	if (verbose) {
-		cli.action.stop();
-	}
+	const standard = await standardReader.read(path, verbose);
 
-	if (verbose) {
-		cli.action.start(`Parsing ${path}`);
-	}
-
-	const serialized = await FilterFactory.parse(fileContent);
-	const filter = FilterFactory.getFromSerialized(serialized);
-
-	if (verbose) {
-		cli.action.stop();
-	}
-
-	return filter;
+	// NB: This is broken!
+	return standard as Rule[];
 }
