@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
-import { VideoSchema } from './Video';
+import { VideoStandardSchema } from './Video';
 
 export const StandardSchema = z.object({
-	video: VideoSchema
+	video: VideoStandardSchema
 }).strict();
 
 export type StandardDefinition = z.infer<typeof StandardSchema>;

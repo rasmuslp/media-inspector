@@ -1,10 +1,8 @@
-import { ICondition } from '../condition/ICondition';
 import { IConditionFactory } from '../condition/IConditionFactory';
 
 import { Rule } from './Rule';
 import { IRuleFactory } from './IRuleFactory';
-import { RuleType } from './RuleType';
-import { RuleSchema, RuleSerialized } from './rule-schema';
+import { RuleSerialized } from './rule-schema';
 
 export class RuleFactory implements IRuleFactory {
 	private readonly conditionFactory: IConditionFactory;
@@ -14,21 +12,8 @@ export class RuleFactory implements IRuleFactory {
 	}
 
 	create(serialized: RuleSerialized): Rule {
-		const parsed = RuleSchema.parse(serialized);
+		const conditions = serialized.conditions.map(condition => this.conditionFactory.create(condition));
 
-		let conditions: ICondition[] = [];
-		if (parsed.conditions) {
-			conditions = parsed.conditions
-				.map(condition => this.conditionFactory.create(condition));
-		}
-
-		switch (parsed.type) {
-			case RuleType.ERROR:
-			case RuleType.METADATA:
-			default: {
-				// TODO: Store the type, or specialise on it?
-				return new Rule(parsed.mimeType, conditions);
-			}
-		}
+		return new Rule(serialized.name, serialized.match, serialized.type, conditions);
 	}
 }

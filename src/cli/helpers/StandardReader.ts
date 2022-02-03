@@ -3,6 +3,8 @@ import cli from 'cli-ux';
 import { IFileReader } from '../../standard/IFileReader';
 import { IJSON5Parser } from '../../standard/IJSON5Parser';
 import { ISchemaParser } from '../../standard/ISchemaParser';
+import { IStandardFactory } from '../../standard/IStandardFactory';
+import { Standard } from '../../standard/Standard';
 
 export class StandardReader {
 	private readonly fileReader: IFileReader;
@@ -11,14 +13,16 @@ export class StandardReader {
 
 	private readonly schemaParser: ISchemaParser;
 
-	constructor(fileReader: IFileReader, json5Parser: IJSON5Parser, schemaParser: ISchemaParser) {
+	private readonly standardFactory: IStandardFactory;
+
+	constructor(fileReader: IFileReader, json5Parser: IJSON5Parser, schemaParser: ISchemaParser, standardFactory: IStandardFactory) {
 		this.fileReader = fileReader;
 		this.json5Parser = json5Parser;
 		this.schemaParser = schemaParser;
+		this.standardFactory = standardFactory;
 	}
 
-	// TODO: Add return type
-	public async read(path: string, verbose = false) {
+	public async read(path: string, verbose = false): Promise<Standard> {
 		if (verbose) {
 			cli.action.start(`Reading from: ${path}`);
 		}
@@ -46,10 +50,11 @@ export class StandardReader {
 		if (verbose) {
 			cli.action.start('Creating standard');
 		}
+		const standard = this.standardFactory.create(parsedSchema);
 		if (verbose) {
 			cli.action.stop();
 		}
 
-		return parsedSchema;
+		return standard;
 	}
 }

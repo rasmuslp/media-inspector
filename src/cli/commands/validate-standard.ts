@@ -2,11 +2,16 @@ import path from 'path';
 
 import cli from 'cli-ux';
 
-import BaseCommand from '../BaseCommand';
+import { CachingConditionFactory } from '../../standard/condition/CachingConditionFactory';
+import { ConditionFactory } from '../../standard/condition/ConditionFactory';
+import { RuleFactory } from '../../standard/rule/RuleFactory';
+import { VideoStandardFactory } from '../../standard/video/VideoStandardFactory';
 import { FsFileReader } from '../../standard/FsFileReader';
 import { JSON5Parser } from '../../standard/JSON5Parser';
 import { SchemaParser } from '../../standard/SchemaParser';
+import { StandardFactory } from '../../standard/StandardFactory';
 import { StandardReader } from '../helpers/StandardReader';
+import BaseCommand from '../BaseCommand';
 
 export default class ValidateStandard extends BaseCommand {
 	static description = 'Validate standard';
@@ -32,7 +37,8 @@ export default class ValidateStandard extends BaseCommand {
 		const standardReader = new StandardReader(
 			new FsFileReader(),
 			new JSON5Parser(),
-			new SchemaParser()
+			new SchemaParser(),
+			new StandardFactory(new VideoStandardFactory(new RuleFactory(new CachingConditionFactory(new ConditionFactory()))))
 		);
 
 		cli.action.start(`Validating standard from file ${standardPath}`);

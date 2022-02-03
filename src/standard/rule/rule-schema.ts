@@ -1,12 +1,15 @@
 import { z } from 'zod';
 
 import { AllConditionsSchema } from '../condition/conditions-schema';
-import { RuleType } from './RuleType';
 
 export const RuleSchema = z.object({
-	mimeType: z.string(),
-	type: z.nativeEnum(RuleType),
+	name: z.string(),
+	match: z.object({
+		fileExtension: z.string().optional(),
+		mimeType: z.string().optional()
+	}).optional(),
+	type: z.string(),
 	conditions: z.array(AllConditionsSchema)
-});
+}).strict();
 
 export type RuleSerialized = z.infer<typeof RuleSchema>;
