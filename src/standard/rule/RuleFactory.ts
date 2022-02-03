@@ -1,9 +1,10 @@
 import { ICondition } from '../condition/ICondition';
 import { IConditionFactory } from '../condition/IConditionFactory';
 
-import { Rule, RuleSchema, RuleSerialized } from './Rule';
+import { Rule } from './Rule';
 import { IRuleFactory } from './IRuleFactory';
 import { RuleType } from './RuleType';
+import { RuleSchema, RuleSerialized } from './rule-schema';
 
 export class RuleFactory implements IRuleFactory {
 	private readonly conditionFactory: IConditionFactory;

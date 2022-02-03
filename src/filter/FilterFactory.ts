@@ -6,8 +6,9 @@ import { z } from 'zod';
 
 import { CachingConditionFactory } from '../standard/condition/CachingConditionFactory';
 import { ConditionFactory } from '../standard/condition/ConditionFactory';
-import { Rule, RuleSchema } from '../standard/rule/Rule';
+import { Rule } from '../standard/rule/Rule';
 import { RuleFactory } from '../standard/rule/RuleFactory';
+import { RuleSchema } from '../standard/rule/rule-schema';
 
 const readFile = promisify(fs.readFile);
 
