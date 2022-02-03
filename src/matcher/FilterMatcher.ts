@@ -1,6 +1,7 @@
 import { File } from '../fs-tree';
 import { MetadataCache } from '../metadata/MetadataCache';
 import { Rule } from '../standard/rule/Rule';
+import { RuleChecker } from '../standard/rule/RuleChecker';
 import { RuleResult } from '../standard/rule/RuleResult';
 import { FilterMatch } from './FilterMatch';
 import { Match } from './Match';
@@ -17,7 +18,7 @@ export class FilterMatcher {
 				const metadata = metadataCache.getMetadata(node.path);
 				if (fileMatchesMimeType && metadata) {
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-					const ruleResult = rule.checkRuleWithPathGetter(metadata.get.bind(metadata));
+					const ruleResult = RuleChecker.checkRuleWithPathGetter(rule, metadata.get.bind(metadata));
 					if (ruleResult) {
 						ruleResults.push(ruleResult);
 					}
