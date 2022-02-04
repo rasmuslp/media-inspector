@@ -11,6 +11,10 @@ export class Rule implements IRule {
 	private readonly theConditions: ICondition[];
 
 	constructor(name: string, match: IRuleMatch, type: string, conditions: ICondition[] = []) {
+		if (conditions.length === 0) {
+			throw new RangeError('Rule requires at least 1 condition');
+		}
+
 		this.name = name;
 		this.match = match;
 		this.type = type;

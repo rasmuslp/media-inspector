@@ -9,7 +9,7 @@ export const RuleSchema = z.object({
 		mimeType: z.string().optional()
 	}).optional(),
 	type: z.string(),
-	conditions: z.array(AllConditionsSchema)
+	conditions: z.array(AllConditionsSchema).nonempty()
 }).strict();
 
 export type RuleSerialized = z.infer<typeof RuleSchema>;

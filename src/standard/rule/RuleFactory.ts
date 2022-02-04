@@ -1,7 +1,8 @@
 import { IConditionFactory } from '../condition/IConditionFactory';
 
-import { Rule } from './Rule';
+import { IRule } from './IRule';
 import { IRuleFactory } from './IRuleFactory';
+import { Rule } from './Rule';
 import { RuleSerialized } from './rule-schema';
 
 export class RuleFactory implements IRuleFactory {
@@ -11,7 +12,7 @@ export class RuleFactory implements IRuleFactory {
 		this.conditionFactory = conditionFactory;
 	}
 
-	create(serialized: RuleSerialized): Rule {
+	create(serialized: RuleSerialized): IRule {
 		const conditions = serialized.conditions.map(condition => this.conditionFactory.create(condition));
 
 		return new Rule(serialized.name, serialized.match, serialized.type, conditions);
