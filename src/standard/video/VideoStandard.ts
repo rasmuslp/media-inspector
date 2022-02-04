@@ -4,9 +4,9 @@ import {
 } from './VideoErrorDetectorConfiguration';
 
 export class VideoStandard {
-	private readonly videoErrorDetectorConfiguration: IVideoErrorDetectorConfiguration;
+	public readonly videoErrorDetectorConfiguration: IVideoErrorDetectorConfiguration;
 
-	private readonly rules: IRule[];
+	public readonly rules: IRule[];
 
 	constructor(videoErrorDetectorConfiguration: IVideoErrorDetectorConfiguration, rules: IRule[]) {
 		this.videoErrorDetectorConfiguration = {
