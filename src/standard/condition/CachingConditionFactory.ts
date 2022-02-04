@@ -2,7 +2,7 @@ import crypto from 'crypto';
 
 import { ICondition } from './ICondition';
 import { IConditionFactory } from './IConditionFactory';
-import { ConditionSerialised } from './conditions-schema';
+import { ConditionSerialised } from './ConditionSchema';
 
 export class CachingConditionFactory implements IConditionFactory {
 	private readonly conditions = new Map<string, ICondition>();

@@ -1,9 +1,9 @@
 import { IRule } from '../rule/IRule';
 import { IRuleFactory } from '../rule/IRuleFactory';
-import { VideoStandardDefinition } from '../schema/Video';
 import { IVideoStandardFactory } from './IVideoStandardFactory';
 import { IVideoErrorDetectorConfiguration } from './VideoErrorDetectorConfiguration';
 import { VideoStandard } from './VideoStandard';
+import { VideoStandardDefinition } from './VideoStandardSchema';
 
 export class VideoStandardFactory implements IVideoStandardFactory {
 	private readonly ruleFactory: IRuleFactory;

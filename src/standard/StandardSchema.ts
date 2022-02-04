@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { VideoStandardSchema } from './Video';
+import { VideoStandardSchema } from './video-standard/VideoStandardSchema';
 
 export const StandardSchema = z.object({
 	video: VideoStandardSchema

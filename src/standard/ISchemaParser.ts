@@ -1,4 +1,4 @@
-import { StandardDefinition } from './schema/Standard';
+import { StandardDefinition } from './StandardSchema';
 
 export interface ISchemaParser {
 	parse(data: unknown): StandardDefinition

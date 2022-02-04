@@ -2,7 +2,7 @@ import { CachingConditionFactory } from '../../standard/condition/CachingConditi
 import { ConditionFactory } from '../../standard/condition/ConditionFactory';
 import { Rule } from '../../standard/rule/Rule';
 import { RuleFactory } from '../../standard/rule/RuleFactory';
-import { VideoStandardFactory } from '../../standard/video/VideoStandardFactory';
+import { VideoStandardFactory } from '../../standard/video-standard/VideoStandardFactory';
 import { FsFileReader } from '../../standard/FsFileReader';
 import { JSON5Parser } from '../../standard/JSON5Parser';
 import { SchemaParser } from '../../standard/SchemaParser';

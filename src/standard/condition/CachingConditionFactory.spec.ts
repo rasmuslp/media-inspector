@@ -3,7 +3,7 @@ import { CachingConditionFactory } from './CachingConditionFactory';
 import { IConditionFactory } from './IConditionFactory';
 import { Operator } from './Operator';
 import { ConditionFactory } from './ConditionFactory';
-import { ConditionSerialised } from './conditions-schema';
+import { ConditionSerialised } from './ConditionSchema';
 
 describe('CachingConditionFactory', () => {
 	let cachingConditionFactory: IConditionFactory;

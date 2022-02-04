@@ -1,6 +1,6 @@
 import { mock, MockProxy } from 'jest-mock-extended';
 
-import { ConditionSerialised } from '../condition/conditions-schema';
+import { ConditionSerialised } from '../condition/ConditionSchema';
 import { ICondition } from '../condition/ICondition';
 import { IConditionFactory } from '../condition/IConditionFactory';
 import { IRuleFactory } from './IRuleFactory';

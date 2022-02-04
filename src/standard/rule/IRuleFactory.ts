@@ -1,5 +1,5 @@
 import { IRule } from './IRule';
-import { RuleSerialized } from './rule-schema';
+import { RuleSerialized } from './RuleSchema';
 
 export interface IRuleFactory {
 	create(serialized: RuleSerialized): IRule

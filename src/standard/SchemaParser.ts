@@ -1,5 +1,5 @@
-import { StandardDefinition, StandardSchema } from './schema/Standard';
 import { ISchemaParser } from './ISchemaParser';
+import { StandardDefinition, StandardSchema } from './StandardSchema';
 
 export class SchemaParser implements ISchemaParser {
 	parse(data: unknown): StandardDefinition {

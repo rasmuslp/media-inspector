@@ -4,7 +4,7 @@ import { IRule } from '../rule/IRule';
 import { IRuleFactory } from '../rule/IRuleFactory';
 import { IVideoStandardFactory } from './IVideoStandardFactory';
 import { VideoStandardFactory } from './VideoStandardFactory';
-import { RuleSerialized } from '../rule/rule-schema';
+import { RuleSerialized } from '../rule/RuleSchema';
 
 describe('VideoStandardFactory', () => {
 	let ruleFactoryMock: MockProxy<IRuleFactory>;

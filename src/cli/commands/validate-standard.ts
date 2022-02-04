@@ -5,7 +5,7 @@ import cli from 'cli-ux';
 import { CachingConditionFactory } from '../../standard/condition/CachingConditionFactory';
 import { ConditionFactory } from '../../standard/condition/ConditionFactory';
 import { RuleFactory } from '../../standard/rule/RuleFactory';
-import { VideoStandardFactory } from '../../standard/video/VideoStandardFactory';
+import { VideoStandardFactory } from '../../standard/video-standard/VideoStandardFactory';
 import { FsFileReader } from '../../standard/FsFileReader';
 import { JSON5Parser } from '../../standard/JSON5Parser';
 import { SchemaParser } from '../../standard/SchemaParser';

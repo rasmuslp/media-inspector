@@ -1,4 +1,4 @@
-import { VideoStandard } from './video/VideoStandard';
+import { VideoStandard } from './video-standard/VideoStandard';
 
 export class Standard {
 	private readonly videoStandard;

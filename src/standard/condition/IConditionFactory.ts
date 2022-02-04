@@ -1,4 +1,4 @@
-import { ConditionSerialised } from './conditions-schema';
+import { ConditionSerialised } from './ConditionSchema';
 import { ICondition } from './ICondition';
 
 export interface IConditionFactory {

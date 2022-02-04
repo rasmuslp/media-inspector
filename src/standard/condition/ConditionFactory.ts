@@ -4,15 +4,15 @@ import { GreaterThanOrEqual } from './types/GreaterThanOrEqual';
 import { In } from './types/In';
 import { LessThan } from './types/LessThan';
 import { NotEqual } from './types/NotEqual';
-import { ICondition } from './ICondition';
-import { IConditionFactory } from './IConditionFactory';
-import { Operator } from './Operator';
 import {
 	ConditionBetweenSchema,
 	ConditionEqualSchema,
 	ConditionGreaterThanOrEqualSchema,
 	ConditionInSchema, ConditionLessThanSchema, ConditionNotEqualSchema, ConditionSerialised
-} from './conditions-schema';
+} from './ConditionSchema';
+import { ICondition } from './ICondition';
+import { IConditionFactory } from './IConditionFactory';
+import { Operator } from './Operator';
 
 export class ConditionFactory implements IConditionFactory {
 	public create(serialized: ConditionSerialised): ICondition {

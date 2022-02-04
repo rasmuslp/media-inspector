@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { AllConditionsSchema } from '../condition/conditions-schema';
+import { AllConditionsSchema } from '../condition/ConditionSchema';
 
 export const RuleSchema = z.object({
 	name: z.string(),

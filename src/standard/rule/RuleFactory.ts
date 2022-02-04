@@ -3,7 +3,7 @@ import { IConditionFactory } from '../condition/IConditionFactory';
 import { IRule } from './IRule';
 import { IRuleFactory } from './IRuleFactory';
 import { Rule } from './Rule';
-import { RuleSerialized } from './rule-schema';
+import { RuleSerialized } from './RuleSchema';
 
 export class RuleFactory implements IRuleFactory {
 	private readonly conditionFactory: IConditionFactory;
