@@ -1,8 +1,7 @@
 import path from 'path';
 
-import { Flags } from '@oclif/core';
+import { CliUx, Flags } from '@oclif/core';
 import chalk from 'chalk';
-import cli from 'cli-ux';
 
 import { Directory, FsNode, PathSorters } from '../../fs-tree';
 import { AuxiliaryMatch } from '../../matcher/AuxiliaryMatch';
@@ -165,11 +164,11 @@ export default class Inspect extends BaseCommand {
 		const videoStandard = standard.videoStandard as VideoStandard; // TODO: Hacky
 
 		if (verbose) {
-			cli.action.start('Filtering...');
+			CliUx.ux.action.start('Filtering...');
 		}
 		const matches = await FilterMatcher.getMatches(metadataCache, videoStandard.rules);
 		if (verbose) {
-			cli.action.stop();
+			CliUx.ux.action.stop();
 			this.log(`Found ${matches.length} item${matches.length === 1 ? 's' : ''} for purging`);
 		}
 
