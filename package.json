@@ -47,6 +47,7 @@
   "dependencies": {
     "@oclif/core": "1.3.0",
     "@oclif/plugin-autocomplete": "~0.3.0",
+    "@oclif/plugin-version": "1.0.4",
     "chalk": "^4.1.2",
     "cli-progress": "^3.9.1",
     "cli-ux": "^5.6.3",
@@ -87,7 +88,14 @@
     "commands": "./src/cli/commands",
     "plugins": [
       "@oclif/plugin-autocomplete",
-      "@oclif/plugin-help"
+      "@oclif/plugin-help",
+      "@oclif/plugin-version"
+    ],
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
     ]
   }
 }
