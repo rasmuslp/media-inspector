@@ -38,7 +38,7 @@ $ npm install -g media-inspector
 $ media-inspector COMMAND
 running command...
 $ media-inspector (-v|--version|version)
-media-inspector/0.4.2 darwin-x64 node-v14.17.3
+media-inspector/0.4.2 darwin-arm64 node-v16.13.1
 $ media-inspector --help [COMMAND]
 USAGE
   $ media-inspector COMMAND
@@ -52,7 +52,7 @@ USAGE
 * [`media-inspector cache`](#media-inspector-cache)
 * [`media-inspector help [COMMAND]`](#media-inspector-help-command)
 * [`media-inspector inspect`](#media-inspector-inspect)
-* [`media-inspector validate-filter FILTERPATH`](#media-inspector-validate-filter-filterpath)
+* [`media-inspector validate-standard STANDARDPATH`](#media-inspector-validate-standard-standardpath)
 * [`media-inspector video-errors VIDEOPATH`](#media-inspector-video-errors-videopath)
 
 ## `media-inspector autocomplete [SHELL]`
@@ -113,47 +113,47 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.18/src/commands/help.ts)_
 
 ## `media-inspector inspect`
 
-Inspect input with filter
+Inspect input and hold it up to a standard
 
 ```
 USAGE
   $ media-inspector inspect
 
 OPTIONS
-  -f, --filter=filter     (required) Path of the filter to apply in JSON or JSON5
-  -i, --includeAuxiliary  Will also include empty directories and 'container' directories
-  -r, --read=read         (required) Path of a directory or file, or a metadata cache file to read
-  -v, --verbose           Enable to get detailed information and progress
+  -i, --includeAuxiliary   Will also include empty directories and 'container' directories
+  -r, --read=read          (required) Path of a directory or file, or a metadata cache file to read
+  -s, --standard=standard  (required) Path of the standard to apply in JSON or JSON5
+  -v, --verbose            Enable to get detailed information and progress
 
 EXAMPLES
-  $ media-inspector inspect -r ~/Downloads -f ./examples/filter-default.json5
-  $ media-inspector inspect -r ~/Downloads/file.ext -f ./examples/filter-default.json5
-  $ media-inspector inspect -r downloads.json -f ./examples/filter-default.json5
-  $ media-inspector inspect -r downloads.json -f ./examples/filter-default.json5 -i -v
+  $ media-inspector inspect -r ~/Downloads -s ./examples/standard-default.json5
+  $ media-inspector inspect -r ~/Downloads/file.ext -s ./examples/standard-default.json5
+  $ media-inspector inspect -r downloads.json -s ./examples/standard-default.json5
+  $ media-inspector inspect -r downloads.json -s ./examples/standard-default.json5 -i -v
 ```
 
 _See code: [src/cli/commands/inspect.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.2/src/cli/commands/inspect.ts)_
 
-## `media-inspector validate-filter FILTERPATH`
+## `media-inspector validate-standard STANDARDPATH`
 
-Validate filter
+Validate standard
 
 ```
 USAGE
-  $ media-inspector validate-filter FILTERPATH
+  $ media-inspector validate-standard STANDARDPATH
 
 ARGUMENTS
-  FILTERPATH  Path to filter in JSON or JSON5
+  STANDARDPATH  Path to a definition of a standard in JSON or JSON5
 
 EXAMPLE
-  $ media-inspector validate-filter ./examples/filter-default.json5
+  $ media-inspector validate-standard ./examples/standard-default.json5
 ```
 
-_See code: [src/cli/commands/validate-filter.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.2/src/cli/commands/validate-filter.ts)_
+_See code: [src/cli/commands/validate-standard.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.2/src/cli/commands/validate-standard.ts)_
 
 ## `media-inspector video-errors VIDEOPATH`
 
@@ -181,10 +181,39 @@ EXAMPLES
 _See code: [src/cli/commands/video-errors.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.2/src/cli/commands/video-errors.ts)_
 <!-- commandsstop -->
 
-# How filters work
-A `filter` is a list of `rules`. A `rule` is a prioritised list of `conditions`.
-A `rule` is considered satisfied when all its `conditions` are satisfied.
-When a media file satisfies all the `conditions` of _any_ `rule`, that media-file is considered a match.
+# Standard
+> Definition of what constitutes a Standard
+
+A Standard describes the acceptable standard of files of different types.
+This is defined in a file as Rules, which all have to be satisfied, in order to meet the Standard.
+
+Depending on the type, different types of Rules - and additional configuration options - are available.
+
+[//]: # (Currently, only `video` is supported, and this support)
+
+A Rule is defined by
+* `name` - A recognizable name.
+* `match` - Criteria for determining if the Rule should be applied to a file.
+* `type` - The type of Rule. Determines what the `conditions` are applied on.
+* `conditions` - A list of Conditions, that all must be satisfied for the Rule to be satisfied for a given file.
+
+A Condition is defined by
+* `path` - The path to a field, within the output generated by applying the Rule type on a given file.
+* `operator` - The operator to apply. E.g. `>=`, `<`, `=`, `in`, and more.
+* `value` - The value to use. The allowed values depends on the `operator`.
+
+And should be interpreted as: Value at `path` must satisfy `operator` for `value`.
+
+If the value of `video.width = 720`, then the following condition would not be satisfied as `720 >= 1280` is `false`.
+```json5
+{
+	path: 'video-standard.width',
+	operator: '>=',
+	value: '1280'
+}
+```
+
+A file need to satisfy all Rules that it matches. If it doesn't, it is considered a match for investigation / purging / ...
 
 # Notes
 * <https://github.com/jshttp/mime-types#readme>

@@ -10,20 +10,31 @@ import { FilterMatch } from '../../matcher/FilterMatch';
 import { FilterMatcher } from '../../matcher/FilterMatcher';
 import { Match } from '../../matcher/Match';
 import { MetadataCache } from '../../metadata/MetadataCache';
+import { ConditionFactory } from '../../standard/condition/ConditionFactory';
+import { CachingConditionFactory } from '../../standard/condition/CachingConditionFactory';
+import { RuleFactory } from '../../standard/rule/RuleFactory';
+import { VideoStandardFactory } from '../../standard/video-standard/VideoStandardFactory';
+import { VideoStandard } from '../../standard/video-standard/VideoStandard';
+import { FsFileReader } from '../../standard/FsFileReader';
+import { JSON5Parser } from '../../standard/JSON5Parser';
+import { SchemaParser } from '../../standard/SchemaParser';
+import { StandardFactory } from '../../standard/StandardFactory';
+import { Standard } from '../../standard/Standard';
 import { SerializableIO } from '../../serializable/SerializableIO';
-import { readFilterFromSerialized } from '../helpers/readFilterFromSerialized';
+import { IStandardReader } from '../helpers/IStandardReader';
 import { readMetadataFromFileSystem } from '../helpers/readMetadataFromFileSystem';
 import { readMetadataFromSerialized } from '../helpers/readMetadataFromSerialized';
+import { StandardReader } from '../helpers/StandardReader';
 import BaseCommand from '../BaseCommand';
 import { verbose } from '../flags';
 
 export default class Inspect extends BaseCommand {
-	static description = 'Inspect input with filter';
+	static description = 'Inspect input and hold it up to a standard';
 
 	static flags = {
-		filter: flags.string({
-			char: 'f',
-			description: 'Path of the filter to apply in JSON or JSON5',
+		standard: flags.string({
+			char: 's',
+			description: 'Path of the standard to apply in JSON or JSON5',
 			parse: (input: string): string => path.resolve(process.cwd(), input),
 			required: true
 		}),
@@ -45,11 +56,22 @@ export default class Inspect extends BaseCommand {
 	};
 
 	static examples = [
-		'$ media-inspector inspect -r ~/Downloads -f ./examples/filter-default.json5',
-		'$ media-inspector inspect -r ~/Downloads/file.ext -f ./examples/filter-default.json5',
-		'$ media-inspector inspect -r downloads.json -f ./examples/filter-default.json5',
-		'$ media-inspector inspect -r downloads.json -f ./examples/filter-default.json5 -i -v'
+		'$ media-inspector inspect -r ~/Downloads -s ./examples/standard-default.json5',
+		'$ media-inspector inspect -r ~/Downloads/file.ext -s ./examples/standard-default.json5',
+		'$ media-inspector inspect -r downloads.json -s ./examples/standard-default.json5',
+		'$ media-inspector inspect -r downloads.json -s ./examples/standard-default.json5 -i -v'
 	];
+
+	private standardReader: IStandardReader;
+
+	async init() {
+		this.standardReader = new StandardReader(
+			new FsFileReader(),
+			new JSON5Parser(),
+			new SchemaParser(),
+			new StandardFactory(new VideoStandardFactory(new RuleFactory(new CachingConditionFactory(new ConditionFactory()))))
+		);
+	}
 
 	async run() {
 		const { flags } = this.parse(Inspect);
@@ -57,7 +79,7 @@ export default class Inspect extends BaseCommand {
 		const metadataCache = await (SerializableIO.isSerializePath(flags.read) ? readMetadataFromSerialized(flags.read) : readMetadataFromFileSystem(flags.read, flags.verbose));
 
 		const matches: Match[] = [];
-		const filterMatches = await this.filter(metadataCache, flags.filter, flags.verbose);
+		const filterMatches = await this.filter(metadataCache, flags.standard, flags.verbose);
 		matches.push(...filterMatches);
 
 		if (flags.includeAuxiliary) {
@@ -139,12 +161,13 @@ export default class Inspect extends BaseCommand {
 	}
 
 	async filter(metadataCache: MetadataCache, filterPath: string, verbose = false): Promise<Match[]> {
-		const filterRules = await readFilterFromSerialized(filterPath, verbose);
+		const standard: Standard = await this.standardReader.read(filterPath, verbose);
+		const videoStandard = standard.videoStandard as VideoStandard; // TODO: Hacky
 
 		if (verbose) {
 			cli.action.start('Filtering...');
 		}
-		const matches = await FilterMatcher.getMatches(metadataCache, filterRules);
+		const matches = await FilterMatcher.getMatches(metadataCache, videoStandard.rules);
 		if (verbose) {
 			cli.action.stop();
 			this.log(`Found ${matches.length} item${matches.length === 1 ? 's' : ''} for purging`);
