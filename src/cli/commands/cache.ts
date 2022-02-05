@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { flags } from '@oclif/command';
+import { Flags } from '@oclif/core';
 import cli from 'cli-ux';
 
 import BaseCommand from '../BaseCommand';
@@ -11,17 +11,17 @@ export default class Cache extends BaseCommand {
 	static description = 'Cache metadata for a directory structure as JSON';
 
 	static flags = {
-		read: flags.string({
+		read: Flags.string({
 			char: 'r',
 			description: 'Path of a directory or file to read',
-			parse: input => path.resolve(process.cwd(), input),
+			parse: async input => path.resolve(process.cwd(), input),
 			required: true
 		}),
 
-		write: flags.string({
+		write: Flags.string({
 			char: 'w',
 			description: 'Path of where to write the metadata cache as JSON',
-			parse: input => path.resolve(process.cwd(), input),
+			parse: async input => path.resolve(process.cwd(), input),
 			required: true
 		})
 	};
@@ -33,7 +33,7 @@ export default class Cache extends BaseCommand {
 	];
 
 	async run() {
-		const { flags } = this.parse(Cache);
+		const { flags } = await this.parse(Cache);
 
 		if (!SerializableIO.isSerializePath(flags.write)) {
 			throw new Error('Write path should end with .json');
