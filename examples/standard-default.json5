@@ -1,5 +1,5 @@
 {
-	// The mime-type. This defines what other configuration properties are available.
+	// The type. This defines what other configuration properties are available.
 	video: {
 		rules: [
 			{
@@ -13,6 +13,31 @@
 					}
 				]
 			},
+
+			{
+				name: 'Minimum 23 FPS',
+				type: 'metadata',
+				conditions: [
+					{
+						path: 'video.framerate',
+						operator: '>=',
+						value: 23
+					}
+				]
+			},
+
+			{
+				name: 'Only progressive scan-type',
+				type: 'metadata',
+				conditions: [
+					{
+						path: 'video.scantype',
+						operator: '=',
+						value: 'progressive'
+					}
+				]
+			},
+
 			{
 				name: 'No errors in recorded TV',
 				match: {
@@ -27,6 +52,7 @@
 					}
 				]
 			},
+
 			{
 				name: 'h265',
 				match: {
@@ -34,6 +60,7 @@
 						path: 'video.format',
 						operator: '=',
 						value: 'hevc'
+						// https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding - MPEG-H Part 2: H265
 					}]
 				},
 				type: 'metadata',
@@ -50,6 +77,57 @@
 					}
 				]
 			},
+
+			{
+				name: 'H264 / VC-1',
+				match: {
+					metadata: [{
+						path: 'video.format',
+						operator: 'in',
+						value: [
+							'avc', // https://en.wikipedia.org/wiki/H.264/MPEG-4_AVC - MPEG-4 Part 10: H264
+							'vc-1' // https://en.wikipedia.org/wiki/VC-1 - Somewhat similar MS alternative
+						]
+					}]
+				},
+				type: 'metadata',
+				conditions: [
+					{
+						path: 'video.width',
+						operator: '>=',
+						value: 1280
+					},
+					{
+						path: 'general.bitrate',
+						operator: '>=',
+						value: 1800000
+					}
+				]
+			},
+
+			{
+				name: 'DivX / XviD',
+				match: {
+					metadata: [{
+						path: 'video.format',
+						operator: '=',
+						value: 'mpeg-4 visual' // https://en.wikipedia.org/wiki/MPEG-4_Part_2 - MPEG-4 Part 2: DivX / XviD
+					}]
+				},
+				type: 'metadata',
+				conditions: [
+					{
+						path: 'video.width',
+						operator: 'between',
+						value: [640, 1279]
+					},
+					{
+						path: 'general.bitrate',
+						operator: '>=',
+						value: 1000000
+					}
+				]
+			}
 		],
 
 		// Error detector configuration
