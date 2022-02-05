@@ -5,8 +5,9 @@ import { IJSON5Parser } from '../../standard/IJSON5Parser';
 import { ISchemaParser } from '../../standard/ISchemaParser';
 import { IStandardFactory } from '../../standard/IStandardFactory';
 import { Standard } from '../../standard/Standard';
+import { IStandardReader } from './IStandardReader';
 
-export class StandardReader {
+export class StandardReader implements IStandardReader {
 	private readonly fileReader: IFileReader;
 
 	private readonly json5Parser: IJSON5Parser;

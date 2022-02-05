@@ -8,6 +8,7 @@ import { FsFileReader } from '../../standard/FsFileReader';
 import { JSON5Parser } from '../../standard/JSON5Parser';
 import { SchemaParser } from '../../standard/SchemaParser';
 import { StandardFactory } from '../../standard/StandardFactory';
+import { IStandardReader } from '../helpers/IStandardReader';
 import { StandardReader } from '../helpers/StandardReader';
 import BaseCommand from '../BaseCommand';
 
@@ -27,20 +28,23 @@ export default class ValidateStandard extends BaseCommand {
 		'$ media-inspector validate-standard ./examples/standard-default.json5'
 	];
 
-	async run() {
-		const { args } = this.parse(ValidateStandard);
+	private standardReader: IStandardReader;
 
-		const standardPath = args.standardPath as string;
-
-		const standardReader = new StandardReader(
+	async init() {
+		this.standardReader = new StandardReader(
 			new FsFileReader(),
 			new JSON5Parser(),
 			new SchemaParser(),
 			new StandardFactory(new VideoStandardFactory(new RuleFactory(new CachingConditionFactory(new ConditionFactory()))))
 		);
+	}
+
+	async run() {
+		const { args } = this.parse(ValidateStandard);
+		const standardPath = args.standardPath as string;
 
 		try {
-			await standardReader.read(standardPath, true);
+			await this.standardReader.read(standardPath, true);
 		}
 		catch (error) {
 			this.error('Validation failed');
