@@ -8,8 +8,6 @@ const VideoErrorDetectorSchema = z.object({
 
 export const VideoStandardSchema = z.object({
 	'error-detector': VideoErrorDetectorSchema.optional(),
-	// TODO: Something is odd here... Is it a generic Rule, or should it be a VideoRule?
-	// If it's generic, how do I handle the different types? Generics?
 	rules: z.array(RuleSchema)
 }).strict();
 
