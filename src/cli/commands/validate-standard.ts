@@ -1,7 +1,5 @@
 import path from 'path';
 
-import cli from 'cli-ux';
-
 import { CachingConditionFactory } from '../../standard/condition/CachingConditionFactory';
 import { ConditionFactory } from '../../standard/condition/ConditionFactory';
 import { RuleFactory } from '../../standard/rule/RuleFactory';
@@ -41,15 +39,13 @@ export default class ValidateStandard extends BaseCommand {
 			new StandardFactory(new VideoStandardFactory(new RuleFactory(new CachingConditionFactory(new ConditionFactory()))))
 		);
 
-		cli.action.start(`Validating standard from file ${standardPath}`);
 		try {
-			await standardReader.read(standardPath, false);
+			await standardReader.read(standardPath, true);
 		}
 		catch (error) {
 			this.error('Validation failed');
 			throw error;
 		}
-		cli.action.stop();
 		this.log('Standard is valid');
 	}
 }
