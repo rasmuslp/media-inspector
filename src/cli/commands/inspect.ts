@@ -12,13 +12,14 @@ import { Match } from '../../matcher/Match';
 import { MetadataCache } from '../../metadata/MetadataCache';
 import { ConditionFactory } from '../../standard/condition/ConditionFactory';
 import { CachingConditionFactory } from '../../standard/condition/CachingConditionFactory';
-import { Rule } from '../../standard/rule/Rule';
 import { RuleFactory } from '../../standard/rule/RuleFactory';
 import { VideoStandardFactory } from '../../standard/video-standard/VideoStandardFactory';
+import { VideoStandard } from '../../standard/video-standard/VideoStandard';
 import { FsFileReader } from '../../standard/FsFileReader';
 import { JSON5Parser } from '../../standard/JSON5Parser';
 import { SchemaParser } from '../../standard/SchemaParser';
 import { StandardFactory } from '../../standard/StandardFactory';
+import { Standard } from '../../standard/Standard';
 import { SerializableIO } from '../../serializable/SerializableIO';
 import { IStandardReader } from '../helpers/IStandardReader';
 import { readMetadataFromFileSystem } from '../helpers/readMetadataFromFileSystem';
@@ -160,15 +161,13 @@ export default class Inspect extends BaseCommand {
 	}
 
 	async filter(metadataCache: MetadataCache, filterPath: string, verbose = false): Promise<Match[]> {
-		const standard = await this.standardReader.read(filterPath, verbose);
-
-		// NB: This is broken!
-		const filterRules = standard as unknown as Rule[];
+		const standard: Standard = await this.standardReader.read(filterPath, verbose);
+		const videoStandard = standard.videoStandard as VideoStandard; // TODO: Hacky
 
 		if (verbose) {
 			cli.action.start('Filtering...');
 		}
-		const matches = await FilterMatcher.getMatches(metadataCache, filterRules);
+		const matches = await FilterMatcher.getMatches(metadataCache, videoStandard.rules);
 		if (verbose) {
 			cli.action.stop();
 			this.log(`Found ${matches.length} item${matches.length === 1 ? 's' : ''} for purging`);

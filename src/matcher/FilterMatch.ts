@@ -22,9 +22,9 @@ export class FilterMatch extends Match {
 		const ruleMessages: string[] = [];
 		const ruleResultsSorted = [...this.ruleResults].sort((a, b) => a.getWeightedScore() - b.getWeightedScore()).reverse();
 		for (const ruleResult of ruleResultsSorted) {
-			let ruleMessage = `${ruleResult.satisfied ? 'MATCHED' : 'failed'}: ${ruleResult.getResultsAsStrings().join(', ')}`;
+			let ruleMessage = `${ruleResult.satisfied ? 'Satisfied' : 'MATCHED'}: ${ruleResult.getResultsAsStrings().join(', ')}`;
 			if (colorized) {
-				ruleMessage = ruleMessage.replace(/matched/gi, match => chalk.green(match));
+				ruleMessage = ruleMessage.replace(/matched/gi, match => chalk.red(match));
 				ruleMessage = ruleMessage.replace(/satisfied/gi, match => chalk.green(match));
 				ruleMessage = ruleMessage.replace(/failed/gi, match => chalk.red(match));
 			}

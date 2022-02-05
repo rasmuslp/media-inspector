@@ -1,20 +1,23 @@
 import { File } from '../fs-tree';
 import { MetadataCache } from '../metadata/MetadataCache';
-import { Rule } from '../standard/rule/Rule';
+import { IRule } from '../standard/rule/IRule';
 import { RuleChecker } from '../standard/rule/RuleChecker';
 import { RuleResult } from '../standard/rule/RuleResult';
 import { FilterMatch } from './FilterMatch';
 import { Match } from './Match';
 
 export class FilterMatcher {
-	static async getMatches(metadataCache: MetadataCache, filterRules: Rule[]): Promise<Match[]> {
+	static async getMatches(metadataCache: MetadataCache, filterRules: IRule[]): Promise<Match[]> {
 		// Build list of matches
 		const matches: Match[] = [];
 		await metadataCache.tree.traverse(async node => {
 			// Check all rules
 			const ruleResults: RuleResult[] = [];
 			for (const rule of filterRules) {
-				const fileMatchesMimeType = node instanceof File && node.mimeType.startsWith(rule.name);
+				if (rule.type !== 'metadata') {
+					continue;
+				}
+				const fileMatchesMimeType = node instanceof File && node.mimeType.startsWith('video/');
 				const metadata = metadataCache.getMetadata(node.path);
 				if (fileMatchesMimeType && metadata) {
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -25,9 +28,9 @@ export class FilterMatcher {
 				}
 			}
 
-			// See if any matched all it's conditions
-			const anyMatch = ruleResults.find(result => result.satisfied);
-			if (anyMatch) {
+			// Check if _any_ rule was not satisfied
+			const anyNotSatisfied = ruleResults.find(result => !result.satisfied);
+			if (anyNotSatisfied) {
 				matches.push(new FilterMatch('Filters matched with::', node, ruleResults));
 			}
 		});
