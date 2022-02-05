@@ -38,7 +38,7 @@ $ npm install -g media-inspector
 $ media-inspector COMMAND
 running command...
 $ media-inspector (-v|--version|version)
-media-inspector/0.4.2 darwin-x64 node-v14.17.3
+media-inspector/0.4.2 darwin-arm64 node-v16.13.1
 $ media-inspector --help [COMMAND]
 USAGE
   $ media-inspector COMMAND
@@ -52,7 +52,7 @@ USAGE
 * [`media-inspector cache`](#media-inspector-cache)
 * [`media-inspector help [COMMAND]`](#media-inspector-help-command)
 * [`media-inspector inspect`](#media-inspector-inspect)
-* [`media-inspector validate-filter FILTERPATH`](#media-inspector-validate-filter-filterpath)
+* [`media-inspector validate-standard STANDARDPATH`](#media-inspector-validate-standard-standardpath)
 * [`media-inspector video-errors VIDEOPATH`](#media-inspector-video-errors-videopath)
 
 ## `media-inspector autocomplete [SHELL]`
@@ -113,47 +113,47 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.18/src/commands/help.ts)_
 
 ## `media-inspector inspect`
 
-Inspect input with filter
+Inspect input and hold it up to a standard
 
 ```
 USAGE
   $ media-inspector inspect
 
 OPTIONS
-  -f, --filter=filter     (required) Path of the filter to apply in JSON or JSON5
-  -i, --includeAuxiliary  Will also include empty directories and 'container' directories
-  -r, --read=read         (required) Path of a directory or file, or a metadata cache file to read
-  -v, --verbose           Enable to get detailed information and progress
+  -i, --includeAuxiliary   Will also include empty directories and 'container' directories
+  -r, --read=read          (required) Path of a directory or file, or a metadata cache file to read
+  -s, --standard=standard  (required) Path of the standard to apply in JSON or JSON5
+  -v, --verbose            Enable to get detailed information and progress
 
 EXAMPLES
-  $ media-inspector inspect -r ~/Downloads -f ./examples/filter-default.json5
-  $ media-inspector inspect -r ~/Downloads/file.ext -f ./examples/filter-default.json5
-  $ media-inspector inspect -r downloads.json -f ./examples/filter-default.json5
-  $ media-inspector inspect -r downloads.json -f ./examples/filter-default.json5 -i -v
+  $ media-inspector inspect -r ~/Downloads -s ./examples/standard-default.json5
+  $ media-inspector inspect -r ~/Downloads/file.ext -s ./examples/standard-default.json5
+  $ media-inspector inspect -r downloads.json -s ./examples/standard-default.json5
+  $ media-inspector inspect -r downloads.json -s ./examples/standard-default.json5 -i -v
 ```
 
 _See code: [src/cli/commands/inspect.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.2/src/cli/commands/inspect.ts)_
 
-## `media-inspector validate-filter FILTERPATH`
+## `media-inspector validate-standard STANDARDPATH`
 
-Validate filter
+Validate standard
 
 ```
 USAGE
-  $ media-inspector validate-filter FILTERPATH
+  $ media-inspector validate-standard STANDARDPATH
 
 ARGUMENTS
-  FILTERPATH  Path to filter in JSON or JSON5
+  STANDARDPATH  Path to a definition of a standard in JSON or JSON5
 
 EXAMPLE
-  $ media-inspector validate-filter ./examples/filter-default.json5
+  $ media-inspector validate-standard ./examples/standard-default.json5
 ```
 
-_See code: [src/cli/commands/validate-filter.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.2/src/cli/commands/validate-filter.ts)_
+_See code: [src/cli/commands/validate-standard.ts](https://github.com/rasmuslp/media-inspector/blob/v0.4.2/src/cli/commands/validate-standard.ts)_
 
 ## `media-inspector video-errors VIDEOPATH`
 
