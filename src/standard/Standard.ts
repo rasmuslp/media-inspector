@@ -1,7 +1,7 @@
 import { VideoStandard } from './video-standard/VideoStandard';
 
 export class Standard {
-	private readonly videoStandard;
+	public readonly videoStandard;
 
 	constructor(videoStandard: VideoStandard) {
 		this.videoStandard = videoStandard;
