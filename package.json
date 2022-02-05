@@ -34,7 +34,7 @@
     "full-test": "npm run type-check && npm run lint && npm run test",
     "lint": "eslint --ext .js,.ts .",
     "lint:fix": "eslint --ext .js,.ts --fix --report-unused-disable-directives .",
-    "prepack": "npm run build && oclif-dev manifest && oclif-dev readme",
+    "prepack": "npm run build && oclif manifest && oclif readme",
     "postpack": "rm -f oclif.manifest.json",
     "publish:beta": "np --no-publish --no-release-draft --any-branch",
     "publish:release": "np --no-publish --no-release-draft",
@@ -42,11 +42,12 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "type-check": "tsc --project tsconfig.eslint.json",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif readme && git add README.md"
   },
   "dependencies": {
     "@oclif/core": "1.3.0",
     "@oclif/plugin-autocomplete": "1.2.0",
+    "@oclif/plugin-help": "5.1.11",
     "@oclif/plugin-version": "1.0.4",
     "chalk": "^4.1.2",
     "cli-progress": "^3.9.1",
@@ -62,7 +63,6 @@
     "zod": "^3.11.6"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "1.26.10",
     "@rasmuslp/eslint-config": "4.0.1",
     "@types/cli-progress": "3.9.2",
     "@types/debug": "4.1.7",
@@ -76,6 +76,7 @@
     "jest-junit": "13.0.0",
     "jest-mock-extended": "2.0.4",
     "np": "7.6.0",
+    "oclif": "2.4.3",
     "ts-jest": "27.1.3",
     "ts-node": "10.4.0",
     "typescript": "4.5.5"
