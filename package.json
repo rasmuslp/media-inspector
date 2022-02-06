@@ -73,7 +73,7 @@
     "@types/node": "16.10.3",
     "@types/split2": "3.2.1",
     "eslint-plugin-jest": "26.0.0",
-    "jest": "27.4.7",
+    "jest": "27.5.0",
     "jest-junit": "13.0.0",
     "jest-mock-extended": "2.0.4",
     "np": "7.6.0",
