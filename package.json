@@ -22,7 +22,9 @@
     "name": "Rasmus Ljungmann Pedersen",
     "email": "rasmuslp@gmail.com"
   },
-  "bin": "./bin/run",
+  "bin": {
+    "media-inspector": "./bin/run"
+  },
   "files": [
     "bin/",
     "dist/",
