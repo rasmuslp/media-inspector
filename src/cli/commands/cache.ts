@@ -1,7 +1,6 @@
 import path from 'path';
 
-import { flags } from '@oclif/command';
-import cli from 'cli-ux';
+import { CliUx, Flags } from '@oclif/core';
 
 import BaseCommand from '../BaseCommand';
 import { readMetadataFromFileSystem } from '../helpers/readMetadataFromFileSystem';
@@ -11,17 +10,17 @@ export default class Cache extends BaseCommand {
 	static description = 'Cache metadata for a directory structure as JSON';
 
 	static flags = {
-		read: flags.string({
+		read: Flags.string({
 			char: 'r',
 			description: 'Path of a directory or file to read',
-			parse: input => path.resolve(process.cwd(), input),
+			parse: async input => path.resolve(process.cwd(), input),
 			required: true
 		}),
 
-		write: flags.string({
+		write: Flags.string({
 			char: 'w',
 			description: 'Path of where to write the metadata cache as JSON',
-			parse: input => path.resolve(process.cwd(), input),
+			parse: async input => path.resolve(process.cwd(), input),
 			required: true
 		})
 	};
@@ -33,7 +32,7 @@ export default class Cache extends BaseCommand {
 	];
 
 	async run() {
-		const { flags } = this.parse(Cache);
+		const { flags } = await this.parse(Cache);
 
 		if (!SerializableIO.isSerializePath(flags.write)) {
 			throw new Error('Write path should end with .json');
@@ -44,8 +43,8 @@ export default class Cache extends BaseCommand {
 
 		const metadataCache = await readMetadataFromFileSystem(flags.read, true);
 
-		cli.action.start(`Writing ${flags.write}`);
+		CliUx.ux.action.start(`Writing ${flags.write}`);
 		await SerializableIO.write(metadataCache, flags.write);
-		cli.action.stop();
+		CliUx.ux.action.stop();
 	}
 }

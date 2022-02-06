@@ -20,7 +20,7 @@ export default class ValidateStandard extends BaseCommand {
 			name: 'standardPath',
 			required: true,
 			description: 'Path to a definition of a standard in JSON or JSON5',
-			parse: (input: string): string => path.resolve(process.cwd(), input)
+			parse: async (input: string) => path.resolve(process.cwd(), input)
 		}
 	];
 
@@ -40,7 +40,7 @@ export default class ValidateStandard extends BaseCommand {
 	}
 
 	async run() {
-		const { args } = this.parse(ValidateStandard);
+		const { args } = await this.parse(ValidateStandard);
 		const standardPath = args.standardPath as string;
 
 		try {

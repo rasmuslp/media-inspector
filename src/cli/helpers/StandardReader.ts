@@ -1,4 +1,4 @@
-import cli from 'cli-ux';
+import { CliUx } from '@oclif/core';
 
 import { IFileReader } from '../../standard/IFileReader';
 import { IJSON5Parser } from '../../standard/IJSON5Parser';
@@ -25,35 +25,35 @@ export class StandardReader implements IStandardReader {
 
 	public async read(path: string, verbose = false): Promise<Standard> {
 		if (verbose) {
-			cli.action.start(`Reading from: ${path}`);
+			CliUx.ux.action.start(`Reading from: ${path}`);
 		}
 		const fileContent = await this.fileReader.read(path);
 		if (verbose) {
-			cli.action.stop();
+			CliUx.ux.action.stop();
 		}
 
 		if (verbose) {
-			cli.action.start('Parsing JSON');
+			CliUx.ux.action.start('Parsing JSON');
 		}
 		const parsedJson = await this.json5Parser.parse(fileContent);
 		if (verbose) {
-			cli.action.stop();
+			CliUx.ux.action.stop();
 		}
 
 		if (verbose) {
-			cli.action.start('Validating standard definition');
+			CliUx.ux.action.start('Validating standard definition');
 		}
 		const parsedSchema = this.schemaParser.parse(parsedJson);
 		if (verbose) {
-			cli.action.stop();
+			CliUx.ux.action.stop();
 		}
 
 		if (verbose) {
-			cli.action.start('Creating standard');
+			CliUx.ux.action.start('Creating standard');
 		}
 		const standard = this.standardFactory.create(parsedSchema);
 		if (verbose) {
-			cli.action.stop();
+			CliUx.ux.action.stop();
 		}
 
 		return standard;

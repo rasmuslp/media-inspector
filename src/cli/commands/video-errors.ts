@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { flags } from '@oclif/command';
+import { Flags } from '@oclif/core';
 import createDebug from 'debug';
 
 import { decodeVideos } from '../helpers/decodeVideo';
@@ -18,27 +18,27 @@ export default class VideoErrors extends BaseCommand {
 			name: 'videoPath',
 			required: true,
 			description: 'Path to video file or directory of video files',
-			parse: (input: string): string => path.resolve(process.cwd(), input)
+			parse: async (input: string) => path.resolve(process.cwd(), input)
 		}
 	];
 
 	static flags = {
-		ext: flags.build({
+		ext: Flags.build({
 			char: 'e',
 			default: undefined,
 			description: 'File extensions to match - default: all',
-			parse: input => input.split(','),
+			parse: async input => input.split(','),
 			required: false
 		})(),
 
-		parallel: flags.integer({
+		parallel: Flags.integer({
 			char: 'p',
-			default: () => 1,
+			default: async () => 1,
 			description: 'Number of parallel processes to utilise for decoding - default: 1',
 			required: true
 		}),
 
-		'demux-only': flags.boolean({
+		'demux-only': Flags.boolean({
 			char: 'd',
 			default: false,
 			description: 'Skip decode and demux only'
@@ -54,7 +54,7 @@ export default class VideoErrors extends BaseCommand {
 	];
 
 	async run() {
-		const { args, flags } = this.parse(VideoErrors);
+		const { args, flags } = await this.parse(VideoErrors);
 
 		const videoPath = args.videoPath as string;
 		const { videoFiles } = await readTreeAndVideos(videoPath, flags.verbose);

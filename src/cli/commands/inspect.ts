@@ -1,8 +1,7 @@
 import path from 'path';
 
-import { flags } from '@oclif/command';
+import { CliUx, Flags } from '@oclif/core';
 import chalk from 'chalk';
-import cli from 'cli-ux';
 
 import { Directory, FsNode, PathSorters } from '../../fs-tree';
 import { AuxiliaryMatch } from '../../matcher/AuxiliaryMatch';
@@ -32,23 +31,23 @@ export default class Inspect extends BaseCommand {
 	static description = 'Inspect input and hold it up to a standard';
 
 	static flags = {
-		standard: flags.string({
+		standard: Flags.string({
 			char: 's',
 			description: 'Path of the standard to apply in JSON or JSON5',
-			parse: (input: string): string => path.resolve(process.cwd(), input),
+			parse: async (input: string) => path.resolve(process.cwd(), input),
 			required: true
 		}),
 
-		includeAuxiliary: flags.boolean({
+		includeAuxiliary: Flags.boolean({
 			char: 'i',
 			default: false,
 			description: 'Will also include empty directories and \'container\' directories'
 		}),
 
-		read: flags.string({
+		read: Flags.string({
 			char: 'r',
 			description: 'Path of a directory or file, or a metadata cache file to read',
-			parse: input => path.resolve(process.cwd(), input),
+			parse: async input => path.resolve(process.cwd(), input),
 			required: true
 		}),
 
@@ -74,7 +73,7 @@ export default class Inspect extends BaseCommand {
 	}
 
 	async run() {
-		const { flags } = this.parse(Inspect);
+		const { flags } = await this.parse(Inspect);
 
 		const metadataCache = await (SerializableIO.isSerializePath(flags.read) ? readMetadataFromSerialized(flags.read) : readMetadataFromFileSystem(flags.read, flags.verbose));
 
@@ -165,11 +164,11 @@ export default class Inspect extends BaseCommand {
 		const videoStandard = standard.videoStandard as VideoStandard; // TODO: Hacky
 
 		if (verbose) {
-			cli.action.start('Filtering...');
+			CliUx.ux.action.start('Filtering...');
 		}
 		const matches = await FilterMatcher.getMatches(metadataCache, videoStandard.rules);
 		if (verbose) {
-			cli.action.stop();
+			CliUx.ux.action.stop();
 			this.log(`Found ${matches.length} item${matches.length === 1 ? 's' : ''} for purging`);
 		}
 
