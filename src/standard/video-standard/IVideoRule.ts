@@ -1,13 +1,14 @@
 import { ICondition } from '../condition/ICondition';
 
-export interface IRuleMatch {
+export interface IVideoRuleMatch {
 	fileExtension?: string,
+	metadata?: ICondition[]
 	mimeType?: string
 }
 
-export interface IRule {
+export interface IVideoRule {
 	name: string,
-	match?: IRuleMatch,
+	match?: IVideoRuleMatch,
 	type: string,
 	conditions: ICondition[]
 }

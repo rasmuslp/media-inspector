@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { RuleResult } from '../standard/rule/RuleResult';
+import { RuleResult } from '../standard/video-standard/RuleResult';
 import { Match, MatchReasonOptions } from './Match';
 import { FsNode } from '../fs-tree';
 

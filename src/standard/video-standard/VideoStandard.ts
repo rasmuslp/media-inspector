@@ -1,4 +1,4 @@
-import { IRule } from '../rule/IRule';
+import { IVideoRule } from './IVideoRule';
 import {
 	IVideoErrorDetectorConfiguration
 } from './VideoErrorDetectorConfiguration';
@@ -6,9 +6,9 @@ import {
 export class VideoStandard {
 	public readonly videoErrorDetectorConfiguration: IVideoErrorDetectorConfiguration;
 
-	public readonly rules: IRule[];
+	public readonly rules: IVideoRule[];
 
-	constructor(videoErrorDetectorConfiguration: IVideoErrorDetectorConfiguration, rules: IRule[]) {
+	constructor(videoErrorDetectorConfiguration: IVideoErrorDetectorConfiguration, rules: IVideoRule[]) {
 		this.videoErrorDetectorConfiguration = {
 			demuxOnly: videoErrorDetectorConfiguration.demuxOnly ?? false
 		};

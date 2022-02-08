@@ -3,16 +3,16 @@ import { mock, MockProxy } from 'jest-mock-extended';
 import { ConditionSerialised } from '../condition/ConditionSchema';
 import { ICondition } from '../condition/ICondition';
 import { IConditionFactory } from '../condition/IConditionFactory';
-import { IRuleFactory } from './IRuleFactory';
-import { Rule } from './Rule';
-import { RuleFactory } from './RuleFactory';
+import { IVideoRuleFactory } from './IVideoRuleFactory';
+import { VideoRule } from './VideoRule';
+import { VideoRuleFactory } from './VideoRuleFactory';
 
-describe('RuleFactory', () => {
+describe('VideoRuleFactory', () => {
 	let conditionFactoryMock: MockProxy<IConditionFactory>;
-	let ruleFactory: IRuleFactory;
+	let videoRuleFactory: IVideoRuleFactory;
 	beforeEach(() => {
 		conditionFactoryMock = mock<IConditionFactory>();
-		ruleFactory = new RuleFactory(conditionFactoryMock);
+		videoRuleFactory = new VideoRuleFactory(conditionFactoryMock);
 	});
 
 	describe('create', () => {
@@ -20,10 +20,10 @@ describe('RuleFactory', () => {
 			conditionFactoryMock.create
 				.calledWith('condition1' as ConditionSerialised)
 				.mockReturnValueOnce('Condition1' as unknown as ICondition);
-			const result = ruleFactory.create({
+			const result = videoRuleFactory.create({
 				conditions: ['condition1' as ConditionSerialised]
 			});
-			expect(result).toBeInstanceOf(Rule);
+			expect(result).toBeInstanceOf(VideoRule);
 			expect(result.conditions).toHaveLength(1);
 		});
 	});

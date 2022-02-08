@@ -1,13 +1,13 @@
 import { File } from '../fs-tree';
 import { MetadataCache } from '../metadata/MetadataCache';
-import { IRule } from '../standard/rule/IRule';
-import { RuleChecker } from '../standard/rule/RuleChecker';
-import { RuleResult } from '../standard/rule/RuleResult';
+import { IVideoRule } from '../standard/video-standard/IVideoRule';
+import { RuleChecker } from '../standard/video-standard/RuleChecker';
+import { RuleResult } from '../standard/video-standard/RuleResult';
 import { FilterMatch } from './FilterMatch';
 import { Match } from './Match';
 
 export class FilterMatcher {
-	static async getMatches(metadataCache: MetadataCache, filterRules: IRule[]): Promise<Match[]> {
+	static async getMatches(metadataCache: MetadataCache, filterRules: IVideoRule[]): Promise<Match[]> {
 		// Build list of matches
 		const matches: Match[] = [];
 		await metadataCache.tree.traverse(async node => {

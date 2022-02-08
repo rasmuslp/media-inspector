@@ -2,7 +2,7 @@ import path from 'path';
 
 import { CachingConditionFactory } from '../../standard/condition/CachingConditionFactory';
 import { ConditionFactory } from '../../standard/condition/ConditionFactory';
-import { RuleFactory } from '../../standard/rule/RuleFactory';
+import { VideoRuleFactory } from '../../standard/video-standard/VideoRuleFactory';
 import { VideoStandardFactory } from '../../standard/video-standard/VideoStandardFactory';
 import { FsFileReader } from '../../standard/FsFileReader';
 import { JSON5Parser } from '../../standard/JSON5Parser';
@@ -35,7 +35,7 @@ export default class ValidateStandard extends BaseCommand {
 			new FsFileReader(),
 			new JSON5Parser(),
 			new SchemaParser(),
-			new StandardFactory(new VideoStandardFactory(new RuleFactory(new CachingConditionFactory(new ConditionFactory()))))
+			new StandardFactory(new VideoStandardFactory(new VideoRuleFactory(new CachingConditionFactory(new ConditionFactory()))))
 		);
 	}
 

@@ -1,14 +1,14 @@
-import { IRule } from '../rule/IRule';
-import { IRuleFactory } from '../rule/IRuleFactory';
+import { IVideoRule } from './IVideoRule';
+import { IVideoRuleFactory } from './IVideoRuleFactory';
 import { IVideoStandardFactory } from './IVideoStandardFactory';
 import { IVideoErrorDetectorConfiguration } from './VideoErrorDetectorConfiguration';
 import { VideoStandard } from './VideoStandard';
 import { VideoStandardDefinition } from './VideoStandardSchema';
 
 export class VideoStandardFactory implements IVideoStandardFactory {
-	private readonly ruleFactory: IRuleFactory;
+	private readonly ruleFactory: IVideoRuleFactory;
 
-	constructor(ruleFactory: IRuleFactory) {
+	constructor(ruleFactory: IVideoRuleFactory) {
 		this.ruleFactory = ruleFactory;
 	}
 
@@ -21,7 +21,7 @@ export class VideoStandardFactory implements IVideoStandardFactory {
 			}
 		}
 
-		const rules: IRule[] = [];
+		const rules: IVideoRule[] = [];
 		for (const rule of data.rules) {
 			rules.push(this.ruleFactory.create(rule));
 		}

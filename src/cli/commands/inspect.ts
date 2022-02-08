@@ -11,7 +11,7 @@ import { Match } from '../../matcher/Match';
 import { MetadataCache } from '../../metadata/MetadataCache';
 import { ConditionFactory } from '../../standard/condition/ConditionFactory';
 import { CachingConditionFactory } from '../../standard/condition/CachingConditionFactory';
-import { RuleFactory } from '../../standard/rule/RuleFactory';
+import { VideoRuleFactory } from '../../standard/video-standard/VideoRuleFactory';
 import { VideoStandardFactory } from '../../standard/video-standard/VideoStandardFactory';
 import { VideoStandard } from '../../standard/video-standard/VideoStandard';
 import { FsFileReader } from '../../standard/FsFileReader';
@@ -68,7 +68,7 @@ export default class Inspect extends BaseCommand {
 			new FsFileReader(),
 			new JSON5Parser(),
 			new SchemaParser(),
-			new StandardFactory(new VideoStandardFactory(new RuleFactory(new CachingConditionFactory(new ConditionFactory()))))
+			new StandardFactory(new VideoStandardFactory(new VideoRuleFactory(new CachingConditionFactory(new ConditionFactory()))))
 		);
 	}
 
