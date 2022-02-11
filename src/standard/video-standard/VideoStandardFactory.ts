@@ -1,5 +1,6 @@
 import { IVideoRule } from './IVideoRule';
 import { IVideoRuleFactory } from './IVideoRuleFactory';
+import { IVideoStandard } from './IVideoStandard';
 import { IVideoStandardFactory } from './IVideoStandardFactory';
 import { IVideoErrorDetectorConfiguration } from './VideoErrorDetectorConfiguration';
 import { VideoStandard } from './VideoStandard';
@@ -12,7 +13,7 @@ export class VideoStandardFactory implements IVideoStandardFactory {
 		this.ruleFactory = ruleFactory;
 	}
 
-	create(data: VideoStandardDefinition): VideoStandard {
+	create(data: VideoStandardDefinition): IVideoStandard {
 		const videoErrorDetectorConfiguration: IVideoErrorDetectorConfiguration = {};
 		if (data['error-detector']) {
 			const demuxOnly = data['error-detector']['demux-only'];

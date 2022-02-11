@@ -1,6 +1,6 @@
-import { VideoStandard } from './VideoStandard';
+import { IVideoStandard } from './IVideoStandard';
 import { VideoStandardDefinition } from './VideoStandardSchema';
 
 export interface IVideoStandardFactory {
-	create(data: VideoStandardDefinition): VideoStandard
+	create(data: VideoStandardDefinition): IVideoStandard
 }
