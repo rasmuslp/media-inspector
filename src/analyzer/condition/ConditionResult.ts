@@ -1,6 +1,6 @@
-import { ConditionSatisfied } from './ConditionSatisfied';
-import { ICondition } from './ICondition';
+import { ICondition } from '../../standard';
 import { IConditionResult } from './IConditionResult';
+import { ConditionSatisfied } from './ConditionSatisfied';
 
 export class ConditionResult implements IConditionResult {
 	private readonly condition: ICondition;

@@ -1,4 +1,4 @@
-import { IConditionResult } from '../condition/IConditionResult';
+import { IConditionResult } from '../../analyzer/condition/IConditionResult';
 
 export class RuleResult {
 	private readonly conditionResults: IConditionResult[];
