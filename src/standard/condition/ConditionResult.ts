@@ -1,11 +1,8 @@
+import { ConditionSatisfied } from './ConditionSatisfied';
 import { ICondition } from './ICondition';
+import { IConditionResult } from './IConditionResult';
 
-export enum ConditionSatisfied {
-	YES,
-	NO
-}
-
-export class ConditionResult {
+export class ConditionResult implements IConditionResult {
 	private readonly condition: ICondition;
 
 	private readonly value: number | string;

@@ -1,7 +1,7 @@
 import createDebug from 'debug';
 
 import { ConditionChecker } from '../condition/ConditionChecker';
-import { ConditionResult } from '../condition/ConditionResult';
+import { IConditionResult } from '../condition/IConditionResult';
 import { IVideoRule } from './IVideoRule';
 import { RuleResult } from './RuleResult';
 
@@ -10,7 +10,7 @@ const debug = createDebug('Rule');
 export class RuleChecker {
 	static checkRuleWithPathGetter(rule: IVideoRule, pathGetterFn: (path: string) => number | string): RuleResult | undefined {
 		// All conditions must be met
-		const conditionResults: ConditionResult[] = [];
+		const conditionResults: IConditionResult[] = [];
 		for (const condition of rule.conditions) {
 			// Try to read value
 			let value: number | string;

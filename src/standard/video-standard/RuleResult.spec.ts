@@ -1,14 +1,14 @@
-import { ConditionResult } from '../condition/ConditionResult';
 import { Equal } from '../condition/types/Equal';
 import { GreaterThanOrEqual } from '../condition/types/GreaterThanOrEqual';
 import { ConditionChecker } from '../condition/ConditionChecker';
+import { IConditionResult } from '../condition/IConditionResult';
 import { RuleResult } from './RuleResult';
 
 describe('#satisfied', () => {
-	let failed1: ConditionResult;
-	let failed2: ConditionResult;
-	let satisfied1: ConditionResult;
-	let satisfied2: ConditionResult;
+	let failed1: IConditionResult;
+	let failed2: IConditionResult;
+	let satisfied1: IConditionResult;
+	let satisfied2: IConditionResult;
 	beforeEach(() => {
 		const condition = new Equal('dummy', 'yesyes');
 		failed1 = ConditionChecker.getResultFor(condition, 'nono');

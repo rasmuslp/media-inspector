@@ -1,9 +1,9 @@
-import { ConditionResult } from '../condition/ConditionResult';
+import { IConditionResult } from '../condition/IConditionResult';
 
 export class RuleResult {
-	private readonly conditionResults: ConditionResult[];
+	private readonly conditionResults: IConditionResult[];
 
-	constructor(conditionResults: ConditionResult[]) {
+	constructor(conditionResults: IConditionResult[]) {
 		if (conditionResults.length === 0) {
 			throw new Error('ConditionResults are required, none were provided.');
 		}
