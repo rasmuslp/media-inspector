@@ -1,13 +1,14 @@
 import { lineStream } from '../../lib/line-stream';
 import { ProcessRunner } from '../../lib/ProcessRunner';
 import { clone } from '../../utils/clone';
+import { IVideoErrorDetector } from '../IVideoErrorDetector';
 import { ErrorSummary } from './output-parser/ErrorSummary';
 import { OutputParser } from './output-parser/OutputParser';
 import { Progress } from './output-parser/Progress';
 
 type Listener = (progress: Progress, errorSummary: ErrorSummary) => void;
 
-export class FFmpegVideoErrorDetector {
+export class FFmpegVideoErrorDetector implements IVideoErrorDetector {
 	private readonly path: string;
 
 	private ffmpegProcess: ProcessRunner;
