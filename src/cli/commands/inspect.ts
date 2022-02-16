@@ -3,23 +3,35 @@ import path from 'path';
 import { CliUx, Flags } from '@oclif/core';
 import chalk from 'chalk';
 
-import { Directory, FsNode, PathSorters } from '../../fs-tree';
+import { ConditionsAnalyzer } from '../../analyzer/condition/ConditionsAnalyzer';
+import { ConditionAnalyzer } from '../../analyzer/condition/ConditionAnalyzer';
+import { TypeNotSupportedResult } from '../../analyzer/result/TypeNotSupportedResult';
+import { VideoFileAnalysisResult } from '../../analyzer/result/VideoFileAnalysisResult';
+import { FileStandardAnalyzer } from '../../analyzer/FileStandardAnalyzer';
+import { IFileAnalysisResult } from '../../analyzer/IFileAnalysisResult';
+import { StandardSatisfied } from '../../analyzer/StandardSatisfied';
+import { VideoRuleResult } from '../../analyzer/VideoRuleResult';
+import { VideoFileRuleConditionsAnalyzer } from '../../analyzer/VideoFileRuleConditionsAnalyzer';
+import { VideoFileRuleMatcher } from '../../analyzer/VideoFileRuleMatcher';
+import {
+	Directory, File, FsNode, PathSorters
+} from '../../fs-tree';
 import { AuxiliaryMatch } from '../../matcher/AuxiliaryMatch';
 import { FilterMatch } from '../../matcher/FilterMatch';
-import { FilterMatcher } from '../../matcher/FilterMatcher';
 import { Match } from '../../matcher/Match';
 import { MetadataCache } from '../../metadata/MetadataCache';
 import { ConditionFactory } from '../../standard/condition/ConditionFactory';
 import { CachingConditionFactory } from '../../standard/condition/CachingConditionFactory';
+import { RuleResult } from '../../standard/video-standard/RuleResult';
 import { VideoRuleFactory } from '../../standard/video-standard/VideoRuleFactory';
 import { VideoStandardFactory } from '../../standard/video-standard/VideoStandardFactory';
-import { VideoStandard } from '../../standard/video-standard/VideoStandard';
 import { FsFileReader } from '../../standard/FsFileReader';
 import { JSON5Parser } from '../../standard/JSON5Parser';
 import { SchemaParser } from '../../standard/SchemaParser';
 import { StandardFactory } from '../../standard/StandardFactory';
 import { Standard } from '../../standard/Standard';
 import { SerializableIO } from '../../serializable/SerializableIO';
+import { VideoErrorDetectorFactory } from '../../video-error-detector/VideoErrorDetectorFactory';
 import { IStandardReader } from '../helpers/IStandardReader';
 import { readMetadataFromFileSystem } from '../helpers/readMetadataFromFileSystem';
 import { readMetadataFromSerialized } from '../helpers/readMetadataFromSerialized';
@@ -160,13 +172,68 @@ export default class Inspect extends BaseCommand {
 	}
 
 	async filter(metadataCache: MetadataCache, filterPath: string, verbose = false): Promise<Match[]> {
+		const conditionsAnalyzer = new ConditionsAnalyzer(new ConditionAnalyzer());
+		const videoFileRuleMatcher = new VideoFileRuleMatcher(metadataCache, conditionsAnalyzer);
+		const videoFileRuleAnalyzer = new VideoFileRuleConditionsAnalyzer(conditionsAnalyzer, metadataCache, new VideoErrorDetectorFactory());
 		const standard: Standard = await this.standardReader.read(filterPath, verbose);
-		const videoStandard = standard.videoStandard as VideoStandard; // TODO: Hacky
+		const fileStandardAnalyzer = new FileStandardAnalyzer(standard, videoFileRuleMatcher, videoFileRuleAnalyzer);
 
 		if (verbose) {
 			CliUx.ux.action.start('Filtering...');
 		}
-		const matches = await FilterMatcher.getMatches(metadataCache, videoStandard.rules);
+
+		const analysisResults = new Map<File, IFileAnalysisResult>();
+		await metadataCache.tree.traverse(async (node: FsNode) => {
+			if (node.name.startsWith('.')) {
+				// Skip hidden files. Don't know what these are, but macOS can sure generate some strange looking files, that produce some strange looking MediainfoMetadata.
+				return;
+			}
+			if (node instanceof File) {
+				const fileAnalysisResult = fileStandardAnalyzer.analyze(node);
+				// NB: Skipping TypeNotSupportedResult, as this can be A LOT when scanning a directory that is not purely video data. This is very noisy and useless for now.
+				if (fileAnalysisResult instanceof TypeNotSupportedResult) {
+					// At this level, we only care about file types that we can define standards for.
+					return;
+				}
+
+				analysisResults.set(node, fileAnalysisResult);
+			}
+		});
+
+		const matches: Match[] = [];
+		for (const [file, fileAnalysisResult] of analysisResults.entries()) {
+			if (fileAnalysisResult.standardSatisfied() === StandardSatisfied.YES) {
+				continue;
+			}
+
+			const videoRuleResults = (fileAnalysisResult as unknown as VideoFileAnalysisResult).getVideoRuleResults();
+			const ruleResults = videoRuleResults.map(videoRuleResult => {
+				const conditionResults = (videoRuleResult as unknown as VideoRuleResult).getConditionResults();
+				/*
+				  ConditionsAnalyzer Could not read video.framerate from video.framerate Track type 'video' not found +0ms
+				  ConditionsAnalyzer Could not read video.scantype from video.scantype Track type 'video' not found +0ms
+				  ConditionsAnalyzer Could not read video.format from video.format Track type 'video' not found +0ms
+				  ConditionsAnalyzer Could not read video.width from video.width Track type 'video' not found +0ms
+				  ConditionsAnalyzer Could not read video.format from video.format Track type 'video' not found +0ms
+				  ConditionsAnalyzer Could not read video.width from video.width Track type 'video' not found +0ms
+				  ConditionsAnalyzer Could not read video.format from video.format Track type 'video' not found +0ms
+				  ConditionsAnalyzer Could not read video.width from video.width Track type 'video' not found +0ms
+				 */
+				// TODO: When track can't be found, there is no condition result
+				if (conditionResults.length === 0) {
+					// eslint-disable-next-line unicorn/no-useless-undefined
+					return undefined;
+				}
+				return new RuleResult(conditionResults);
+			});
+			const ruleResultsFiltered = ruleResults.filter(i => i);
+			if (ruleResultsFiltered.length === 0) {
+				continue;
+			}
+			const match = new FilterMatch('Filters matched with::', file, ruleResultsFiltered);
+			matches.push(match);
+		}
+
 		if (verbose) {
 			CliUx.ux.action.stop();
 			this.log(`Found ${matches.length} item${matches.length === 1 ? 's' : ''} for purging`);

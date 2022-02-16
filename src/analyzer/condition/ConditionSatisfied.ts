@@ -1,4 +1,4 @@
 export enum ConditionSatisfied {
-	YES,
-	NO
+	YES = 'YES',
+	NO = 'NO'
 }
