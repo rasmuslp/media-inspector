@@ -20,8 +20,7 @@ export class FilterMatch extends Match {
 	getResultsAsStrings({ colorized = false } = {}): string[] {
 		// Filter to remove any 'passed' entries, as they are stored as null
 		const ruleMessages: string[] = [];
-		const ruleResultsSorted = [...this.ruleResults].sort((a, b) => a.getWeightedScore() - b.getWeightedScore()).reverse();
-		for (const ruleResult of ruleResultsSorted) {
+		for (const ruleResult of this.ruleResults) {
 			let ruleMessage = `${ruleResult.satisfied ? 'Satisfied' : 'MATCHED'}: ${ruleResult.getResultsAsStrings().join(', ')}`;
 			if (colorized) {
 				ruleMessage = ruleMessage.replace(/matched/gi, match => chalk.red(match));

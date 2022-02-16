@@ -62,37 +62,3 @@ describe('#getResultsAsStrings', () => {
 		expect(resultAsStrings[0]).toMatch(/failed/);
 	});
 });
-
-describe('#getWeightedScore', () => {
-	test('#1: Fail, #2: Pass --> 1', () => {
-		const conditions = [
-			new GreaterThanOrEqual('video.framerate', 25),
-			new GreaterThanOrEqual('audio.channels', 2)
-		];
-
-		const results = [
-			conditionAnalyzer.analyze(conditions[0], '23'),
-			conditionAnalyzer.analyze(conditions[1], '2')
-		];
-
-		const ruleResult = new RuleResult(results);
-		const score = ruleResult.getWeightedScore();
-		expect(score).toBe(1);
-	});
-
-	test('#1: Pass, #2: Fail --> 4', () => {
-		const conditions = [
-			new GreaterThanOrEqual('video.framerate', 25),
-			new GreaterThanOrEqual('audio.channels', 2)
-		];
-
-		const results = [
-			conditionAnalyzer.analyze(conditions[0], '25'),
-			conditionAnalyzer.analyze(conditions[1], '1')
-		];
-
-		const ruleResult = new RuleResult(results);
-		const score = ruleResult.getWeightedScore();
-		expect(score).toBe(4);
-	});
-});

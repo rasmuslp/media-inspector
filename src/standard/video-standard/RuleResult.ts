@@ -28,27 +28,4 @@ export class RuleResult {
 
 		return messages;
 	}
-
-	// Ratio of: # satisfied / # conditions
-	getScore(): number {
-		const satisfiedConditions = this.conditionResults.filter(result => result.isSatisfied);
-		const score = satisfiedConditions.length / this.conditionResults.length;
-
-		return score;
-	}
-
-	// Weighted ratio of passes/results
-	getWeightedScore(): number {
-		let score = 0;
-		for (let i = 0; i < this.conditionResults.length; i++) {
-			const result = this.conditionResults[i];
-			if (result.isSatisfied) {
-				const weigth = this.conditionResults.length - i;
-				const partialScore = weigth ** 2;
-				score += partialScore;
-			}
-		}
-
-		return score;
-	}
 }
