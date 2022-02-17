@@ -9,9 +9,10 @@ import { FileStandardAnalyzer } from '../../analyzer/FileStandardAnalyzer';
 import { IFileAnalysisResult } from '../../analyzer/IFileAnalysisResult';
 import { StandardSatisfied } from '../../analyzer/StandardSatisfied';
 import { VideoFileAnalysisResult } from '../../analyzer/VideoFileAnalysisResult';
-import { VideoRuleResult } from '../../analyzer/VideoRuleResult';
+import { VideoFileAnalyzer } from '../../analyzer/VideoFileAnalyzer';
 import { VideoFileRuleConditionsAnalyzer } from '../../analyzer/VideoFileRuleConditionsAnalyzer';
 import { VideoFileRuleMatcher } from '../../analyzer/VideoFileRuleMatcher';
+import { VideoRuleResult } from '../../analyzer/VideoRuleResult';
 import {
 	Directory, File, FsNode, PathSorters
 } from '../../fs-tree';
@@ -173,9 +174,10 @@ export default class Inspect extends BaseCommand {
 	async filter(metadataCache: MetadataCache, filterPath: string, verbose = false): Promise<Match[]> {
 		const conditionsAnalyzer = new ConditionsAnalyzer(new ConditionAnalyzer());
 		const videoFileRuleMatcher = new VideoFileRuleMatcher(metadataCache, conditionsAnalyzer);
-		const videoFileRuleAnalyzer = new VideoFileRuleConditionsAnalyzer(conditionsAnalyzer, metadataCache, new VideoErrorDetectorFactory());
+		const videoFileRuleConditionsAnalyzer = new VideoFileRuleConditionsAnalyzer(conditionsAnalyzer, metadataCache, new VideoErrorDetectorFactory());
+		const videoFileAnalyzer = new VideoFileAnalyzer(videoFileRuleMatcher, videoFileRuleConditionsAnalyzer);
 		const standard: Standard = await this.standardReader.read(filterPath, verbose);
-		const fileStandardAnalyzer = new FileStandardAnalyzer(standard, videoFileRuleMatcher, videoFileRuleAnalyzer);
+		const fileStandardAnalyzer = new FileStandardAnalyzer(videoFileAnalyzer, standard);
 
 		if (verbose) {
 			CliUx.ux.action.start('Filtering...');
@@ -189,13 +191,10 @@ export default class Inspect extends BaseCommand {
 			}
 
 			if (node instanceof File) {
-				if (!fileStandardAnalyzer.canAnalyze(node)) {
-					return;
-				}
-
 				const fileAnalysisResult = fileStandardAnalyzer.analyze(node);
-
-				analysisResults.set(node, fileAnalysisResult);
+				if (fileAnalysisResult) {
+					analysisResults.set(node, fileAnalysisResult);
+				}
 			}
 		});
 
