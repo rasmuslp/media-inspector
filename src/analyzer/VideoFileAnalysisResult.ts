@@ -1,6 +1,6 @@
-import { IFileAnalysisResult } from '../IFileAnalysisResult';
-import { IVideoRuleResult } from '../IVideoRuleResult';
-import { StandardSatisfied } from '../StandardSatisfied';
+import { IFileAnalysisResult } from './IFileAnalysisResult';
+import { IVideoRuleResult } from './IVideoRuleResult';
+import { StandardSatisfied } from './StandardSatisfied';
 
 export class VideoFileAnalysisResult implements IFileAnalysisResult {
 	private readonly videoRuleResults: IVideoRuleResult[];

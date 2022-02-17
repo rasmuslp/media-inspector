@@ -5,11 +5,10 @@ import chalk from 'chalk';
 
 import { ConditionsAnalyzer } from '../../analyzer/condition/ConditionsAnalyzer';
 import { ConditionAnalyzer } from '../../analyzer/condition/ConditionAnalyzer';
-import { TypeNotSupportedResult } from '../../analyzer/result/TypeNotSupportedResult';
-import { VideoFileAnalysisResult } from '../../analyzer/result/VideoFileAnalysisResult';
 import { FileStandardAnalyzer } from '../../analyzer/FileStandardAnalyzer';
 import { IFileAnalysisResult } from '../../analyzer/IFileAnalysisResult';
 import { StandardSatisfied } from '../../analyzer/StandardSatisfied';
+import { VideoFileAnalysisResult } from '../../analyzer/VideoFileAnalysisResult';
 import { VideoRuleResult } from '../../analyzer/VideoRuleResult';
 import { VideoFileRuleConditionsAnalyzer } from '../../analyzer/VideoFileRuleConditionsAnalyzer';
 import { VideoFileRuleMatcher } from '../../analyzer/VideoFileRuleMatcher';
@@ -188,13 +187,13 @@ export default class Inspect extends BaseCommand {
 				// Skip hidden files. Don't know what these are, but macOS can sure generate some strange looking files, that produce some strange looking MediainfoMetadata.
 				return;
 			}
+
 			if (node instanceof File) {
-				const fileAnalysisResult = fileStandardAnalyzer.analyze(node);
-				// NB: Skipping TypeNotSupportedResult, as this can be A LOT when scanning a directory that is not purely video data. This is very noisy and useless for now.
-				if (fileAnalysisResult instanceof TypeNotSupportedResult) {
-					// At this level, we only care about file types that we can define standards for.
+				if (!fileStandardAnalyzer.canAnalyze(node)) {
 					return;
 				}
+
+				const fileAnalysisResult = fileStandardAnalyzer.analyze(node);
 
 				analysisResults.set(node, fileAnalysisResult);
 			}

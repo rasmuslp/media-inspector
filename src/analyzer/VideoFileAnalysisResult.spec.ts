@@ -1,4 +1,4 @@
-import { StandardSatisfied } from '../StandardSatisfied';
+import { StandardSatisfied } from './StandardSatisfied';
 import { VideoFileAnalysisResult } from './VideoFileAnalysisResult';
 
 describe('VideoFileAnalysisResult', () => {

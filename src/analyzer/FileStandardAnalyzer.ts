@@ -1,12 +1,11 @@
 import { File } from '../fs-tree';
 import { IStandard } from '../standard/IStandard';
-import { TypeNotSupportedResult } from './result/TypeNotSupportedResult';
-import { VideoFileAnalysisResult } from './result/VideoFileAnalysisResult';
 import { IFileAnalysisResult } from './IFileAnalysisResult';
 import { IFileStandardAnalyzer } from './IFileStandardAnalyzer';
 import { IVideoFileRuleConditionsAnalyzer } from './IVideoFileRuleConditionsAnalyzer';
 import { IVideoFileRuleMatcher } from './IVideoFileRuleMatcher';
 import { IVideoRuleResult } from './IVideoRuleResult';
+import { VideoFileAnalysisResult } from './VideoFileAnalysisResult';
 import { VideoRuleResult } from './VideoRuleResult';
 
 export class FileStandardAnalyzer implements IFileStandardAnalyzer {
@@ -22,12 +21,18 @@ export class FileStandardAnalyzer implements IFileStandardAnalyzer {
 		this.videoFileRuleConditionsAnalyzer = videoFileRuleConditionsAnalyzer;
 	}
 
-	public analyze(file: File): IFileAnalysisResult {
+	public canAnalyze(file: File): boolean {
 		const fileMimeType = file.getMimeTypeWithoutSubtype();
-		if (fileMimeType !== 'video') {
-			return new TypeNotSupportedResult(fileMimeType);
-		}
+		switch (fileMimeType) {
+			case 'video':
+				return true;
 
+			default:
+				return false;
+		}
+	}
+
+	public analyze(file: File): IFileAnalysisResult {
 		const ruleResults: IVideoRuleResult[] = [];
 		for (const rule of this.standard.videoStandard.rules) {
 			const matches = this.videoFileRuleMatcher.match(file, rule.match);
