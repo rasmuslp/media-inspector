@@ -7,7 +7,6 @@ import { ConditionsAnalyzer } from '../../analyzer/condition/ConditionsAnalyzer'
 import { ConditionAnalyzer } from '../../analyzer/condition/ConditionAnalyzer';
 import { IFileAnalysisResult } from '../../analyzer/interfaces/IFileAnalysisResult';
 import { FileStandardAnalyzer } from '../../analyzer/FileStandardAnalyzer';
-import { StandardSatisfied } from '../../analyzer/StandardSatisfied';
 import { VideoFileAnalysisResult } from '../../analyzer/VideoFileAnalysisResult';
 import { VideoFileAnalyzer } from '../../analyzer/VideoFileAnalyzer';
 import { VideoFileRuleConditionsAnalyzer } from '../../analyzer/VideoFileRuleConditionsAnalyzer';
@@ -200,7 +199,7 @@ export default class Inspect extends BaseCommand {
 
 		const matches: Match[] = [];
 		for (const [file, fileAnalysisResult] of analysisResults.entries()) {
-			if (fileAnalysisResult.standardSatisfied() === StandardSatisfied.YES) {
+			if (fileAnalysisResult.isSatisfied) {
 				continue;
 			}
 

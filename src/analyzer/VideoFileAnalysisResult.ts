@@ -1,6 +1,5 @@
 import { IFileAnalysisResult } from './interfaces/IFileAnalysisResult';
 import { IVideoRuleResult } from './interfaces/IVideoRuleResult';
-import { StandardSatisfied } from './StandardSatisfied';
 
 export class VideoFileAnalysisResult implements IFileAnalysisResult {
 	private readonly videoRuleResults: IVideoRuleResult[];
@@ -12,19 +11,13 @@ export class VideoFileAnalysisResult implements IFileAnalysisResult {
 		this.videoRuleResults = videoRuleResults;
 	}
 
-	public standardSatisfied(): StandardSatisfied {
-		if (this.videoRuleResults.length === 0) {
-			// Hmm, so now I'm encoding domain knowledge.
-			// Alternatively, I should have all videoRuleResults, and how each of them matched on the file.
-			return StandardSatisfied.NOT_APPLICABLE;
-		}
-
+	get isSatisfied(): boolean {
 		const anyNotSatisfied = this.videoRuleResults.find(result => !result.isSatisfied);
 		if (anyNotSatisfied) {
-			return StandardSatisfied.NO;
+			return false;
 		}
 
-		return StandardSatisfied.YES;
+		return true;
 	}
 
 	getVideoRuleResults(): IVideoRuleResult[] {
