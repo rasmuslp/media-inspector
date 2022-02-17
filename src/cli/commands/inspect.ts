@@ -5,8 +5,8 @@ import chalk from 'chalk';
 
 import { ConditionsAnalyzer } from '../../analyzer/condition/ConditionsAnalyzer';
 import { ConditionAnalyzer } from '../../analyzer/condition/ConditionAnalyzer';
+import { IFileAnalysisResult } from '../../analyzer/interfaces/IFileAnalysisResult';
 import { FileStandardAnalyzer } from '../../analyzer/FileStandardAnalyzer';
-import { IFileAnalysisResult } from '../../analyzer/IFileAnalysisResult';
 import { StandardSatisfied } from '../../analyzer/StandardSatisfied';
 import { VideoFileAnalysisResult } from '../../analyzer/VideoFileAnalysisResult';
 import { VideoFileAnalyzer } from '../../analyzer/VideoFileAnalyzer';

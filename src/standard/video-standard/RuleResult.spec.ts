@@ -1,5 +1,5 @@
 import { ConditionAnalyzer } from '../../analyzer/condition/ConditionAnalyzer';
-import { IConditionResult } from '../../analyzer/condition/IConditionResult';
+import { IConditionResult } from '../../analyzer/interfaces/IConditionResult';
 import { Equal } from '../condition/types/Equal';
 import { GreaterThanOrEqual } from '../condition/types/GreaterThanOrEqual';
 import { RuleResult } from './RuleResult';

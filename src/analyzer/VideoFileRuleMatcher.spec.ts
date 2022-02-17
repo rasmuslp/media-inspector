@@ -6,9 +6,9 @@ import { Metadata } from '../metadata/Metadata';
 import { Equal } from '../standard/condition/types/Equal';
 import { GreaterThanOrEqual } from '../standard/condition/types/GreaterThanOrEqual';
 import { ICondition } from '../standard';
-import { IConditionsAnalyzer } from './condition/IConditionsAnalyzer';
-import { IConditionResult } from './condition/IConditionResult';
-import { IVideoFileRuleMatcher } from './IVideoFileRuleMatcher';
+import { IConditionsAnalyzer } from './interfaces/IConditionsAnalyzer';
+import { IConditionResult } from './interfaces/IConditionResult';
+import { IVideoFileRuleMatcher } from './interfaces/IVideoFileRuleMatcher';
 import { VideoFileRuleMatcher } from './VideoFileRuleMatcher';
 
 describe('VideoFileRuleMatcher', () => {

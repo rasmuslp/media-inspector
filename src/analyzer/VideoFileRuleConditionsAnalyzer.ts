@@ -1,9 +1,9 @@
 import { IMetadataGetter } from '../metadata/IMetadataGetter';
 import { IVideoRule } from '../standard/video-standard/IVideoRule';
 import { IVideoErrorDetectorFactory } from '../video-error-detector/IVideoErrorDetectorFactory';
-import { IConditionsAnalyzer } from './condition/IConditionsAnalyzer';
-import { IConditionResult } from './condition/IConditionResult';
-import { IVideoFileRuleConditionsAnalyzer } from './IVideoFileRuleConditionsAnalyzer';
+import { IConditionsAnalyzer } from './interfaces/IConditionsAnalyzer';
+import { IConditionResult } from './interfaces/IConditionResult';
+import { IVideoFileRuleConditionsAnalyzer } from './interfaces/IVideoFileRuleConditionsAnalyzer';
 
 export class VideoFileRuleConditionsAnalyzer implements IVideoFileRuleConditionsAnalyzer {
 	private readonly conditionsAnalyzer: IConditionsAnalyzer;

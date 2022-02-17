@@ -1,6 +1,6 @@
 import { LessThan } from '../../standard/condition/types/LessThan';
+import { IConditionAnalyzer } from '../interfaces/IConditionAnalyzer';
 import { ConditionAnalyzer } from './ConditionAnalyzer';
-import { IConditionAnalyzer } from './IConditionAnalyzer';
 
 describe('ConditionAnalyzer', () => {
 	describe('analyze with LessThan', () => {

@@ -1,5 +1,5 @@
-import { IFileAnalysisResult } from './IFileAnalysisResult';
-import { IVideoRuleResult } from './IVideoRuleResult';
+import { IFileAnalysisResult } from './interfaces/IFileAnalysisResult';
+import { IVideoRuleResult } from './interfaces/IVideoRuleResult';
 import { StandardSatisfied } from './StandardSatisfied';
 
 export class VideoFileAnalysisResult implements IFileAnalysisResult {

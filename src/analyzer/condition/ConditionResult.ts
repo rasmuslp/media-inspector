@@ -1,5 +1,5 @@
 import { ICondition } from '../../standard';
-import { IConditionResult } from './IConditionResult';
+import { IConditionResult } from '../interfaces/IConditionResult';
 import { ConditionSatisfied } from './ConditionSatisfied';
 
 export class ConditionResult implements IConditionResult {

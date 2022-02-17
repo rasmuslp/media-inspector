@@ -1,12 +1,12 @@
 import { File } from '../fs-tree';
 import { IVideoStandard } from '../standard/video-standard/IVideoStandard';
-import { IFileAnalysisResult } from './IFileAnalysisResult';
-import { IVideoFileAnalyzer } from './IVideoFileAnalyzer';
-import { IVideoRuleResult } from './IVideoRuleResult';
+import { IFileAnalysisResult } from './interfaces/IFileAnalysisResult';
+import { IVideoFileAnalyzer } from './interfaces/IVideoFileAnalyzer';
+import { IVideoRuleResult } from './interfaces/IVideoRuleResult';
+import { IVideoFileRuleMatcher } from './interfaces/IVideoFileRuleMatcher';
+import { IVideoFileRuleConditionsAnalyzer } from './interfaces/IVideoFileRuleConditionsAnalyzer';
 import { VideoRuleResult } from './VideoRuleResult';
 import { VideoFileAnalysisResult } from './VideoFileAnalysisResult';
-import { IVideoFileRuleMatcher } from './IVideoFileRuleMatcher';
-import { IVideoFileRuleConditionsAnalyzer } from './IVideoFileRuleConditionsAnalyzer';
 
 export class VideoFileAnalyzer implements IVideoFileAnalyzer {
 	private readonly videoFileRuleMatcher: IVideoFileRuleMatcher;

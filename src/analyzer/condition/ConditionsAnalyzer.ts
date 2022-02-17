@@ -2,9 +2,9 @@ import createDebug from 'debug';
 
 import { Metadata } from '../../metadata/Metadata';
 import { ICondition } from '../../standard';
-import { IConditionResult } from './IConditionResult';
-import { IConditionAnalyzer } from './IConditionAnalyzer';
-import { IConditionsAnalyzer } from './IConditionsAnalyzer';
+import { IConditionResult } from '../interfaces/IConditionResult';
+import { IConditionAnalyzer } from '../interfaces/IConditionAnalyzer';
+import { IConditionsAnalyzer } from '../interfaces/IConditionsAnalyzer';
 
 const debug = createDebug('ConditionsAnalyzer');
 

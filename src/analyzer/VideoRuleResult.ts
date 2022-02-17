@@ -1,5 +1,5 @@
-import { IConditionResult } from './condition/IConditionResult';
-import { IVideoRuleResult } from './IVideoRuleResult';
+import { IConditionResult } from './interfaces/IConditionResult';
+import { IVideoRuleResult } from './interfaces/IVideoRuleResult';
 
 export class VideoRuleResult implements IVideoRuleResult {
 	public readonly name: string;

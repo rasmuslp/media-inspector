@@ -1,8 +1,8 @@
 import { ICondition } from '../../standard';
+import { IConditionAnalyzer } from '../interfaces/IConditionAnalyzer';
+import { IConditionResult } from '../interfaces/IConditionResult';
 import { ConditionResult } from './ConditionResult';
 import { ConditionSatisfied } from './ConditionSatisfied';
-import { IConditionAnalyzer } from './IConditionAnalyzer';
-import { IConditionResult } from './IConditionResult';
 
 export class ConditionAnalyzer implements IConditionAnalyzer {
 	public analyze(condition: ICondition, value: number | string): IConditionResult {

@@ -1,8 +1,8 @@
 import { File } from '../fs-tree';
 import { IMetadataGetter } from '../metadata/IMetadataGetter';
 import { IVideoRuleMatch } from '../standard/video-standard/IVideoRule';
-import { IConditionsAnalyzer } from './condition/IConditionsAnalyzer';
-import { IVideoFileRuleMatcher } from './IVideoFileRuleMatcher';
+import { IConditionsAnalyzer } from './interfaces/IConditionsAnalyzer';
+import { IVideoFileRuleMatcher } from './interfaces/IVideoFileRuleMatcher';
 
 export class VideoFileRuleMatcher implements IVideoFileRuleMatcher {
 	private readonly metadataGetter: IMetadataGetter;
