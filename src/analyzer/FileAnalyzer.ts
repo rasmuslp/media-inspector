@@ -1,10 +1,10 @@
 import { File } from '../fs-tree';
 import { IStandard } from '../standard/IStandard';
 import { IFileAnalysisResult } from './interfaces/IFileAnalysisResult';
-import { IFileStandardAnalyzer } from './interfaces/IFileStandardAnalyzer';
+import { IFileAnalyzer } from './interfaces/IFileAnalyzer';
 import { IVideoFileAnalyzer } from './interfaces/IVideoFileAnalyzer';
 
-export class FileStandardAnalyzer implements IFileStandardAnalyzer {
+export class FileAnalyzer implements IFileAnalyzer {
 	private readonly videoFileAnalyzer: IVideoFileAnalyzer;
 
 	private readonly standard: IStandard;

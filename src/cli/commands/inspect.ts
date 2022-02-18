@@ -6,7 +6,7 @@ import chalk from 'chalk';
 import { ConditionsAnalyzer } from '../../analyzer/condition/ConditionsAnalyzer';
 import { ConditionAnalyzer } from '../../analyzer/condition/ConditionAnalyzer';
 import { IFileAnalysisResult } from '../../analyzer/interfaces/IFileAnalysisResult';
-import { FileStandardAnalyzer } from '../../analyzer/FileStandardAnalyzer';
+import { FileAnalyzer } from '../../analyzer/FileAnalyzer';
 import { VideoFileAnalysisResult } from '../../analyzer/VideoFileAnalysisResult';
 import { VideoFileAnalyzer } from '../../analyzer/VideoFileAnalyzer';
 import { VideoFileRuleConditionsAnalyzer } from '../../analyzer/VideoFileRuleConditionsAnalyzer';
@@ -176,7 +176,7 @@ export default class Inspect extends BaseCommand {
 		const videoFileRuleConditionsAnalyzer = new VideoFileRuleConditionsAnalyzer(conditionsAnalyzer, metadataCache, new VideoErrorDetectorFactory());
 		const videoFileAnalyzer = new VideoFileAnalyzer(videoFileRuleMatcher, videoFileRuleConditionsAnalyzer);
 		const standard: Standard = await this.standardReader.read(filterPath, verbose);
-		const fileStandardAnalyzer = new FileStandardAnalyzer(videoFileAnalyzer, standard);
+		const fileAnalyzer = new FileAnalyzer(videoFileAnalyzer, standard);
 
 		if (verbose) {
 			CliUx.ux.action.start('Filtering...');
@@ -190,7 +190,7 @@ export default class Inspect extends BaseCommand {
 			}
 
 			if (node instanceof File) {
-				const fileAnalysisResult = fileStandardAnalyzer.analyze(node);
+				const fileAnalysisResult = fileAnalyzer.analyze(node);
 				if (fileAnalysisResult) {
 					analysisResults.set(node, fileAnalysisResult);
 				}

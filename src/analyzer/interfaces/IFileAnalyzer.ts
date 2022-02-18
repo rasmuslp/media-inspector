@@ -1,6 +1,6 @@
 import { File } from '../../fs-tree';
 import { IFileAnalysisResult } from './IFileAnalysisResult';
 
-export interface IFileStandardAnalyzer {
+export interface IFileAnalyzer {
 	analyze(file: File): IFileAnalysisResult | undefined
 }
