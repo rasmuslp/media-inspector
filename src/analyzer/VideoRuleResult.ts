@@ -4,7 +4,7 @@ import { IVideoRuleResult } from './interfaces/IVideoRuleResult';
 export class VideoRuleResult implements IVideoRuleResult {
 	public readonly name: string;
 
-	private readonly conditionResults: IConditionResult[];
+	public readonly conditionResults: IConditionResult[];
 
 	constructor(name: string, conditionResults: IConditionResult[]) {
 		this.name = name;

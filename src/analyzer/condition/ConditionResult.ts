@@ -19,7 +19,7 @@ export class ConditionResult implements IConditionResult {
 		return this.satisfied === ConditionSatisfied.YES;
 	}
 
-	getResultAsStrings(): string {
+	getResultAsString(): string {
 		const message = `${this.condition.path} ${this.isSatisfied ? 'satisfied' : 'failed'}: ${this.condition.toStringForValue(this.value)}`;
 
 		return message;

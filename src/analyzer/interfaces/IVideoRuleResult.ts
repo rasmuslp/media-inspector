@@ -1,5 +1,9 @@
-export interface IVideoRuleResult {
-	readonly name: string,
+import { IConditionResult } from './IConditionResult';
 
-	isSatisfied: boolean,
+export interface IVideoRuleResult {
+	isSatisfied: boolean
+
+	readonly name: string
+
+	readonly conditionResults: IConditionResult[];
 }

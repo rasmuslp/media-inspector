@@ -5,10 +5,12 @@ describe('VideoFileAnalysisResult', () => {
 		it('should return true provided 2 satisfied IVideoRuleResults', () => {
 			const videoFileAnalysisResult = new VideoFileAnalysisResult([{
 				name: '1 satisfied',
-				isSatisfied: true
+				isSatisfied: true,
+				conditionResults: []
 			}, {
 				name: '2 satisfied',
-				isSatisfied: true
+				isSatisfied: true,
+				conditionResults: []
 			}]);
 
 			const result = videoFileAnalysisResult.isSatisfied;
@@ -19,10 +21,12 @@ describe('VideoFileAnalysisResult', () => {
 		it('should return false provided 1 satisfied IVideoRuleResult and 1 not satisfied IVideoRuleResult', () => {
 			const videoFileAnalysisResult = new VideoFileAnalysisResult([{
 				name: '1 satisfied',
-				isSatisfied: true
+				isSatisfied: true,
+				conditionResults: []
 			}, {
 				name: '2 not satisfied',
-				isSatisfied: false
+				isSatisfied: false,
+				conditionResults: []
 			}]);
 
 			const result = videoFileAnalysisResult.isSatisfied;

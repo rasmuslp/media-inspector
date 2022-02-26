@@ -23,7 +23,7 @@ export class RuleResult {
 	getResultsAsStrings(): string[] {
 		const messages: string[] = [];
 		for (const result of this.conditionResults) {
-			messages.push(result.getResultAsStrings());
+			messages.push(result.getResultAsString());
 		}
 
 		return messages;
