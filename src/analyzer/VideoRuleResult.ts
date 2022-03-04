@@ -20,8 +20,4 @@ export class VideoRuleResult implements IVideoRuleResult {
 
 		return true;
 	}
-
-	getConditionResults(): IConditionResult[] {
-		return this.conditionResults;
-	}
 }

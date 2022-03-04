@@ -20,8 +20,7 @@ export class ConditionResult implements IConditionResult {
 	}
 
 	getResultAsString(): string {
-		const message = `${this.condition.path} ${this.isSatisfied ? 'satisfied' : 'failed'}: ${this.condition.toStringForValue(this.value)}`;
-
+		const message = `${this.condition.path} ${this.isSatisfied ? 'satisfied' : 'not satisfied'}: ${this.condition.toStringForValue(this.value)}`;
 		return message;
 	}
 }

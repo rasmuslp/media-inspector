@@ -1,8 +1,8 @@
-import { IFileAnalysisResult } from './interfaces/IFileAnalysisResult';
+import { IVideoFileAnalysisResult } from './interfaces/IVideoFileAnalysisResult';
 import { IVideoRuleResult } from './interfaces/IVideoRuleResult';
 
-export class VideoFileAnalysisResult implements IFileAnalysisResult {
-	private readonly videoRuleResults: IVideoRuleResult[];
+export class VideoFileAnalysisResult implements IVideoFileAnalysisResult {
+	public readonly videoRuleResults: IVideoRuleResult[];
 
 	/**
 	 * @param videoRuleResults - Should only contain relevant results - i.e. results for Rules that _matched_ somehow
@@ -18,9 +18,5 @@ export class VideoFileAnalysisResult implements IFileAnalysisResult {
 		}
 
 		return true;
-	}
-
-	getVideoRuleResults(): IVideoRuleResult[] {
-		return this.videoRuleResults;
 	}
 }

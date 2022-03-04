@@ -11,17 +11,12 @@ import { VideoFileAnalysisResult } from '../../analyzer/VideoFileAnalysisResult'
 import { VideoFileAnalyzer } from '../../analyzer/VideoFileAnalyzer';
 import { VideoFileRuleConditionsAnalyzer } from '../../analyzer/VideoFileRuleConditionsAnalyzer';
 import { VideoFileRuleMatcher } from '../../analyzer/VideoFileRuleMatcher';
-import { VideoRuleResult } from '../../analyzer/VideoRuleResult';
 import {
-	Directory, File, FsNode, PathSorters
+	Directory, File, FsNode, FsTree, PathSorters
 } from '../../fs-tree';
-import { AuxiliaryMatch } from '../../matcher/AuxiliaryMatch';
-import { FilterMatch } from '../../matcher/FilterMatch';
-import { Match } from '../../matcher/Match';
 import { MetadataCache } from '../../metadata/MetadataCache';
 import { ConditionFactory } from '../../standard/condition/ConditionFactory';
 import { CachingConditionFactory } from '../../standard/condition/CachingConditionFactory';
-import { RuleResult } from '../../standard/video-standard/RuleResult';
 import { VideoRuleFactory } from '../../standard/video-standard/VideoRuleFactory';
 import { VideoStandardFactory } from '../../standard/video-standard/VideoStandardFactory';
 import { FsFileReader } from '../../standard/FsFileReader';
@@ -31,6 +26,10 @@ import { StandardFactory } from '../../standard/StandardFactory';
 import { Standard } from '../../standard/Standard';
 import { SerializableIO } from '../../serializable/SerializableIO';
 import { VideoErrorDetectorFactory } from '../../video-error-detector/VideoErrorDetectorFactory';
+import { PrintableOptions } from '../helpers/printable/PrintableOptions';
+import { PrintableAuxiliaryResult } from '../helpers/printable/PrintableAuxiliaryResult';
+import { PrintableVideoResult } from '../helpers/printable/PrintableVideoResult';
+import { IPrintable } from '../helpers/printable/IPrintable';
 import { IStandardReader } from '../helpers/IStandardReader';
 import { readMetadataFromFileSystem } from '../helpers/readMetadataFromFileSystem';
 import { readMetadataFromSerialized } from '../helpers/readMetadataFromSerialized';
@@ -49,10 +48,24 @@ export default class Inspect extends BaseCommand {
 			required: true
 		}),
 
-		includeAuxiliary: Flags.boolean({
-			char: 'i',
+		satisfied: Flags.boolean({
+			allowNo: true,
 			default: false,
-			description: 'Will also include empty directories and \'container\' directories'
+			description: 'Print files that are satisfied by the standard. Can be reversed by prefixing no-'
+		}),
+
+		includeEmpty: Flags.boolean({
+			char: 'e',
+			default: false,
+			description: 'Also print empty directories',
+			exclusive: ['satisfied']
+		}),
+
+		includeAuxiliary: Flags.boolean({
+			char: 'a',
+			default: false,
+			description: 'Will also include empty directories and \'container\' directories',
+			exclusive: ['satisfied']
 		}),
 
 		read: Flags.string({
@@ -87,102 +100,32 @@ export default class Inspect extends BaseCommand {
 		const { flags } = await this.parse(Inspect);
 
 		const metadataCache = await (SerializableIO.isSerializePath(flags.read) ? readMetadataFromSerialized(flags.read) : readMetadataFromFileSystem(flags.read, flags.verbose));
-
-		const matches: Match[] = [];
-		const filterMatches = await this.filter(metadataCache, flags.standard, flags.verbose);
-		matches.push(...filterMatches);
-
-		if (flags.includeAuxiliary) {
-			// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for matcher
-			await metadataCache.tree.traverse(async (node: FsNode) => {
-				if (node instanceof Directory) {
-					const children = metadataCache.tree.getDirectChildren(node);
-					if (children.length === 0) {
-						matches.push(new AuxiliaryMatch('Directory empty', node));
-					}
-					else {
-						const childPaths = new Set(children.map(fsNode => fsNode.path));
-						const matchedChildren = matches.filter(match => childPaths.has(match.fsNode.path));
-
-						// Get sizes of matched children
-						let sizeOfMatchedChildren = 0;
-						for (const match of matchedChildren) {
-							sizeOfMatchedChildren += match.fsNode.size;
-						}
-
-						const sizeOfTree = await metadataCache.tree.getSize(node);
-
-						// Take parent and all children when this was the majority
-						if (sizeOfMatchedChildren >= 0.9 * sizeOfTree) {
-							// Mark tree from directory as Purgable
-							const treeAsList = await metadataCache.tree.getAsSortedList(node);
-							const auxiliaryMatches = treeAsList.map(childNode => new AuxiliaryMatch(`Auxiliary to ${node.path}`, childNode));
-
-							matches.push(...auxiliaryMatches);
-						}
-					}
-				}
-			});
-		}
-
-		// Dedupe list
-		const dedupedMap = new Map<FsNode, Match>();
-		for (const match of matches) {
-			const existing = dedupedMap.get(match.fsNode);
-			if (existing) {
-				// Update if current has better score
-				if (existing.score < match.score) {
-					dedupedMap.set(match.fsNode, match);
-				}
-			}
-			else {
-				// Store as unique otherwise
-				dedupedMap.set(match.fsNode, match);
-			}
-		}
-
-		// Sort deduped
-		const dedupedPurgres = [...dedupedMap.values()].sort((a, b) => PathSorters.childrenBeforeParents(a.fsNode.path, b.fsNode.path));
-
-		for (const match of dedupedPurgres) {
-			if (flags.verbose) {
-				const message = getLogMessageOfMatch(match, { colorized: true });
-				this.log(message);
-			}
-			else {
-				this.log(match.fsNode.path);
-			}
-		}
+		const analysisResults = await this.analyze(metadataCache, flags.standard, flags.verbose);
+		const printableResults = await this.getPrintableResults(metadataCache.tree, analysisResults, flags.satisfied, flags.includeEmpty, flags.includeAuxiliary);
+		const logMessages = this.getLogMessages(printableResults, flags.verbose);
 
 		if (flags.verbose) {
-			let spaceFreeable = 0;
-			for (const match of dedupedPurgres) {
-				spaceFreeable += match.fsNode.size;
-			}
+			logMessages.push(...(await this.getSummary(metadataCache.tree, printableResults)));
+		}
 
-			this.log('Space freeable:\t', spaceFreeable);
-
-			const size = await metadataCache.tree.getSize();
-			this.log('Total Size:\t', size);
-
-			const reduction = (spaceFreeable / size) * 100;
-			this.log(`Reduction: ${reduction.toFixed(2)}%`);
+		for (const message of logMessages) {
+			this.log(message);
 		}
 	}
 
-	async filter(metadataCache: MetadataCache, filterPath: string, verbose = false): Promise<Match[]> {
+	async analyze(metadataCache: MetadataCache, standardPath: string, verbose = false): Promise<Map<FsNode, IFileAnalysisResult>> {
 		const conditionsAnalyzer = new ConditionsAnalyzer(new ConditionAnalyzer());
 		const videoFileRuleMatcher = new VideoFileRuleMatcher(metadataCache, conditionsAnalyzer);
 		const videoFileRuleConditionsAnalyzer = new VideoFileRuleConditionsAnalyzer(conditionsAnalyzer, metadataCache, new VideoErrorDetectorFactory());
 		const videoFileAnalyzer = new VideoFileAnalyzer(videoFileRuleMatcher, videoFileRuleConditionsAnalyzer);
-		const standard: Standard = await this.standardReader.read(filterPath, verbose);
+		const standard: Standard = await this.standardReader.read(standardPath, verbose);
 		const fileAnalyzer = new FileAnalyzer(videoFileAnalyzer, standard);
 
 		if (verbose) {
-			CliUx.ux.action.start('Filtering...');
+			CliUx.ux.action.start('Analyzing...');
 		}
 
-		const analysisResults = new Map<File, IFileAnalysisResult>();
+		const analysisResults = new Map<FsNode, IFileAnalysisResult>();
 		await metadataCache.tree.traverse(async (node: FsNode) => {
 			if (node.name.startsWith('.')) {
 				// Skip hidden files. Don't know what these are, but macOS can sure generate some strange looking files, that produce some strange looking MediainfoMetadata.
@@ -197,63 +140,138 @@ export default class Inspect extends BaseCommand {
 			}
 		});
 
-		const matches: Match[] = [];
-		for (const [file, fileAnalysisResult] of analysisResults.entries()) {
-			if (fileAnalysisResult.isSatisfied) {
-				continue;
-			}
-
-			const videoRuleResults = (fileAnalysisResult as unknown as VideoFileAnalysisResult).getVideoRuleResults();
-			const ruleResults = videoRuleResults.map(videoRuleResult => {
-				const conditionResults = (videoRuleResult as unknown as VideoRuleResult).getConditionResults();
-				/*
-				  ConditionsAnalyzer Could not read video.framerate from video.framerate Track type 'video' not found +0ms
-				  ConditionsAnalyzer Could not read video.scantype from video.scantype Track type 'video' not found +0ms
-				  ConditionsAnalyzer Could not read video.format from video.format Track type 'video' not found +0ms
-				  ConditionsAnalyzer Could not read video.width from video.width Track type 'video' not found +0ms
-				  ConditionsAnalyzer Could not read video.format from video.format Track type 'video' not found +0ms
-				  ConditionsAnalyzer Could not read video.width from video.width Track type 'video' not found +0ms
-				  ConditionsAnalyzer Could not read video.format from video.format Track type 'video' not found +0ms
-				  ConditionsAnalyzer Could not read video.width from video.width Track type 'video' not found +0ms
-				 */
-				// TODO: When track can't be found, there is no condition result
-				if (conditionResults.length === 0) {
-					// eslint-disable-next-line unicorn/no-useless-undefined
-					return undefined;
-				}
-				return new RuleResult(conditionResults);
-			});
-			const ruleResultsFiltered = ruleResults.filter(i => i);
-			if (ruleResultsFiltered.length === 0) {
-				continue;
-			}
-			const match = new FilterMatch('Filters matched with::', file, ruleResultsFiltered);
-			matches.push(match);
-		}
-
 		if (verbose) {
 			CliUx.ux.action.stop();
-			this.log(`Found ${matches.length} item${matches.length === 1 ? 's' : ''} for purging`);
+			this.log(`Processed ${analysisResults.size} file${analysisResults.size === 1 ? 's' : ''}`);
 		}
 
-		return matches;
+		return analysisResults;
+	}
+
+	async getPrintableResults(tree: FsTree, analysisResults: Map<FsNode, IFileAnalysisResult>, satisfied: boolean, includeEmpty: boolean, includeAuxiliary: boolean): Promise<Map<FsNode, IPrintable>> {
+		const printableResults = new Map<FsNode, IPrintable>();
+
+		// Process analysis results
+		for (const [file, fileAnalysisResult] of analysisResults.entries()) {
+			const seekingSatisfiedAndFileSatisfied = satisfied && fileAnalysisResult.isSatisfied;
+			const seekingNonSatisfiedAndFileNotSatisfied = !satisfied && !fileAnalysisResult.isSatisfied;
+
+			if (seekingSatisfiedAndFileSatisfied || seekingNonSatisfiedAndFileNotSatisfied) {
+				if (fileAnalysisResult instanceof VideoFileAnalysisResult) {
+					printableResults.set(file, new PrintableVideoResult(fileAnalysisResult));
+				}
+				else {
+					throw new TypeError('fileAnalysisResult must be instance of VideoFileAnalysisResult');
+				}
+			}
+		}
+
+		// Process tree with extra flags
+		if (!satisfied) {
+			if (includeEmpty) {
+				await tree.traverse(async (node: FsNode) => {
+					if (node instanceof Directory) {
+						const children = tree.getDirectChildren(node);
+						if (children.length === 0) {
+							printableResults.set(node, new PrintableAuxiliaryResult('Directory empty'));
+						}
+					}
+				});
+			}
+
+			if (includeAuxiliary) {
+				// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for matcher
+				await tree.traverse(async (node: FsNode) => {
+					if (node instanceof Directory) {
+						const children = tree.getDirectChildren(node);
+						if (children.length > 0) {
+							const matchedChildren = children.filter(i => printableResults.has(i));
+
+							// Get sizes of matched children
+							let sizeOfMatchedChildren = 0;
+							for (const child of matchedChildren) {
+								// I don't think this will capture the true size of the matched sub-tree. Size of Directories are 0, and I get only direct children.
+								sizeOfMatchedChildren += child.size;
+							}
+
+							const sizeOfTree = await tree.getSize(node);
+
+							if (sizeOfMatchedChildren >= 0.9 * sizeOfTree) {
+								// Match whole sub-tree
+								const subTreeAsList = await tree.getAsList(node);
+								const newAuxiliaryMatches = subTreeAsList.filter(i => !printableResults.has(i));
+								for (const match of newAuxiliaryMatches) {
+									printableResults.set(match, new PrintableAuxiliaryResult(`Auxiliary to ${node.path}`));
+								}
+							}
+						}
+					}
+				});
+			}
+		}
+
+		return printableResults;
+	}
+
+	getLogMessages(printableResults: Map<FsNode, IPrintable>, verbose: boolean): string[] {
+		const messages: string[] = [];
+
+		// Get FsNodes and sort by path
+		const nodesSortedByPath = [...printableResults.keys()].sort((a, b) => PathSorters.childrenBeforeParents(a.path, b.path));
+		for (const node of nodesSortedByPath) {
+			if (verbose) {
+				const printableResult = printableResults.get(node);
+
+				const message = getLogMessageOfNodeAndResult(node, printableResult, { colorized: true });
+				messages.push(message);
+			}
+			else {
+				messages.push(node.path);
+			}
+		}
+
+		return messages;
+	}
+
+	async getSummary(tree: FsTree, printableResults: Map<FsNode, IPrintable>): Promise<string[]> {
+		const messages: string[] = [];
+
+		let matchedSize = 0;
+		for (const match of printableResults.keys()) {
+			matchedSize += match.size;
+		}
+		const totalSize = await tree.getSize();
+		const percentage = (matchedSize / totalSize) * 100;
+
+		messages.push(`${percentage.toFixed(2)}%`);
+		// eslint-disable-next-line unicorn/no-array-push-push
+		messages.push(`Matched size:\t ${matchedSize}`);
+		// eslint-disable-next-line unicorn/no-array-push-push
+		messages.push(`Total size:\t ${totalSize}`);
+
+		return messages;
 	}
 }
 
-function getLogMessageOfMatch(match: Match, { colorized = false } = {}): string {
-	let message = `${colorized ? chalk.yellow(match.fsNode.path) : match.fsNode.path}\n\t`;
-	message += match.fsNode instanceof Directory ? '[Directory]' : '[File]';
+function getLogMessageOfNodeAndResult(node: FsNode, printable: IPrintable, options: PrintableOptions): string {
+	let message = `${options.colorized ? chalk.yellow(node.path) : node.path}\n`;
+	message += node instanceof Directory ? '[Directory]' : '[File]';
 	message += ' ';
 
-	switch (match.constructor) {
-		case FilterMatch:
-		case AuxiliaryMatch: {
-			message += match.getMatchReason({ colorized });
-			break;
+	if (!printable) {
+		message += `${options.colorized ? chalk.red('ERROR') : 'ERROR'} No printable result provided`;
+	}
+	else {
+		const subMessages = printable.getStrings(options);
+		// Slice of first string, and add to current line, then just newline the rest for now
+		if (subMessages.length > 0) {
+			message += subMessages[0];
 		}
-
-		default:
-			message += `${match.message ? match.message : 'Error'}: ${JSON.stringify(match)}`;
+		if (subMessages.length > 1) {
+			for (let i = 1; i < subMessages.length; i++) {
+				message += `\n${subMessages[i]}`;
+			}
+		}
 	}
 
 	return `${message}\n`;
