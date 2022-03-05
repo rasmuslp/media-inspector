@@ -3,9 +3,9 @@ import { CliUx } from '@oclif/core';
 import { IFileAnalysisResult } from '../../analyzer/interfaces/IFileAnalysisResult';
 import { IFileAnalyzer } from '../../analyzer/interfaces/IFileAnalyzer';
 import { File, FsNode, FsTree } from '../../fs-tree';
-import { IStandardFsTreeAnalyzer } from './IStandardFsTreeAnalyzer';
+import { IFsTreeStandardAnalyzer } from './IFsTreeStandardAnalyzer';
 
-export class StandardFsTreeAnalyzer implements IStandardFsTreeAnalyzer {
+export class FsTreeStandardAnalyzer implements IFsTreeStandardAnalyzer {
 	private readonly fileAnalyzer: IFileAnalyzer;
 
 	constructor(fileAnalyzer: IFileAnalyzer) {

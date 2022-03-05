@@ -1,18 +1,15 @@
 import path from 'path';
 
 import { Flags } from '@oclif/core';
-import chalk from 'chalk';
 
 import { ConditionsAnalyzer } from '../../analyzer/condition/ConditionsAnalyzer';
 import { ConditionAnalyzer } from '../../analyzer/condition/ConditionAnalyzer';
-import { IFileAnalysisResult } from '../../analyzer/interfaces/IFileAnalysisResult';
 import { FileAnalyzer } from '../../analyzer/FileAnalyzer';
-import { VideoFileAnalysisResult } from '../../analyzer/VideoFileAnalysisResult';
 import { VideoFileAnalyzer } from '../../analyzer/VideoFileAnalyzer';
 import { VideoFileRuleConditionsAnalyzer } from '../../analyzer/VideoFileRuleConditionsAnalyzer';
 import { VideoFileRuleMatcher } from '../../analyzer/VideoFileRuleMatcher';
 import {
-	Directory, FsNode, FsTree, PathSorters
+	FsNode, FsTree
 } from '../../fs-tree';
 import { ConditionFactory } from '../../standard/condition/ConditionFactory';
 import { CachingConditionFactory } from '../../standard/condition/CachingConditionFactory';
@@ -25,15 +22,16 @@ import { StandardFactory } from '../../standard/StandardFactory';
 import { Standard } from '../../standard/Standard';
 import { SerializableIO } from '../../serializable/SerializableIO';
 import { VideoErrorDetectorFactory } from '../../video-error-detector/VideoErrorDetectorFactory';
-import { PrintableOptions } from '../helpers/printable/PrintableOptions';
-import { PrintableAuxiliaryResult } from '../helpers/printable/PrintableAuxiliaryResult';
-import { PrintableVideoResult } from '../helpers/printable/PrintableVideoResult';
+import { FsNodePrintableTransformer } from '../helpers/printable/FsNodePrintableTransformer';
+import { FsTreePrintableTransformer } from '../helpers/printable/FsTreePrintableTransformer';
+import { IFsTreePrintableTransformer } from '../helpers/printable/IFsTreePrintableTransformer';
 import { IPrintable } from '../helpers/printable/IPrintable';
+import { IFsTreeStandardAnalyzer } from '../helpers/IFsTreeStandardAnalyzer';
 import { IStandardReader } from '../helpers/IStandardReader';
 import { readMetadataFromFileSystem } from '../helpers/readMetadataFromFileSystem';
 import { readMetadataFromSerialized } from '../helpers/readMetadataFromSerialized';
-import { IStandardFsTreeAnalyzer } from '../helpers/IStandardFsTreeAnalyzer';
-import { StandardFsTreeAnalyzer } from '../helpers/StandardFsTreeAnalyzer';
+import { FsTreeExtrasAnalyzer } from '../helpers/FsTreeExtrasAnalyzer';
+import { FsTreeStandardAnalyzer } from '../helpers/FsTreeStandardAnalyzer';
 import { StandardReader } from '../helpers/StandardReader';
 import BaseCommand from '../BaseCommand';
 import { verbose } from '../flags';
@@ -109,11 +107,14 @@ export default class Inspect extends BaseCommand {
 		const videoFileRuleConditionsAnalyzer = new VideoFileRuleConditionsAnalyzer(conditionsAnalyzer, metadataCache, new VideoErrorDetectorFactory());
 		const videoFileAnalyzer = new VideoFileAnalyzer(videoFileRuleMatcher, videoFileRuleConditionsAnalyzer);
 		const fileAnalyzer = new FileAnalyzer(videoFileAnalyzer, standard);
-		const standardFsTreeAnalyzer: IStandardFsTreeAnalyzer = new StandardFsTreeAnalyzer(fileAnalyzer);
+		const standardFsTreeAnalyzer: IFsTreeStandardAnalyzer = new FsTreeStandardAnalyzer(fileAnalyzer);
 		const analysisResults = await standardFsTreeAnalyzer.analyze(metadataCache.tree, flags.verbose);
 
-		const printableResults = await this.getPrintableResults(metadataCache.tree, analysisResults, flags.satisfied, flags.includeEmpty, flags.includeAuxiliary);
-		const logMessages = this.getLogMessages(printableResults, flags.verbose);
+		const fsTreeExtrasAnalyzer = new FsTreeExtrasAnalyzer();
+		const printableResults = await fsTreeExtrasAnalyzer.analyze(metadataCache.tree, analysisResults, flags.satisfied, flags.includeEmpty, flags.includeAuxiliary);
+
+		const fsTreePrintableTransformer: IFsTreePrintableTransformer = new FsTreePrintableTransformer(new FsNodePrintableTransformer());
+		const logMessages = fsTreePrintableTransformer.getMessages(printableResults, flags.verbose);
 
 		if (flags.verbose) {
 			logMessages.push(...(await this.getSummary(metadataCache.tree, printableResults)));
@@ -122,91 +123,6 @@ export default class Inspect extends BaseCommand {
 		for (const message of logMessages) {
 			this.log(message);
 		}
-	}
-
-	async getPrintableResults(tree: FsTree, analysisResults: Map<FsNode, IFileAnalysisResult>, satisfied: boolean, includeEmpty: boolean, includeAuxiliary: number): Promise<Map<FsNode, IPrintable>> {
-		const printableResults = new Map<FsNode, IPrintable>();
-
-		// Process analysis results
-		for (const [file, fileAnalysisResult] of analysisResults.entries()) {
-			const seekingSatisfiedAndFileSatisfied = satisfied && fileAnalysisResult.isSatisfied;
-			const seekingNonSatisfiedAndFileNotSatisfied = !satisfied && !fileAnalysisResult.isSatisfied;
-
-			if (seekingSatisfiedAndFileSatisfied || seekingNonSatisfiedAndFileNotSatisfied) {
-				if (fileAnalysisResult instanceof VideoFileAnalysisResult) {
-					printableResults.set(file, new PrintableVideoResult(fileAnalysisResult));
-				}
-				else {
-					throw new TypeError('fileAnalysisResult must be instance of VideoFileAnalysisResult');
-				}
-			}
-		}
-
-		// Process tree with extra flags
-		if (!satisfied) {
-			if (includeEmpty) {
-				await tree.traverse(async (node: FsNode) => {
-					if (node instanceof Directory) {
-						const children = tree.getDirectChildren(node);
-						if (children.length === 0) {
-							printableResults.set(node, new PrintableAuxiliaryResult('Directory empty'));
-						}
-					}
-				});
-			}
-
-			if (includeAuxiliary) {
-				// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for matcher
-				await tree.traverse(async (node: FsNode) => {
-					if (node instanceof Directory) {
-						const children = tree.getDirectChildren(node);
-						if (children.length > 0) {
-							const matchedChildren = children.filter(i => printableResults.has(i));
-
-							// Get sizes of matched children
-							let sizeOfMatchedChildren = 0;
-							for (const child of matchedChildren) {
-								// I don't think this will capture the true size of the matched sub-tree. Size of Directories are 0, and I get only direct children.
-								sizeOfMatchedChildren += child.size;
-							}
-
-							const sizeOfTree = await tree.getSize(node);
-
-							if (sizeOfMatchedChildren >= includeAuxiliary * sizeOfTree) {
-								// Match whole sub-tree
-								const subTreeAsList = await tree.getAsList(node);
-								const newAuxiliaryMatches = subTreeAsList.filter(i => !printableResults.has(i));
-								for (const match of newAuxiliaryMatches) {
-									printableResults.set(match, new PrintableAuxiliaryResult(`Auxiliary to ${node.path}`));
-								}
-							}
-						}
-					}
-				});
-			}
-		}
-
-		return printableResults;
-	}
-
-	getLogMessages(printableResults: Map<FsNode, IPrintable>, verbose: boolean): string[] {
-		const messages: string[] = [];
-
-		// Get FsNodes and sort by path
-		const nodesSortedByPath = [...printableResults.keys()].sort((a, b) => PathSorters.childrenBeforeParents(a.path, b.path));
-		for (const node of nodesSortedByPath) {
-			if (verbose) {
-				const printableResult = printableResults.get(node);
-
-				const message = getLogMessageOfNodeAndResult(node, printableResult, { colorized: true });
-				messages.push(message);
-			}
-			else {
-				messages.push(node.path);
-			}
-		}
-
-		return messages;
 	}
 
 	async getSummary(tree: FsTree, printableResults: Map<FsNode, IPrintable>): Promise<string[]> {
@@ -227,28 +143,4 @@ export default class Inspect extends BaseCommand {
 
 		return messages;
 	}
-}
-
-function getLogMessageOfNodeAndResult(node: FsNode, printable: IPrintable, options: PrintableOptions): string {
-	let message = `${options.colorized ? chalk.yellow(node.path) : node.path}\n`;
-	message += node instanceof Directory ? '[Directory]' : '[File]';
-	message += ' ';
-
-	if (!printable) {
-		message += `${options.colorized ? chalk.red('ERROR') : 'ERROR'} No printable result provided`;
-	}
-	else {
-		const subMessages = printable.getStrings(options);
-		// Slice of first string, and add to current line, then just newline the rest for now
-		if (subMessages.length > 0) {
-			message += subMessages[0];
-		}
-		if (subMessages.length > 1) {
-			for (let i = 1; i < subMessages.length; i++) {
-				message += `\n${subMessages[i]}`;
-			}
-		}
-	}
-
-	return `${message}\n`;
 }
