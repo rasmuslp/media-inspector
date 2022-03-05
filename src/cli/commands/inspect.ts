@@ -36,6 +36,7 @@ import { readMetadataFromSerialized } from '../helpers/readMetadataFromSerialize
 import { StandardReader } from '../helpers/StandardReader';
 import BaseCommand from '../BaseCommand';
 import { verbose } from '../flags';
+import { RatioFlag } from '../RatioFlag';
 
 export default class Inspect extends BaseCommand {
 	static description = 'Inspect input and hold it up to a standard';
@@ -61,10 +62,10 @@ export default class Inspect extends BaseCommand {
 			exclusive: ['satisfied']
 		}),
 
-		includeAuxiliary: Flags.boolean({
+		includeAuxiliary: RatioFlag({
 			char: 'a',
-			default: false,
-			description: 'Will also include empty directories and \'container\' directories',
+			default: 0,
+			description: 'Also print \'container\' directories; i.e. directories that are larger than provided RATIO not satisfied. NB: Marks whole directory!',
 			exclusive: ['satisfied']
 		}),
 
@@ -148,7 +149,7 @@ export default class Inspect extends BaseCommand {
 		return analysisResults;
 	}
 
-	async getPrintableResults(tree: FsTree, analysisResults: Map<FsNode, IFileAnalysisResult>, satisfied: boolean, includeEmpty: boolean, includeAuxiliary: boolean): Promise<Map<FsNode, IPrintable>> {
+	async getPrintableResults(tree: FsTree, analysisResults: Map<FsNode, IFileAnalysisResult>, satisfied: boolean, includeEmpty: boolean, includeAuxiliary: number): Promise<Map<FsNode, IPrintable>> {
 		const printableResults = new Map<FsNode, IPrintable>();
 
 		// Process analysis results
@@ -196,7 +197,7 @@ export default class Inspect extends BaseCommand {
 
 							const sizeOfTree = await tree.getSize(node);
 
-							if (sizeOfMatchedChildren >= 0.9 * sizeOfTree) {
+							if (sizeOfMatchedChildren >= includeAuxiliary * sizeOfTree) {
 								// Match whole sub-tree
 								const subTreeAsList = await tree.getAsList(node);
 								const newAuxiliaryMatches = subTreeAsList.filter(i => !printableResults.has(i));
