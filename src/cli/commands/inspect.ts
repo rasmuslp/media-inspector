@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { CliUx, Flags } from '@oclif/core';
+import { Flags } from '@oclif/core';
 import chalk from 'chalk';
 
 import { ConditionsAnalyzer } from '../../analyzer/condition/ConditionsAnalyzer';
@@ -12,9 +12,8 @@ import { VideoFileAnalyzer } from '../../analyzer/VideoFileAnalyzer';
 import { VideoFileRuleConditionsAnalyzer } from '../../analyzer/VideoFileRuleConditionsAnalyzer';
 import { VideoFileRuleMatcher } from '../../analyzer/VideoFileRuleMatcher';
 import {
-	Directory, File, FsNode, FsTree, PathSorters
+	Directory, FsNode, FsTree, PathSorters
 } from '../../fs-tree';
-import { MetadataCache } from '../../metadata/MetadataCache';
 import { ConditionFactory } from '../../standard/condition/ConditionFactory';
 import { CachingConditionFactory } from '../../standard/condition/CachingConditionFactory';
 import { VideoRuleFactory } from '../../standard/video-standard/VideoRuleFactory';
@@ -33,6 +32,8 @@ import { IPrintable } from '../helpers/printable/IPrintable';
 import { IStandardReader } from '../helpers/IStandardReader';
 import { readMetadataFromFileSystem } from '../helpers/readMetadataFromFileSystem';
 import { readMetadataFromSerialized } from '../helpers/readMetadataFromSerialized';
+import { IStandardFsTreeAnalyzer } from '../helpers/IStandardFsTreeAnalyzer';
+import { StandardFsTreeAnalyzer } from '../helpers/StandardFsTreeAnalyzer';
 import { StandardReader } from '../helpers/StandardReader';
 import BaseCommand from '../BaseCommand';
 import { verbose } from '../flags';
@@ -101,7 +102,16 @@ export default class Inspect extends BaseCommand {
 		const { flags } = await this.parse(Inspect);
 
 		const metadataCache = await (SerializableIO.isSerializePath(flags.read) ? readMetadataFromSerialized(flags.read) : readMetadataFromFileSystem(flags.read, flags.verbose));
-		const analysisResults = await this.analyze(metadataCache, flags.standard, flags.verbose);
+		const standard: Standard = await this.standardReader.read(flags.standard, flags.verbose);
+
+		const conditionsAnalyzer = new ConditionsAnalyzer(new ConditionAnalyzer());
+		const videoFileRuleMatcher = new VideoFileRuleMatcher(metadataCache, conditionsAnalyzer);
+		const videoFileRuleConditionsAnalyzer = new VideoFileRuleConditionsAnalyzer(conditionsAnalyzer, metadataCache, new VideoErrorDetectorFactory());
+		const videoFileAnalyzer = new VideoFileAnalyzer(videoFileRuleMatcher, videoFileRuleConditionsAnalyzer);
+		const fileAnalyzer = new FileAnalyzer(videoFileAnalyzer, standard);
+		const standardFsTreeAnalyzer: IStandardFsTreeAnalyzer = new StandardFsTreeAnalyzer(fileAnalyzer);
+		const analysisResults = await standardFsTreeAnalyzer.analyze(metadataCache.tree, flags.verbose);
+
 		const printableResults = await this.getPrintableResults(metadataCache.tree, analysisResults, flags.satisfied, flags.includeEmpty, flags.includeAuxiliary);
 		const logMessages = this.getLogMessages(printableResults, flags.verbose);
 
@@ -112,41 +122,6 @@ export default class Inspect extends BaseCommand {
 		for (const message of logMessages) {
 			this.log(message);
 		}
-	}
-
-	async analyze(metadataCache: MetadataCache, standardPath: string, verbose = false): Promise<Map<FsNode, IFileAnalysisResult>> {
-		const conditionsAnalyzer = new ConditionsAnalyzer(new ConditionAnalyzer());
-		const videoFileRuleMatcher = new VideoFileRuleMatcher(metadataCache, conditionsAnalyzer);
-		const videoFileRuleConditionsAnalyzer = new VideoFileRuleConditionsAnalyzer(conditionsAnalyzer, metadataCache, new VideoErrorDetectorFactory());
-		const videoFileAnalyzer = new VideoFileAnalyzer(videoFileRuleMatcher, videoFileRuleConditionsAnalyzer);
-		const standard: Standard = await this.standardReader.read(standardPath, verbose);
-		const fileAnalyzer = new FileAnalyzer(videoFileAnalyzer, standard);
-
-		if (verbose) {
-			CliUx.ux.action.start('Analyzing...');
-		}
-
-		const analysisResults = new Map<FsNode, IFileAnalysisResult>();
-		await metadataCache.tree.traverse(async (node: FsNode) => {
-			if (node.name.startsWith('.')) {
-				// Skip hidden files. Don't know what these are, but macOS can sure generate some strange looking files, that produce some strange looking MediainfoMetadata.
-				return;
-			}
-
-			if (node instanceof File) {
-				const fileAnalysisResult = fileAnalyzer.analyze(node);
-				if (fileAnalysisResult) {
-					analysisResults.set(node, fileAnalysisResult);
-				}
-			}
-		});
-
-		if (verbose) {
-			CliUx.ux.action.stop();
-			this.log(`Processed ${analysisResults.size} file${analysisResults.size === 1 ? 's' : ''}`);
-		}
-
-		return analysisResults;
 	}
 
 	async getPrintableResults(tree: FsTree, analysisResults: Map<FsNode, IFileAnalysisResult>, satisfied: boolean, includeEmpty: boolean, includeAuxiliary: number): Promise<Map<FsNode, IPrintable>> {
