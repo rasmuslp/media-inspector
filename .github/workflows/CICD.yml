@@ -45,7 +45,7 @@ jobs:
           name: test-report
           path: reports/junit/results.xml
       - name: Upload codecoverage to Codacy (Node 14 only)
-        if: matrix.node == 14
+        if: matrix.node == 14 && github.actor != 'dependabot[bot]'
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
@@ -60,7 +60,7 @@ jobs:
           shasum -a 256 -c codecov.SHA256SUM
           chmod +x codecov
           ./codecov -t ${CODECOV_TOKEN}
-        if: matrix.node == 14
+        if: matrix.node == 14 && github.actor != 'dependabot[bot]'
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
