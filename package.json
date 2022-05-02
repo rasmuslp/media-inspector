@@ -68,7 +68,7 @@
     "@types/cli-progress": "3.9.2",
     "@types/debug": "4.1.7",
     "@types/jest": "27.4.0",
-    "@types/luxon": "2.0.9",
+    "@types/luxon": "2.3.2",
     "@types/mime-types": "2.1.1",
     "@types/node": "16.10.3",
     "@types/split2": "3.2.1",
