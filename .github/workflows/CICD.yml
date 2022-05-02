@@ -45,10 +45,11 @@ jobs:
           name: test-report
           path: reports/junit/results.xml
       - name: Upload codecoverage to Codacy (Node 14 only)
-        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r ./coverage/lcov.info
         if: matrix.node == 14
-        env:
-          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: ./coverage/lcov.info
       - name: Upload codecoverage to Codecov (Node 14 only)
         run: |
           curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --import # One-time step
