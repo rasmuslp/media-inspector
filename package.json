@@ -67,7 +67,7 @@
     "@rasmuslp/eslint-config": "4.0.1",
     "@types/cli-progress": "3.9.2",
     "@types/debug": "4.1.7",
-    "@types/jest": "27.4.0",
+    "@types/jest": "27.4.1",
     "@types/luxon": "2.0.9",
     "@types/mime-types": "2.1.1",
     "@types/node": "16.10.3",
