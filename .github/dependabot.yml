@@ -3,6 +3,13 @@ version: 2
 updates:
   - package-ecosystem: 'npm'
     directory: '/'
+    ignore:
+      - dependency-name: 'chalk'
+        versions: [ '>=5' ]
+      - dependency-name: 'execa'
+        versions: [ '>=6' ]
+      - dependency-name: 'p-limit'
+        versions: [ '>=4' ]
     schedule:
       interval: 'daily'
     open-pull-requests-limit: 20
