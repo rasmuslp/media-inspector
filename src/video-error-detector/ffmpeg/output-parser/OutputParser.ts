@@ -78,6 +78,7 @@ export class OutputParser {
 				break;
 			}
 
+			// eslint-disable-next-line unicorn/no-useless-switch-case
 			case LineType.METADATA:
 			default:
 				this.metadataParser.parse(line);
