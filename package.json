@@ -65,7 +65,7 @@
   },
   "devDependencies": {
     "@rasmuslp/eslint-config": "4.5.0",
-    "@types/cli-progress": "3.9.2",
+    "@types/cli-progress": "3.11.0",
     "@types/debug": "4.1.7",
     "@types/jest": "27.4.1",
     "@types/luxon": "2.3.2",
