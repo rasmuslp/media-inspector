@@ -22,7 +22,14 @@ export class MediainfoMetadataFactory {
 		const output = await exec(`${mediainfoPath} --Full --Output=XML "${path.replace(/`/g, '\\`')}"`);
 
 		// Parse mediainfo output
-		const mediainfo: unknown = await mediainfoParse(output.stdout);
+		// TODO: Slippery slope to transform single entries to arrays, just to conform to my lookup logic?
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		const mediainfo = await mediainfoParse(output.stdout);
+		/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+		if (mediainfo?.media?.track && !Array.isArray(mediainfo.media.track)) {
+			mediainfo.media.track = [mediainfo.media.track];
+		}
+		/* eslint-enable @typescript-eslint/no-unsafe-member-access */
 
 		// Can parse without throwing, then the full object - with any additional properties - can be returned
 		MediainfoMetadataRawSchema.parse(mediainfo);
