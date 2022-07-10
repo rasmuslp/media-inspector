@@ -64,23 +64,23 @@
     "zod": "^3.11.6"
   },
   "devDependencies": {
-    "@rasmuslp/eslint-config": "4.5.0",
+    "@rasmuslp/eslint-config": "5.0.0",
     "@types/cli-progress": "3.11.0",
     "@types/debug": "4.1.7",
-    "@types/jest": "27.4.1",
+    "@types/jest": "28.1.4",
     "@types/luxon": "2.3.2",
     "@types/mime-types": "2.1.1",
-    "@types/node": "16.11.33",
+    "@types/node": "16.11.43",
     "@types/split2": "3.2.1",
-    "eslint-plugin-jest": "26.1.5",
-    "jest": "27.5.1",
-    "jest-junit": "13.2.0",
-    "jest-mock-extended": "2.0.5",
-    "np": "7.6.1",
-    "oclif": "2.4.3",
-    "ts-jest": "27.1.4",
-    "ts-node": "10.7.0",
-    "typescript": "4.6.4"
+    "eslint-plugin-jest": "26.5.3",
+    "jest": "28.1.2",
+    "jest-junit": "14.0.0",
+    "jest-mock-extended": "2.0.6",
+    "np": "7.6.2",
+    "oclif": "3.1.0",
+    "ts-jest": "28.0.5",
+    "ts-node": "10.8.2",
+    "typescript": "4.7.4"
   },
   "engines": {
     "node": ">=12.13.0"
