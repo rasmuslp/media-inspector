@@ -1,6 +1,6 @@
+import { ICondition } from '../../standard';
+import { IConditionResult } from '../interfaces/IConditionResult';
 import { ConditionSatisfied } from './ConditionSatisfied';
-import { ICondition } from './ICondition';
-import { IConditionResult } from './IConditionResult';
 
 export class ConditionResult implements IConditionResult {
 	private readonly condition: ICondition;
@@ -19,9 +19,8 @@ export class ConditionResult implements IConditionResult {
 		return this.satisfied === ConditionSatisfied.YES;
 	}
 
-	getResultAsStrings(): string {
-		const message = `${this.condition.path} ${this.isSatisfied ? 'satisfied' : 'failed'}: ${this.condition.toStringForValue(this.value)}`;
-
+	getResultAsString(): string {
+		const message = `${this.condition.path} ${this.isSatisfied ? 'satisfied' : 'not satisfied'}: ${this.condition.toStringForValue(this.value)}`;
 		return message;
 	}
 }

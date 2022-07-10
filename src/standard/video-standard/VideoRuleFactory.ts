@@ -15,6 +15,12 @@ export class VideoRuleFactory implements IVideoRuleFactory {
 	create(serialized: VideoRuleSerialized): IVideoRule {
 		const conditions = serialized.conditions.map(condition => this.conditionFactory.create(condition));
 
-		return new VideoRule(serialized.name, serialized.match, serialized.type, conditions);
+		const match = {
+			fileExtension: serialized.match?.fileExtension,
+			metadata: serialized.match?.metadata && serialized.match.metadata.map(condition => this.conditionFactory.create(condition)),
+			mimeType: serialized.match?.mimeType
+		};
+
+		return new VideoRule(serialized.name, match, serialized.type, conditions);
 	}
 }

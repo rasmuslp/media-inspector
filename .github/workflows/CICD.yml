@@ -37,6 +37,7 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends mediainfo
       - run: npm run test -- --ci --coverage --runInBand --reporters=default --reporters=jest-junit
         env:
+          FORCE_COLOR: '1'
           JEST_JUNIT_OUTPUT_NAME: 'reports/junit/results.xml'
       - run: npm run build
       - name: Archive test results

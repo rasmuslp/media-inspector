@@ -22,4 +22,8 @@ export class File extends FsNode<FileSerialized> {
 			mimeType: this.mimeType
 		};
 	}
+
+	getMimeTypeWithoutSubtype() {
+		return this.mimeType.split('/', 1)[0];
+	}
 }

@@ -1,31 +1,41 @@
 import path from 'path';
 
-import { CliUx, Flags } from '@oclif/core';
-import chalk from 'chalk';
+import { Flags } from '@oclif/core';
 
-import { Directory, FsNode, PathSorters } from '../../fs-tree';
-import { AuxiliaryMatch } from '../../matcher/AuxiliaryMatch';
-import { FilterMatch } from '../../matcher/FilterMatch';
-import { FilterMatcher } from '../../matcher/FilterMatcher';
-import { Match } from '../../matcher/Match';
-import { MetadataCache } from '../../metadata/MetadataCache';
+import { ConditionsAnalyzer } from '../../analyzer/condition/ConditionsAnalyzer';
+import { ConditionAnalyzer } from '../../analyzer/condition/ConditionAnalyzer';
+import { FileAnalyzer } from '../../analyzer/FileAnalyzer';
+import { VideoFileAnalyzer } from '../../analyzer/VideoFileAnalyzer';
+import { VideoFileRuleConditionsAnalyzer } from '../../analyzer/VideoFileRuleConditionsAnalyzer';
+import { VideoFileRuleMatcher } from '../../analyzer/VideoFileRuleMatcher';
+import {
+	FsNode, FsTree
+} from '../../fs-tree';
 import { ConditionFactory } from '../../standard/condition/ConditionFactory';
 import { CachingConditionFactory } from '../../standard/condition/CachingConditionFactory';
 import { VideoRuleFactory } from '../../standard/video-standard/VideoRuleFactory';
 import { VideoStandardFactory } from '../../standard/video-standard/VideoStandardFactory';
-import { VideoStandard } from '../../standard/video-standard/VideoStandard';
 import { FsFileReader } from '../../standard/FsFileReader';
 import { JSON5Parser } from '../../standard/JSON5Parser';
 import { SchemaParser } from '../../standard/SchemaParser';
 import { StandardFactory } from '../../standard/StandardFactory';
 import { Standard } from '../../standard/Standard';
 import { SerializableIO } from '../../serializable/SerializableIO';
+import { VideoErrorDetectorFactory } from '../../video-error-detector/VideoErrorDetectorFactory';
+import { FsNodePrintableTransformer } from '../helpers/printable/FsNodePrintableTransformer';
+import { FsTreePrintableTransformer } from '../helpers/printable/FsTreePrintableTransformer';
+import { IFsTreePrintableTransformer } from '../helpers/printable/IFsTreePrintableTransformer';
+import { IPrintable } from '../helpers/printable/IPrintable';
+import { IFsTreeStandardAnalyzer } from '../helpers/IFsTreeStandardAnalyzer';
 import { IStandardReader } from '../helpers/IStandardReader';
 import { readMetadataFromFileSystem } from '../helpers/readMetadataFromFileSystem';
 import { readMetadataFromSerialized } from '../helpers/readMetadataFromSerialized';
+import { FsTreeExtrasAnalyzer } from '../helpers/FsTreeExtrasAnalyzer';
+import { FsTreeStandardAnalyzer } from '../helpers/FsTreeStandardAnalyzer';
 import { StandardReader } from '../helpers/StandardReader';
 import BaseCommand from '../BaseCommand';
 import { verbose } from '../flags';
+import { RatioFlag } from '../RatioFlag';
 
 export default class Inspect extends BaseCommand {
 	static description = 'Inspect input and hold it up to a standard';
@@ -38,10 +48,24 @@ export default class Inspect extends BaseCommand {
 			required: true
 		}),
 
-		includeAuxiliary: Flags.boolean({
-			char: 'i',
+		satisfied: Flags.boolean({
+			allowNo: true,
 			default: false,
-			description: 'Will also include empty directories and \'container\' directories'
+			description: 'Print files that are satisfied by the standard. Can be reversed by prefixing no-'
+		}),
+
+		includeEmpty: Flags.boolean({
+			char: 'e',
+			default: false,
+			description: 'Also print empty directories',
+			exclusive: ['satisfied']
+		}),
+
+		includeAuxiliary: RatioFlag({
+			char: 'a',
+			default: 0,
+			description: 'Also print \'container\' directories; i.e. directories that are larger than provided RATIO not satisfied. NB: Marks whole directory!',
+			exclusive: ['satisfied']
 		}),
 
 		read: Flags.string({
@@ -58,7 +82,8 @@ export default class Inspect extends BaseCommand {
 		'$ media-inspector inspect -r ~/Downloads -s ./examples/standard-default.json5',
 		'$ media-inspector inspect -r ~/Downloads/file.ext -s ./examples/standard-default.json5',
 		'$ media-inspector inspect -r downloads.json -s ./examples/standard-default.json5',
-		'$ media-inspector inspect -r downloads.json -s ./examples/standard-default.json5 -i -v'
+		'$ media-inspector inspect -r downloads.json -s ./examples/standard-default.json5 -a -e -v',
+		'$ media-inspector inspect -r downloads.json -s ./examples/standard-default.json5 --satisfied -v'
 	];
 
 	private standardReader: IStandardReader;
@@ -76,121 +101,47 @@ export default class Inspect extends BaseCommand {
 		const { flags } = await this.parse(Inspect);
 
 		const metadataCache = await (SerializableIO.isSerializePath(flags.read) ? readMetadataFromSerialized(flags.read) : readMetadataFromFileSystem(flags.read, flags.verbose));
+		const standard: Standard = await this.standardReader.read(flags.standard, flags.verbose);
 
-		const matches: Match[] = [];
-		const filterMatches = await this.filter(metadataCache, flags.standard, flags.verbose);
-		matches.push(...filterMatches);
+		const conditionsAnalyzer = new ConditionsAnalyzer(new ConditionAnalyzer());
+		const videoFileRuleMatcher = new VideoFileRuleMatcher(metadataCache, conditionsAnalyzer);
+		const videoFileRuleConditionsAnalyzer = new VideoFileRuleConditionsAnalyzer(conditionsAnalyzer, metadataCache, new VideoErrorDetectorFactory());
+		const videoFileAnalyzer = new VideoFileAnalyzer(videoFileRuleMatcher, videoFileRuleConditionsAnalyzer);
+		const fileAnalyzer = new FileAnalyzer(videoFileAnalyzer, standard);
+		const standardFsTreeAnalyzer: IFsTreeStandardAnalyzer = new FsTreeStandardAnalyzer(fileAnalyzer);
+		const analysisResults = await standardFsTreeAnalyzer.analyze(metadataCache.tree, flags.verbose);
 
-		if (flags.includeAuxiliary) {
-			// TODO: I need proper DFS to ensure that parent dirs will capture children that are marked for matcher
-			await metadataCache.tree.traverse(async (node: FsNode) => {
-				if (node instanceof Directory) {
-					const children = metadataCache.tree.getDirectChildren(node);
-					if (children.length === 0) {
-						matches.push(new AuxiliaryMatch('Directory empty', node));
-					}
-					else {
-						const childPaths = new Set(children.map(fsNode => fsNode.path));
-						const matchedChildren = matches.filter(match => childPaths.has(match.fsNode.path));
+		const fsTreeExtrasAnalyzer = new FsTreeExtrasAnalyzer();
+		const printableResults = await fsTreeExtrasAnalyzer.analyze(metadataCache.tree, analysisResults, flags.satisfied, flags.includeEmpty, flags.includeAuxiliary);
 
-						// Get sizes of matched children
-						let sizeOfMatchedChildren = 0;
-						for (const match of matchedChildren) {
-							sizeOfMatchedChildren += match.fsNode.size;
-						}
-
-						const sizeOfTree = await metadataCache.tree.getSize(node);
-
-						// Take parent and all children when this was the majority
-						if (sizeOfMatchedChildren >= 0.9 * sizeOfTree) {
-							// Mark tree from directory as Purgable
-							const treeAsList = await metadataCache.tree.getAsSortedList(node);
-							const auxiliaryMatches = treeAsList.map(childNode => new AuxiliaryMatch(`Auxiliary to ${node.path}`, childNode));
-
-							matches.push(...auxiliaryMatches);
-						}
-					}
-				}
-			});
-		}
-
-		// Dedupe list
-		const dedupedMap = new Map<FsNode, Match>();
-		for (const match of matches) {
-			const existing = dedupedMap.get(match.fsNode);
-			if (existing) {
-				// Update if current has better score
-				if (existing.score < match.score) {
-					dedupedMap.set(match.fsNode, match);
-				}
-			}
-			else {
-				// Store as unique otherwise
-				dedupedMap.set(match.fsNode, match);
-			}
-		}
-
-		// Sort deduped
-		const dedupedPurgres = [...dedupedMap.values()].sort((a, b) => PathSorters.childrenBeforeParents(a.fsNode.path, b.fsNode.path));
-
-		for (const match of dedupedPurgres) {
-			if (flags.verbose) {
-				const message = getLogMessageOfMatch(match, { colorized: true });
-				this.log(message);
-			}
-			else {
-				this.log(match.fsNode.path);
-			}
-		}
+		const fsTreePrintableTransformer: IFsTreePrintableTransformer = new FsTreePrintableTransformer(new FsNodePrintableTransformer());
+		const logMessages = fsTreePrintableTransformer.getMessages(printableResults, flags.verbose);
 
 		if (flags.verbose) {
-			let spaceFreeable = 0;
-			for (const match of dedupedPurgres) {
-				spaceFreeable += match.fsNode.size;
-			}
+			logMessages.push(...(await this.getSummary(metadataCache.tree, printableResults)));
+		}
 
-			this.log('Space freeable:\t', spaceFreeable);
-
-			const size = await metadataCache.tree.getSize();
-			this.log('Total Size:\t', size);
-
-			const reduction = (spaceFreeable / size) * 100;
-			this.log(`Reduction: ${reduction.toFixed(2)}%`);
+		for (const message of logMessages) {
+			this.log(message);
 		}
 	}
 
-	async filter(metadataCache: MetadataCache, filterPath: string, verbose = false): Promise<Match[]> {
-		const standard: Standard = await this.standardReader.read(filterPath, verbose);
-		const videoStandard = standard.videoStandard as VideoStandard; // TODO: Hacky
+	async getSummary(tree: FsTree, printableResults: Map<FsNode, IPrintable>): Promise<string[]> {
+		const messages: string[] = [];
 
-		if (verbose) {
-			CliUx.ux.action.start('Filtering...');
+		let matchedSize = 0;
+		for (const match of printableResults.keys()) {
+			matchedSize += match.size;
 		}
-		const matches = await FilterMatcher.getMatches(metadataCache, videoStandard.rules);
-		if (verbose) {
-			CliUx.ux.action.stop();
-			this.log(`Found ${matches.length} item${matches.length === 1 ? 's' : ''} for purging`);
-		}
+		const totalSize = await tree.getSize();
+		const percentage = (matchedSize / totalSize) * 100;
 
-		return matches;
+		messages.push(`${percentage.toFixed(2)}%`);
+		// eslint-disable-next-line unicorn/no-array-push-push
+		messages.push(`Matched size:\t ${matchedSize}`);
+		// eslint-disable-next-line unicorn/no-array-push-push
+		messages.push(`Total size:\t ${totalSize}`);
+
+		return messages;
 	}
-}
-
-function getLogMessageOfMatch(match: Match, { colorized = false } = {}): string {
-	let message = `${colorized ? chalk.yellow(match.fsNode.path) : match.fsNode.path}\n\t`;
-	message += match.fsNode instanceof Directory ? '[Directory]' : '[File]';
-	message += ' ';
-
-	switch (match.constructor) {
-		case FilterMatch:
-		case AuxiliaryMatch: {
-			message += match.getMatchReason({ colorized });
-			break;
-		}
-
-		default:
-			message += `${match.message ? match.message : 'Error'}: ${JSON.stringify(match)}`;
-	}
-
-	return `${message}\n`;
 }
