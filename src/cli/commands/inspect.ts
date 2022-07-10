@@ -82,7 +82,8 @@ export default class Inspect extends BaseCommand {
 		'$ media-inspector inspect -r ~/Downloads -s ./examples/standard-default.json5',
 		'$ media-inspector inspect -r ~/Downloads/file.ext -s ./examples/standard-default.json5',
 		'$ media-inspector inspect -r downloads.json -s ./examples/standard-default.json5',
-		'$ media-inspector inspect -r downloads.json -s ./examples/standard-default.json5 -i -v'
+		'$ media-inspector inspect -r downloads.json -s ./examples/standard-default.json5 -a -e -v',
+		'$ media-inspector inspect -r downloads.json -s ./examples/standard-default.json5 --satisfied -v'
 	];
 
 	private standardReader: IStandardReader;
