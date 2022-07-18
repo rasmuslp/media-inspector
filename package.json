@@ -75,7 +75,7 @@
     "eslint-plugin-jest": "26.5.3",
     "jest": "28.1.2",
     "jest-junit": "14.0.0",
-    "jest-mock-extended": "2.0.6",
+    "jest-mock-extended": "2.0.7",
     "np": "7.6.2",
     "oclif": "3.1.0",
     "ts-jest": "28.0.5",
