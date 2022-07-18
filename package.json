@@ -64,7 +64,7 @@
     "zod": "3.17.3"
   },
   "devDependencies": {
-    "@rasmuslp/eslint-config": "5.0.0",
+    "@rasmuslp/eslint-config": "5.1.0",
     "@types/cli-progress": "3.11.0",
     "@types/debug": "4.1.7",
     "@types/jest": "28.1.4",
