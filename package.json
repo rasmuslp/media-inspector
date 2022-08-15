@@ -70,7 +70,7 @@
     "@types/jest": "28.1.4",
     "@types/luxon": "2.3.2",
     "@types/mime-types": "2.1.1",
-    "@types/node": "16.11.43",
+    "@types/node": "16.11.48",
     "@types/split2": "3.2.1",
     "eslint-plugin-jest": "26.5.3",
     "jest": "28.1.2",
