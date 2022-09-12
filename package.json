@@ -61,7 +61,7 @@
     "mime-types": "^2.1.35",
     "p-limit": "^3.1.0",
     "split2": "4.1.0",
-    "zod": "3.17.3"
+    "zod": "3.19.1"
   },
   "devDependencies": {
     "@rasmuslp/eslint-config": "5.0.0",
