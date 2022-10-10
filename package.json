@@ -77,7 +77,7 @@
     "jest-junit": "14.0.0",
     "jest-mock-extended": "2.0.6",
     "np": "7.6.2",
-    "oclif": "3.1.0",
+    "oclif": "3.2.16",
     "ts-jest": "28.0.5",
     "ts-node": "10.8.2",
     "typescript": "4.7.4"
