@@ -1,3 +1,3 @@
 export interface PrintableOptions {
-	colorized: boolean
+	colorized: boolean;
 }

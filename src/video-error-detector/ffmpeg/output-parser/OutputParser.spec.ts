@@ -27,7 +27,7 @@ describe('OutputParser', () => {
 			const repeatLine = '    Last message repeated 1 times';
 			[, errorSummary] = outputParser.parse(repeatLine);
 			expect(errorSummary.corruptDecodedFrames).toEqual(2);
-			expect(parseSpy).toBeCalledTimes(3);
+			expect(parseSpy).toHaveBeenCalledTimes(3);
 		});
 
 		it('yields progress stats on frame lines without percentage when duration is unknown', () => {

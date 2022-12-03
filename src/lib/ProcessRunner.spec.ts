@@ -8,6 +8,6 @@ describe('ProcessRunner', () => {
 
 		await runner.process;
 
-		expect(callback).toBeCalledWith('hello there\n');
+		expect(callback).toHaveBeenCalledWith('hello there\n');
 	});
 });

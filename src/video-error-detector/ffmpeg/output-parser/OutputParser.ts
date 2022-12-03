@@ -80,12 +80,13 @@ export class OutputParser {
 
 			// eslint-disable-next-line unicorn/no-useless-switch-case
 			case LineType.METADATA:
-			default:
+			default: {
 				this.metadataParser.parse(line);
 				if (!this.totalDurationMs) {
 					this.totalDurationMs = this.metadataParser.getDurationMs();
 				}
 				break;
+			}
 		}
 
 		this.lastLineProcessed = line;

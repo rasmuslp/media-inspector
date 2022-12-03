@@ -64,7 +64,7 @@
     "zod": "3.17.3"
   },
   "devDependencies": {
-    "@rasmuslp/eslint-config": "5.0.0",
+    "@rasmuslp/eslint-config": "5.16.0",
     "@types/cli-progress": "3.11.0",
     "@types/debug": "4.1.7",
     "@types/jest": "28.1.4",
@@ -72,7 +72,7 @@
     "@types/mime-types": "2.1.1",
     "@types/node": "16.11.43",
     "@types/split2": "3.2.1",
-    "eslint-plugin-jest": "26.5.3",
+    "eslint-plugin-jest": "27.1.6",
     "jest": "28.1.2",
     "jest-junit": "14.0.0",
     "jest-mock-extended": "2.0.6",

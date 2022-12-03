@@ -49,8 +49,10 @@ export class MediainfoMetadata extends Serializable<MediainfoMetadataSerialized>
 			case 'general': {
 				// eslint-disable-next-line default-case
 				switch (property) {
-					case 'bitrate':
-						return track.overallbitrate as string; // TODO Improve type
+					case 'bitrate': {
+						// TODO Improve type
+						return track.overallbitrate as string;
+					}
 				}
 			}
 		}

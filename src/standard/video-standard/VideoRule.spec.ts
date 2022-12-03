@@ -5,6 +5,6 @@ describe('VideoRule', () => {
 		expect(() => {
 			// eslint-disable-next-line no-new
 			new VideoRule('name', {}, 'type', []);
-		}).toThrowError(/VideoRule requires at least 1 condition/);
+		}).toThrow(/VideoRule requires at least 1 condition/);
 	});
 });

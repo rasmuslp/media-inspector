@@ -1,4 +1,4 @@
 export interface ErrorSummary {
-	corruptDecodedFrames: number,
-	streams: number
+	corruptDecodedFrames: number;
+	streams: number;
 }

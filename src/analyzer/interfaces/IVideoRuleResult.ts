@@ -1,9 +1,9 @@
 import { IConditionResult } from './IConditionResult';
 
 export interface IVideoRuleResult {
-	isSatisfied: boolean
+	isSatisfied: boolean;
 
-	readonly name: string
+	readonly name: string;
 
 	readonly conditionResults: IConditionResult[];
 }

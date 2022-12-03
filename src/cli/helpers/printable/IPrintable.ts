@@ -1,5 +1,5 @@
 import { PrintableOptions } from './PrintableOptions';
 
 export interface IPrintable {
-	getStrings(options?: PrintableOptions): string[]
+	getStrings(options?: PrintableOptions): string[];
 }

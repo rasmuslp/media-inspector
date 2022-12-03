@@ -5,7 +5,7 @@ import { File, FsTree, FsTreeFactory } from '../../fs-tree';
 
 const debug = createDebug('readTreeAndVideos');
 
-export async function readTreeAndVideos(path: string, verbose: boolean): Promise<{ fsTree: FsTree, videoFiles: File[] }> {
+export async function readTreeAndVideos(path: string, verbose: boolean): Promise<{ fsTree: FsTree; videoFiles: File[] }> {
 	debug('Reading %s', path);
 	if (verbose) {
 		CliUx.ux.action.start(`Reading from file system ${path}`);

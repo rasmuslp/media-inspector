@@ -11,10 +11,7 @@ export class FsNodePrintableTransformer implements IFsNodePrintableTransformer {
 		message += node instanceof Directory ? '[Directory]' : '[File]';
 		message += ' ';
 
-		if (!printable) {
-			message += `${options.colorized ? chalk.red('ERROR') : 'ERROR'} No printable result provided`;
-		}
-		else {
+		if (printable) {
 			const subMessages = printable.getStrings(options);
 			// Slice of first string, and add to current line, then just newline the rest for now
 			if (subMessages.length > 0) {
@@ -25,6 +22,9 @@ export class FsNodePrintableTransformer implements IFsNodePrintableTransformer {
 					message += `\n${subMessages[i]}`;
 				}
 			}
+		}
+		else {
+			message += `${options.colorized ? chalk.red('ERROR') : 'ERROR'} No printable result provided`;
 		}
 
 		return `${message}\n`;

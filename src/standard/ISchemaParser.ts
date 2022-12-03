@@ -1,5 +1,5 @@
 import { StandardDefinition } from './StandardSchema';
 
 export interface ISchemaParser {
-	parse(data: unknown): StandardDefinition
+	parse(data: unknown): StandardDefinition;
 }

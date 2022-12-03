@@ -21,8 +21,9 @@ export class FileAnalyzer implements IFileAnalyzer {
 				return this.videoFileAnalyzer.analyze(this.standard.videoStandard, file);
 			}
 
-			default:
+			default: {
 				return undefined;
+			}
 		}
 	}
 }

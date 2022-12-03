@@ -1,4 +1,4 @@
 export interface IConditionResult {
-	isSatisfied: boolean,
-	getResultAsString(): string
+	isSatisfied: boolean;
+	getResultAsString(): string;
 }

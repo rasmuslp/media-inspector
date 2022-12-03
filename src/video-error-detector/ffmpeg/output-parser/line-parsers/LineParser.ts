@@ -1,4 +1,4 @@
 export interface LineParser<T> {
-	canParse(line: string): boolean
-	parse(line: string): T
+	canParse(line: string): boolean;
+	parse(line: string): T;
 }

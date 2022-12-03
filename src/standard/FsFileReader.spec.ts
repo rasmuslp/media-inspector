@@ -10,6 +10,6 @@ describe('FsFileReader', () => {
 
 	it('should throw error on non existing file', async () => {
 		const reader = new FsFileReader();
-		await expect(reader.read('nope-note-there')).rejects.toThrowError('Could not read file at \'nope-note-there\': ENOENT: no such file or directory, open \'nope-note-there\'');
+		await expect(reader.read('nope-note-there')).rejects.toThrow('Could not read file at \'nope-note-there\': ENOENT: no such file or directory, open \'nope-note-there\'');
 	});
 });

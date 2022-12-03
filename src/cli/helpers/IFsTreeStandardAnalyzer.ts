@@ -2,5 +2,5 @@ import { IFileAnalysisResult } from '../../analyzer/interfaces/IFileAnalysisResu
 import { FsNode, FsTree } from '../../fs-tree';
 
 export interface IFsTreeStandardAnalyzer {
-	analyze(tree: FsTree, verbose: boolean): Promise<Map<FsNode, IFileAnalysisResult>>
+	analyze(tree: FsTree, verbose: boolean): Promise<Map<FsNode, IFileAnalysisResult>>;
 }

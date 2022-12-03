@@ -53,8 +53,9 @@ export class ConditionFactory implements IConditionFactory {
 				return condition;
 			}
 
-			default:
+			default: {
 				throw new Error(`Unknown operator in ${JSON.stringify(serialized)}`);
+			}
 		}
 	}
 }

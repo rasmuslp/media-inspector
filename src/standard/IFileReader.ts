@@ -1,3 +1,3 @@
 export interface IFileReader {
-	read(path: string): Promise<string>
+	read(path: string): Promise<string>;
 }

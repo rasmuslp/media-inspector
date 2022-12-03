@@ -1,7 +1,7 @@
 import { LineParser } from './LineParser';
 
 export interface ParsedLastMessageRepeatedLine {
-	count: number
+	count: number;
 }
 
 export class LastMessageRepeatedLineParser implements LineParser<ParsedLastMessageRepeatedLine> {

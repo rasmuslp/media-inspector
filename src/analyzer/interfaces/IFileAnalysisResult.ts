@@ -1,3 +1,3 @@
 export interface IFileAnalysisResult {
-	isSatisfied: boolean
+	isSatisfied: boolean;
 }

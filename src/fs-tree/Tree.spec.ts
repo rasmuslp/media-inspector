@@ -27,7 +27,7 @@ class TestTree extends Tree<TestNode> {
 	}
 }
 
-function getTree(): { tree: TestTree, nodes: Record<string, TestNode> } {
+function getTree(): { tree: TestTree; nodes: Record<string, TestNode> } {
 	const nodes = {
 		// Root node
 		node0: new TestNode('node0'),

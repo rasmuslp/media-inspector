@@ -1,7 +1,7 @@
 import { LineParser } from './LineParser';
 
 export interface ParsedCorruptDecodedFrameLine {
-	message: string
+	message: string;
 }
 
 export class CorruptDecodedFrameLineParser implements LineParser<ParsedCorruptDecodedFrameLine> {
