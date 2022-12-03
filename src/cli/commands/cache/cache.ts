@@ -2,12 +2,15 @@ import path from 'path';
 
 import { CliUx, Flags } from '@oclif/core';
 
-import BaseCommand from '../BaseCommand';
-import { readMetadataFromFileSystem } from '../helpers/readMetadataFromFileSystem';
-import { SerializableIO } from '../../serializable/SerializableIO';
+import BaseCommand from '../../BaseCommand';
+import { readMetadataFromFileSystem } from '../../helpers/readMetadataFromFileSystem';
+import { SerializableIO } from '../../../serializable/SerializableIO';
 
+/**
+ * @deprecated
+ */
 export default class Cache extends BaseCommand {
-	static description = 'Cache metadata for a directory structure as JSON';
+	static description = '[Depracated] Cache metadata for a directory structure as JSON';
 
 	static flags = {
 		read: Flags.string({

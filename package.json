@@ -88,6 +88,12 @@
   "oclif": {
     "bin": "media-inspector",
     "commands": "./src/cli/commands",
+    "topics": {
+      "cache": {
+        "description": "Manage metadata cache for a directory or file"
+      }
+    },
+    "topicSeparator": " ",
     "plugins": [
       "@oclif/plugin-autocomplete",
       "@oclif/plugin-help",
