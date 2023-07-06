@@ -1,6 +1,6 @@
 import { Flags } from '@oclif/core';
 
-export const RatioFlag = Flags.build({
+export const RatioFlag = Flags.custom({
 	parse: async input => {
 		// Matches [0, 1], with dot and comma separator
 		const ratioRegex = /^(((0[,.])?\d+)|1)$/;

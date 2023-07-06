@@ -1,4 +1,4 @@
-import { CliUx } from '@oclif/core';
+import { ux } from '@oclif/core';
 
 import { IFileAnalysisResult } from '../../analyzer/interfaces/IFileAnalysisResult';
 import { IFileAnalyzer } from '../../analyzer/interfaces/IFileAnalyzer';
@@ -14,7 +14,7 @@ export class FsTreeStandardAnalyzer implements IFsTreeStandardAnalyzer {
 
 	public async analyze(tree: FsTree, verbose = false): Promise<Map<FsNode, IFileAnalysisResult>> {
 		if (verbose) {
-			CliUx.ux.action.start('Analyzing...');
+			ux.action.start('Analyzing...');
 		}
 
 		const analysisResults = new Map<FsNode, IFileAnalysisResult>();
@@ -33,7 +33,7 @@ export class FsTreeStandardAnalyzer implements IFsTreeStandardAnalyzer {
 		});
 
 		if (verbose) {
-			CliUx.ux.action.stop();
+			ux.action.stop();
 			console.log(`Processed ${analysisResults.size} file${analysisResults.size === 1 ? 's' : ''}`);
 		}
 

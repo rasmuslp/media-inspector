@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { CliUx, Flags } from '@oclif/core';
+import { ux, Flags } from '@oclif/core';
 
 import BaseCommand from '../BaseCommand';
 import { readMetadataFromFileSystem } from '../helpers/readMetadataFromFileSystem';
@@ -43,8 +43,8 @@ export default class Cache extends BaseCommand {
 
 		const metadataCache = await readMetadataFromFileSystem(flags.read, true);
 
-		CliUx.ux.action.start(`Writing ${flags.write}`);
+		ux.action.start(`Writing ${flags.write}`);
 		await SerializableIO.write(metadataCache, flags.write);
-		CliUx.ux.action.stop();
+		ux.action.stop();
 	}
 }
