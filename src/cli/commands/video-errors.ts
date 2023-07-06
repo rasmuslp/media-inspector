@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import createDebug from 'debug';
 
 import { decodeVideos } from '../helpers/decodeVideo';
@@ -13,17 +13,17 @@ const debug = createDebug('VideoErrors');
 export default class VideoErrors extends BaseCommand {
 	static description = 'Checks video files for errors by decoding them';
 
-	static args = [
-		{
+	static args = {
+		videoPath: Args.string({
 			name: 'videoPath',
 			required: true,
 			description: 'Path to video file or directory of video files',
 			parse: async (input: string) => path.resolve(process.cwd(), input)
-		}
-	];
+		})
+	};
 
 	static flags = {
-		ext: Flags.build({
+		ext: Flags.custom({
 			char: 'e',
 			default: undefined,
 			description: 'File extensions to match - default: all',
@@ -56,8 +56,7 @@ export default class VideoErrors extends BaseCommand {
 	async run() {
 		const { args, flags } = await this.parse(VideoErrors);
 
-		const videoPath = args.videoPath as string;
-		const { videoFiles } = await readTreeAndVideos(videoPath, flags.verbose);
+		const { videoFiles } = await readTreeAndVideos(args.videoPath, flags.verbose);
 		let videoFilesFilteredByExtension = videoFiles;
 		if (flags.ext) {
 			videoFilesFilteredByExtension = videoFiles.filter(file => flags.ext.includes(file.extension));
